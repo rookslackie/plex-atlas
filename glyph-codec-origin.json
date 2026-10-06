@@ -1,0 +1,8 @@
+{
+  "dialect": "xi.glyph-sha256.v1",
+  "source_repository": "rookslackie/xi-kernel",
+  "source_path": "glyph-lab/sha256/glyph-sha256.mjs",
+  "source_commit": "bf1e4973504d3719ecf4b7e4ee4f8b6befdba43b",
+  "module_sha256": "1ce8681f758dee7002cff56791f463ee2ff737717342aeef4b429e0bd70b03ee",
+  "transfer": "byte-identical vendored page asset"
+}

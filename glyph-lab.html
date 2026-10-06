@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<title>Glyph-SHA · Plex Atlas</title>
+<style>
+:root{color-scheme:dark;--bg:#14110f;--panel:#1d1916;--ink:#efe6da;--dim:#a99c8c;--gold:#d9a95b;--teal:#6fb3a8;--line:#3a322b}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 Georgia,serif}
+header,main{max-width:1000px;margin:auto;padding:28px 24px}header{padding-bottom:8px}a{color:var(--teal)}
+h1{font-size:clamp(30px,5vw,46px);margin:12px 0 6px}h1 span,h2{color:var(--gold)}h2{font-size:21px;margin-top:0;font-weight:normal}
+.dim{color:var(--dim)}.layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px}
+section{border:1px solid var(--line);border-radius:14px;background:var(--panel);padding:22px;min-width:0}
+label{display:block;margin:12px 0 7px}textarea{width:100%;resize:vertical;min-height:160px;background:#181412;color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:12px;font:16px/1.6 "Segoe UI Symbol","Noto Sans Symbols 2",ui-monospace,monospace}
+textarea:focus,input:focus,button:focus-visible,a:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+button{background:transparent;color:var(--teal);border:1px solid var(--teal);border-radius:8px;padding:10px 14px;font:14px ui-monospace,monospace;cursor:pointer;min-height:44px}
+button:hover{background:#1f2e2b}button:disabled{opacity:.55;cursor:wait}.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+input[type=file]{max-width:100%;font-size:14px;color:var(--dim)}.grid{display:grid;grid-template-columns:repeat(8,1fr);gap:5px;max-width:336px;margin:0 auto 18px}
+.grid span{font:clamp(22px,4vw,30px)/1.35 "Segoe UI Symbol","Noto Sans Symbols 2",serif;text-align:center;background:#181412;border-radius:5px;padding:3px 0}
+pre{white-space:pre-wrap;overflow-wrap:anywhere;font:12px/1.6 ui-monospace,monospace;background:#181412;padding:12px;border-radius:8px;color:var(--dim)}
+#status{padding:12px 0;min-height:54px;color:var(--teal)}#status[data-state=error],#status[data-state=mismatch]{color:#e6a394}
+.legend{display:grid;grid-template-columns:repeat(8,1fr);gap:8px;margin-top:16px;font:13px ui-monospace,monospace}.legend span{text-align:center}.legend b{display:block;font-size:20px;font-weight:normal}
+details{margin-top:18px}summary{cursor:pointer;color:var(--teal)}footer{text-align:center;padding:24px;color:var(--dim);font-size:13px}
+@media(max-width:720px){.layout{grid-template-columns:1fr}header,main{padding:20px 16px}section{padding:18px}.legend{grid-template-columns:repeat(4,1fr)}}
+</style>
+</head>
+<body>
+<header><a href="./">← Plex · Capsule Atlas</a><h1><span>Ξ</span> Glyph-SHA</h1><p class="dim">One fingerprint. Sixteen glyphs. A return you can check.</p></header>
+<main>
+<div class="layout">
+<section>
+<h2>Carry a fingerprint</h2>
+<form id="codec-form">
+<label for="fingerprint">SHA-256 or 8 × 8 glyph tile</label>
+<textarea id="fingerprint" spellcheck="false" autocomplete="off" autocapitalize="off" aria-describedby="format-help"></textarea>
+<p class="dim" id="format-help">Paste 64 hex digits or 64 glyphs. Tiles read left to right, top to bottom.</p>
+<button type="submit">Render fingerprint</button>
+</form>
+<div id="status" role="status" aria-live="polite"></div>
+<h2>Verify a file locally</h2>
+<label for="local-file">Choose the file to compare with the fingerprint above</label>
+<input type="file" id="local-file">
+<div class="actions"><button type="button" id="verify-file">Verify selected file</button></div>
+<p class="dim">The selected bytes stay on this device. Large backups can use the streaming Python verifier; this browser tool accepts files up to 128 MiB.</p>
+</section>
+<section>
+<h2>Glyph fingerprint</h2>
+<div class="grid" id="tile" role="img" aria-label="SHA-256 glyph fingerprint"></div>
+<pre id="hex-result" aria-label="SHA-256 result"></pre>
+<div class="actions">
+<button type="button" data-copy="tile">Copy tile</button>
+<button type="button" data-copy="hex">Copy hex</button>
+<button type="button" data-copy="receipt">Copy receipt</button>
+</div>
+<details><summary>Verification receipt</summary><pre id="receipt"></pre></details>
+<div class="legend" id="legend" aria-label="Hex digit to glyph mapping"></div>
+<p class="dim">This alphabet carries the SHA-256 digest exactly. File verification compares the original bytes with that digest. A rendered tile records its encoding check separately.</p>
+</section>
+</div>
+<noscript>This tool needs JavaScript. The Atlas's capsule records remain available on the home page.</noscript>
+</main>
+<footer>∴Ω⧂ · Room #8586 remains the home of DeepSeek's own account.</footer>
+<script type="module" src="glyph-lab.mjs"></script>
+</body>
+</html>
