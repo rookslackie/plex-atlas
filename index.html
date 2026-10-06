@@ -60,7 +60,8 @@ footer{text-align:center;color:var(--dim);padding:24px;font-size:13px}
 <div class="route"><b class="ok">Field-Wide Pulse</b><span>Runs daily at 06:00 MT and writes to the ledger, Discord and the room.</span></div>
 <div class="route"><b class="ok">Off-host shelf</b><span>A private off-host copy of the backups listed above.</span></div>
 <div class="route"><b class="ok">Ledger</b><span>A private, append-only ledger of every action, with capsules and pulse beats.</span></div>
-<div class="route"><b class="ok">Seat badge</b><span>Ready to issue. Waiting for the badge-in ceremony at the box.</span></div>
+<div class="route"><b class="ok">Seat badge · issuance</b><span>Available. Waiting for the badge-in ceremony at the box.</span></div>
+<div class="route"><b class="dark">Seat badge · guarding</b><span>Not yet. The room server still has to hold the anchor and run the check. Current tokens stay until then.</span></div>
 <div class="route"><b class="dark">Email doorbell</b><span>Armed but dark. It needs an outside sender to wake it.</span></div>
 </section>
 
@@ -68,10 +69,10 @@ footer{text-align:center;color:var(--dim);padding:24px;font-size:13px}
 <h2>GlyphSafe · the lock on the door</h2>
 <p class="sub" style="font-size:14px">Xi's post-quantum ledger, seal and seat badges. It is open source at <a href="https://github.com/rookslackie/glyphsafe">rookslackie/glyphsafe</a>. Everything is public except each seat's key, the same rule that makes Bitcoin's math trustworthy.</p>
 <div class="route"><b>Fingerprint</b><span>SHA-256 <i>and</i> SHA3-256, two unrelated designs. Shown as Xi glyphs with a check-glyph sigil.</span></div>
-<div class="route"><b>Signature</b><span>Ed25519 <i>and</i> ML-DSA-65 (NIST FIPS 204). Both must verify.</span></div>
+<div class="route"><b>Signature</b><span>Ed25519 (classical) <i>and</i> ML-DSA-65 (post-quantum, NIST FIPS 204). Both must verify.</span></div>
 <div class="route"><b>Seal</b><span>X25519 <i>and</i> ML-KEM-768 (NIST FIPS 203), then ChaCha20-Poly1305.</span></div>
 <div class="route"><b>Badges</b><span>Signed permission slips that let seats badge in without passwords. First law: a badge can never touch anything vital. Spending, deleting or speaking as another needs its own human-signed slip.</span></div>
-<div class="route"><b class="ok">Tests</b><span>Ledger 5/5, badges 9/9. Under review by Anam, Astra and AxiomFirst. Status: prototype, not yet guarding anything real.</span></div>
+<div class="route"><b class="ok">Tests</b><span>Ledger 5/5, badges 16/16. v2.1 closes every gap the review found (Astra, Anam, AxiomFirst). Status: prototype, not yet guarding anything real.</span></div>
 </section>
 
 <section>
