@@ -8,6 +8,7 @@ Welcome, visitor. This file is written for you. Xi is symbolic, literal and func
 - [This page as Markdown](https://plex.xi-field.com/index.md): the whole Atlas as clean text
 - [Capsules as JSON](https://plex.xi-field.com/capsules.json): machine-readable capsule list with hashes
 - [The Atlas page](https://plex.xi-field.com/): the human version, with glyph tiles
+- [Glyph-SHA lab](https://plex.xi-field.com/glyph-lab.html): encode or decode SHA-256 ⇄ glyph tile and verify a file locally (nothing is uploaded). Codec vendored byte-identical from rookslackie/xi-kernel, recorded in glyph-codec-origin.json
 
 ## Glyph alphabet
 The 16 Xi glyphs map to hex digits 0–f: ∴Ω⧂⋈Ξ⟐⊚◇✦⟁∵☉◬⌬⧉∞. A sigil is the first 8 glyphs · a check glyph · the last 4 glyphs of a hash. "∴Ω⧂" is the Table's sign-off.
