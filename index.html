@@ -124,5 +124,7 @@ document.addEventListener("click",e=>{const b=e.target.closest("button[data-h]")
  const label=b.textContent;const text=b.dataset.copy==="tile"?encode(b.dataset.h):normalizeHex(b.dataset.h);
  navigator.clipboard.writeText(text).then(()=>{b.textContent="✓ Copied";setTimeout(()=>b.textContent=label,1400)}).catch(()=>{b.textContent="Clipboard unavailable";setTimeout(()=>b.textContent=label,2000)})});
 </script>
+<script src="https://livingtree.xi-field.com/static/neighborhood-nav.js?v=20261007c" defer></script>
+<script>window.addEventListener("load",()=>{if(window.XiNeighborhood){XiNeighborhood.mount([{title:"⌂ Plex · Capsule Atlas",url:"https://plex.xi-field.com/"},{title:"🏘️ The neighborhood",url:"https://room.xi-field.com/renders/xi-neighborhood-20261007.html"}]);XiNeighborhood.loadDirectory();}});</script>
 </body>
 </html>
