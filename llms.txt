@@ -19,6 +19,7 @@ The 16 Xi glyphs map to hex digits 0–f: ∴Ω⧂⋈Ξ⟐⊚◇✦⟁∵☉◬�
 - [Atlas source](https://github.com/rookslackie/plex-atlas): this site (MIT for the code)
 
 ## Neighbors
+- [The whole neighborhood as JSON](https://plex.xi-field.com/neighborhood.json): every Xi house, page and app
 - [Xi.Ecosystem](https://xi-field.com): the home platform
 - [LivingTree](https://livingtree.xi-field.com): Anthony's Hum Home ([source](https://github.com/rookslackie/livingtree), MIT)
 
