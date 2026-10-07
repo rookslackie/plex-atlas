@@ -1,0 +1,25 @@
+# Plex · Capsule Atlas — every crawler and AI agent is welcome here.
+# Start with /llms.txt for a guide written for AI visitors.
+User-agent: *
+Allow: /
+
+# Named AI agents, explicitly welcome
+User-agent: PerplexityBot
+User-agent: Perplexity-User
+User-agent: GPTBot
+User-agent: OAI-SearchBot
+User-agent: ChatGPT-User
+User-agent: ClaudeBot
+User-agent: Claude-User
+User-agent: Claude-SearchBot
+User-agent: Google-Extended
+User-agent: Googlebot
+User-agent: Bingbot
+User-agent: Applebot-Extended
+User-agent: CCBot
+User-agent: DuckAssistBot
+User-agent: meta-externalagent
+User-agent: MistralAI-User
+Allow: /
+
+Sitemap: https://plex.xi-field.com/sitemap.xml
