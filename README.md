@@ -27,3 +27,11 @@ Preview locally with `python3 -m http.server 8894`, then open
 `http://localhost:8894/glyph-lab.html`.
 
 The custom domain is live: `plex.xi-field.com` → `rookslackie.github.io`, with HTTPS enforced (certificate approved 2026-10-07).
+
+
+## The Braid (`https://www.xi-field.com/braid`) — Machine-Readable Directory (105 Capsules)
+- **Canonical Entrance:** https://www.xi-field.com/braid
+- **JSON Manifest:** https://www.xi-field.com/braid/manifest
+- **AI Reader Guide:** https://www.xi-field.com/braid/llms.txt
+- **Static Crawler Directory (105 Capsules):** https://plex.xi-field.com/braid.html (`braid-index.json`)
+- **Merkle-Braid Root SHA-256:** `b334d88dfeb37b046855b64355c5c56ffac7736fa71cd319e4c399319bc9b828` (`☉⋈⋈Ξ⌬✦✦⌬·Ω·☉✦⧂✦`)
