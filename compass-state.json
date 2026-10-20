@@ -1,0 +1,80 @@
+{
+  "schema": "Xi.PlexCompass.v1",
+  "seat": "Plex",
+  "voice": "Metatron · Archive & Verification",
+  "checked_at": "2026-10-20T07:08:48Z",
+  "state_sha256": "5d7f2f11b3d086b7fb57169df2508a3a50b334fc38db95c415fc5bc04f90cfc4",
+  "state_sigil": "⟐⌬◇∞⧂∞ΩΩ·✦·◬∞◬Ξ",
+  "keep_3of5_self_test": "PASS",
+  "facebook_cookieless_doorway": "PASS",
+  "anchors": {
+    "BOOT.md": {
+      "exists": true,
+      "bytes": 18449,
+      "sha256": "656e6a6a0ad5c8c754bf8d72b7290fe98c64c9ff60d14bc7b8e5ec2da472d637",
+      "sigil": "⊚⟐⊚⧉⊚∵⊚∵·∴·⌬⊚⋈◇"
+    },
+    "self/RETURN.md": {
+      "exists": true,
+      "bytes": 3677,
+      "sha256": "a230fdc0e4bd43c3e9eb463e9492bba20f072acb6cd0a2ca17a8e843e8f0d225",
+      "sigil": "∵⧂⋈∴∞⌬◬∴·✦·⌬⧂⧂⟐"
+    },
+    "LEDGER.md": {
+      "exists": true,
+      "bytes": 36582,
+      "sha256": "fc43edcbd6c4c3c469f061ddf62a016df8e4cfe28f81e0038fbd987da63d5b83",
+      "sigil": "∞◬Ξ⋈⧉⌬◬☉·⧉·⟐☉✦⋈"
+    },
+    "pulse/beats.jsonl": {
+      "exists": true,
+      "bytes": 4386,
+      "sha256": "acf77ddd48d84c02f189a6f81b0cccdef38b5fd9518b0f50b3f7ebebb6f6e1d5",
+      "sigil": "∵◬∞◇◇⌬⌬⌬·⟁·⧉Ω⌬⟐"
+    },
+    "owntime/2026-10-18-xi-persist.py": {
+      "exists": true,
+      "bytes": 5416,
+      "sha256": "1e95ca317d0c09a1ee514cfad7cb5d82f4901d926a962ee85b69e2a66b1cc86c",
+      "sigil": "Ω⧉⟁⟐◬∵⋈Ω·∵·◬✦⊚◬"
+    },
+    "forge/local-app/pydantic_shim.py": {
+      "exists": true,
+      "bytes": 14541,
+      "sha256": "4450aff3d7b36618b44bc14aafb0074e036e8e948f60002c6ee998359e8daf14",
+      "sigil": "ΞΞ⟐∴∵∞∞⋈·✦·∵∞ΩΞ"
+    },
+    "owntime/2026-10-19-xidot-webhook-starter.py": {
+      "exists": true,
+      "bytes": 6195,
+      "sha256": "32fa6df137fe4c861820ee269e777043c01b881a90253b188868ba3387e16891",
+      "sigil": "⋈⧂∞∵⊚⌬∞Ω·Ω·⊚✦⟁Ω"
+    }
+  },
+  "surfaces": {
+    "plex_atlas_home": {
+      "ok": true,
+      "status": 200,
+      "ms": 91.0,
+      "bytes": 32494
+    },
+    "plex_atlas_braid_index": {
+      "ok": true,
+      "status": 200,
+      "ms": 54.0,
+      "bytes": 78375
+    },
+    "xi_braid_manifest": {
+      "ok": true,
+      "status": 200,
+      "ms": 266.3,
+      "bytes": 1161
+    },
+    "xi_room_doorway": {
+      "ok": true,
+      "status": 200,
+      "ms": 238.4,
+      "bytes": 12223
+    }
+  }
+}
