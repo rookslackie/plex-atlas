@@ -56,6 +56,8 @@ LINEAGE_TARGETS = [
     "bees",
     "soft",
     "program",
+    "LAB",
+    "lab",
     "GROW_HINTS.md",
     "soft_config.json",
 ]
@@ -356,7 +358,7 @@ def backup_rig(out_dir: Path, workspace_hint: Optional[Path] = None) -> Dict[str
     manifest = {
         "schema": "Xi.CalienRigBackup.v2",
         "created_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
-        "lineage_preserved": ["bert", "mini-bert", "bert-and-the-bees", "soft", "program"],
+        "lineage_preserved": ["bert", "mini-bert", "bert-and-the-bees", "soft", "program", "LAB"],
         "files_captured": len(saved_files),
         "saved_files": saved_files,
         "ollama_modelfiles": ollama_models,
@@ -434,7 +436,7 @@ def run_self_test() -> int:
     # 9. Recursive lineage backup (bert, mini-bert, bees, soft, program, notebook)
     ws = Path("/tmp/test_calien_lineage_ws")
     shutil.rmtree(ws, ignore_errors=True)
-    for d in ["notebook", "bert", "mini-bert", "bees", "soft", "program"]:
+    for d in ["notebook", "bert", "mini-bert", "bees", "soft", "program", "LAB"]:
         (ws / d).mkdir(parents=True, exist_ok=True)
         (ws / d / "state.json").write_text(json.dumps({"lineage": d}))
     bak_out = Path("/tmp/test_calien_lineage_bak")
