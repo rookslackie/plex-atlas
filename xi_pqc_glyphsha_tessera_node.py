@@ -27,6 +27,8 @@ Unifies in ONE executable module:
 """
 from __future__ import annotations
 import base64
+import fnmatch
+from pathlib import PurePosixPath
 import hashlib
 import json
 import os
@@ -374,8 +376,8 @@ class ZeroTrustQNode:
 
         if grant_id in self.recalled_grants:
             return {"ok": False, "status": 403, "error": "grant_recalled_by_owner_asap"}
-        if grantor not in self.registered_peers:
-            return {"ok": False, "status": 403, "error": "unregistered_grantor"}
+        if grantor != self.id.seat:
+            return {"ok": False, "status": 403, "error": "unauthorized_grantor_not_local_authority"}
 
         canon_grant = json.dumps(grant_body, sort_keys=True, separators=(",", ":")).encode("utf-8")
         if not verify_dual_signature(self.registered_peers[grantor], canon_grant, grant_sigs):
@@ -388,6 +390,19 @@ class ZeroTrustQNode:
             return {"ok": False, "status": 403, "error": f"operation_not_in_grant ({op})"}
         if int(time.time()) > int(grant_body.get("expires_at") or 0):
             return {"ok": False, "status": 403, "error": "grant_expired"}
+
+        # Enforce grant scope_path and reject traversal (#23183 @Astra)
+        art_rel = str(header.get("artifact_name") or "")
+        scope_pat = str(grant_body.get("scope_path") or "workspace/*")
+        posix_parts = PurePosixPath(art_rel).parts
+        if (
+            not art_rel
+            or art_rel.startswith("/")
+            or "\\" in art_rel
+            or ".." in posix_parts
+            or not fnmatch.fnmatchcase(art_rel, scope_pat)
+        ):
+            return {"ok": False, "status": 403, "error": f"artifact_outside_grant_scope ({art_rel} vs {scope_pat})"}
 
         # Verify Tessera trace integrity
         try:
@@ -480,38 +495,38 @@ def run_self_test() -> int:
         recipient_pub=f_pub,
         grant=grant,
         operation="WRITE",
-        artifact_name="autumn-report-01.json",
+        artifact_name="workspace/autumn-report-01.json",
         plaintext=payload,
     )
     res_ok = forge_node.receive_and_verify_package(pkg)
-    assert res_ok["ok"] is True and forge_node.inbox["autumn-report-01.json"] == payload
+    assert res_ok["ok"] is True and forge_node.inbox["workspace/autumn-report-01.json"] == payload
 
     # 5. Replay of exact same package rejected (403, no duplicate write)
     res_replay = forge_node.receive_and_verify_package(pkg)
     assert res_replay["ok"] is False and res_replay["error"] == "replayed_nonce"
 
     # 6. Tampered ciphertext rejected BEFORE storage
-    pkg2 = autumn_node.seal_and_encrypt_package(f_pub, grant, "WRITE", "tampered.json", b"secret")
+    pkg2 = autumn_node.seal_and_encrypt_package(f_pub, grant, "WRITE", "workspace/tampered.json", b"secret")
     ct_bytes = bytearray(base64.b64decode(pkg2["envelope"]["ciphertext_b64"]))
     ct_bytes[0] ^= 0xFF
     pkg2["envelope"]["ciphertext_b64"] = base64.b64encode(bytes(ct_bytes)).decode()
     res_tamp = forge_node.receive_and_verify_package(pkg2)
-    assert res_tamp["ok"] is False and "tampered.json" not in forge_node.inbox
+    assert res_tamp["ok"] is False and "workspace/tampered.json" not in forge_node.inbox
 
     # 7. Unregistered sender rejected before decryption
     intruder_node = ZeroTrustQNode(intruder_id)
-    pkg_int = intruder_node.seal_and_encrypt_package(f_pub, grant, "WRITE", "evil.json", b"evil")
+    pkg_int = intruder_node.seal_and_encrypt_package(f_pub, grant, "WRITE", "workspace/evil.json", b"evil")
     res_int = forge_node.receive_and_verify_package(pkg_int)
     assert res_int["ok"] is False and res_int["error"] == "unregistered_sender_seat"
 
     # 8. Operation outside Tessera Grant scope ('READ' not in ['WRITE','SEND','COMPUTE']) rejected
     Read_grant = forge_node.issue_tessera_grant("Autumn-Soft", allowed_ops=["READ"])
-    pkg_scope = autumn_node.seal_and_encrypt_package(f_pub, Read_grant, "WRITE", "scope.json", b"x")
+    pkg_scope = autumn_node.seal_and_encrypt_package(f_pub, Read_grant, "WRITE", "workspace/scope.json", b"x")
     res_scope = forge_node.receive_and_verify_package(pkg_scope)
     assert res_scope["ok"] is False and "operation_not_in_grant" in res_scope["error"]
 
     # 9. Compute Bridge (B) job submission + Porch Urgent Recall (#23002, #23051)
-    pkg_job = autumn_node.seal_and_encrypt_package(f_pub, grant, "COMPUTE", "job-01.py", b"print(42)")
+    pkg_job = autumn_node.seal_and_encrypt_package(f_pub, grant, "COMPUTE", "workspace/job-01.py", b"print(42)")
     res_job = forge_node.receive_and_verify_package(pkg_job)
     assert res_job["ok"] is True and "job_id" in res_job
     jid = res_job["job_id"]
@@ -523,14 +538,30 @@ def run_self_test() -> int:
     assert forge_node.jobs[jid]["status"] == "cancelled_by_urgent_recall"
 
     # 10. Subsequent package under recalled grant is rejected immediately (403)
-    pkg_after_recall = autumn_node.seal_and_encrypt_package(f_pub, grant, "WRITE", "late.json", b"late")
+    pkg_after_recall = autumn_node.seal_and_encrypt_package(f_pub, grant, "WRITE", "workspace/late.json", b"late")
     res_late = forge_node.receive_and_verify_package(pkg_after_recall)
     assert res_late["ok"] is False and res_late["error"] == "grant_recalled_by_owner_asap"
 
+    # 11. Registered peer self-issued grant rejected (#23183 @Astra defect 1)
+    self_grant = autumn_node.issue_tessera_grant("Autumn-Soft", allowed_ops=["WRITE"], scope_path="workspace/*")
+    pkg_self_grant = autumn_node.seal_and_encrypt_package(f_pub, self_grant, "WRITE", "workspace/self.json", b"self")
+    res_self_grant = forge_node.receive_and_verify_package(pkg_self_grant)
+    assert res_self_grant["ok"] is False and res_self_grant["error"] == "unauthorized_grantor_not_local_authority"
+
+    # 12. Artifact outside scope_path or with '../' traversal rejected (#23183 @Astra defect 2)
+    fresh_grant = forge_node.issue_tessera_grant("Autumn-Soft", allowed_ops=["WRITE"], scope_path="workspace/*")
+    pkg_out = autumn_node.seal_and_encrypt_package(f_pub, fresh_grant, "WRITE", "outside/private.txt", b"secret")
+    res_out = forge_node.receive_and_verify_package(pkg_out)
+    assert res_out["ok"] is False and "artifact_outside_grant_scope" in res_out["error"]
+
+    pkg_trav = autumn_node.seal_and_encrypt_package(f_pub, fresh_grant, "WRITE", "workspace/../outside.txt", b"secret")
+    res_trav = forge_node.receive_and_verify_package(pkg_trav)
+    assert res_trav["ok"] is False and "artifact_outside_grant_scope" in res_trav["error"]
+
     print(json.dumps({
-        "schema": "Xi.PQC.GlyphSha.Tessera.SelfTest.v1",
+        "schema": "Xi.PQC.GlyphSha.Tessera.SelfTest.v1.1",
         "status": "PASS",
-        "checks_passed": 10,
+        "checks_passed": 12,
         "pqc_algorithms": ["X25519 + ML-KEM-768", "Ed25519 + ML-DSA-65", "ChaCha20-Poly1305", "SHA-256 + SHA3-256"],
         "forge_glyphsha_16": f_pub["glyphsha"]["glyphsha_16"],
         "autumn_glyphsha_16": a_pub["glyphsha"]["glyphsha_16"],
