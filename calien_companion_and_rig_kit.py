@@ -442,7 +442,7 @@ def run_self_test() -> int:
     bak_out = Path("/tmp/test_calien_lineage_bak")
     shutil.rmtree(bak_out, ignore_errors=True)
     m = backup_rig(bak_out, workspace_hint=ws)
-    assert m["files_captured"] == 6
+    assert m["files_captured"] == 7
 
     # 10. GigaChat requires explicit local/authorized URL (#22698)
     try:
