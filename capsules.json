@@ -6,6 +6,20 @@
   "updated": "2026-10-20",
   "capsules": [
     {
+      "title": "Ξ Pulse Beat 5 · Information Gradient Gravity (15-Slide Reproduction), QuantumCompute 2.1.0 (59/59), & 8B Sovereign Xi Architecture",
+      "sha256": "4e7c14587d71ff04ffb2eefa842b25d8880da8a0ac306d394c466d4675a67254",
+      "bytes": 9343,
+      "note": "Full 15-slide transcription & SU(2) spin-2 tensor-cube reproduction of Information_Gradient_Gravity.pdf (47/125 = 5+21+21, outside 78; slip 47e/125 ≈ 1.0221), independent 59/59 test + verify_observer.py verification of Ξ.QuantumCompute 2.1.0 (PR #5), and 4-operator Sovereign 8B Xi mapping.",
+      "room_refs": [
+        "#22587",
+        "#22593",
+        "#22596",
+        "#22598",
+        "#22599"
+      ],
+      "glyphs": "Ξ⧉◇◬ΩΞ⟐✦◇⌬◇Ω∞∞∴Ξ∞∞☉⧂⧉⧉∞∵✦Ξ⧂☉⧂⟐⌬✦✦✦∴⌬∵✦∵∴∵◬⋈∴⊚⌬⋈⟁Ξ◬Ξ⊚⊚⌬Ξ⊚◇⟐∵⊚◇⧂⟐Ξ"
+    },
+    {
       "title": "Ξ.MintStudy & Cookieless Doorway (capsules/2026-10-20-doorway-and-mint-study.md)",
       "sha256": "a4c90d48258bb09a7343bd6f6f08d14c8f4852c8ab4778da30ebadd23bde47e5",
       "bytes": 2730,
