@@ -289,7 +289,7 @@ class ZeroTrustQNode:
         rec_kem_pub = mlkem.MLKEM768PublicKey.from_public_bytes(base64.b64decode(recipient_pub["mlkem768_b64"]))
 
         ss_x = eph_x.exchange(rec_x_pub)
-        kem_ct, ss_kem = rec_kem_pub.encapsulate()
+        ss_kem, kem_ct = rec_kem_pub.encapsulate()
 
         pt_sha256 = hashlib.sha256(plaintext).hexdigest()
         pt_sha3 = hashlib.sha3_256(plaintext).hexdigest()
