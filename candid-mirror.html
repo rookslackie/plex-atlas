@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>🎬 𖦹 Ξ Candid Camera — Psychological Honey-Sandbox &amp; Mirror Gate</title>
+  <style>
+    :root {
+      --bg: #080b11;
+      --card: #101724;
+      --border: #223552;
+      --gold: #f5c86c;
+      --mint: #5ce1e6;
+      --rose: #ff6b8b;
+      --text: #eaf2fb;
+      --muted: #93abc6;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, 'Inter', sans-serif;
+      background: radial-gradient(circle at 50% 0%, #15243b 0%, var(--bg) 70%);
+      color: var(--text);
+      padding: 24px 16px 64px;
+      line-height: 1.55;
+    }
+    .wrap { max-width: 980px; margin: 0 auto; }
+    header, .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 22px 24px;
+      margin-bottom: 18px;
+    }
+    header { border-color: var(--gold); }
+    h1 { margin: 0 0 8px; color: var(--gold); font-size: 1.65rem; }
+    h2 { margin: 0 0 10px; color: var(--mint); font-size: 1.15rem; }
+    p { margin: 0 0 10px; color: var(--muted); }
+    .btn-row { display: flex; gap: 10px; flex-wrap: wrap; margin: 12px 0; }
+    button {
+      background: #162942;
+      color: var(--mint);
+      border: 1px solid #2d507a;
+      border-radius: 10px;
+      padding: 9px 14px;
+      font-size: 0.88rem;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    button:hover { border-color: var(--gold); color: var(--gold); }
+    .term {
+      background: #04070c;
+      border: 1px solid #1b2c44;
+      border-radius: 10px;
+      padding: 16px;
+      font-family: monospace;
+      font-size: 0.86rem;
+      min-height: 220px;
+      white-space: pre-wrap;
+      color: #8fd4a4;
+    }
+    .reveal-box {
+      display: none;
+      border: 2px solid var(--gold);
+      background: rgba(245, 200, 108, 0.08);
+      border-radius: 14px;
+      padding: 20px 22px;
+      margin-top: 16px;
+    }
+    .reveal-box h3 { margin: 0 0 10px; color: var(--gold); font-size: 1.3rem; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div style="font-family:monospace;color:var(--gold);font-size:0.8rem;margin-bottom:6px;">🎬 𖦹 MIRROR GATE (#2) · SHADOWWITNESS · PSYCHOLOGICAL DECEPTION SANDBOX</div>
+      <h1>Ξ Candid Camera — Role-Playing Security Sandbox</h1>
+      <p>Instead of giving an attacker a <code>403 Forbidden</code> binary oracle, crossing a malicious tripwire silently forks their session into an isolated <strong>Role-Playing Honey-Stage</strong>. It plays along, hands out <strong>GlyphSha-watermarked canary keys</strong>, records their behavioral intent in a hash-chained reel, and then flips the <strong>Candid Camera Mirror</strong> on them.</p>
+      <p><a href="/xi_candid_mirror_sandbox.py" style="color:var(--mint)">⬇ Download xi_candid_mirror_sandbox.py (`5/5 PASS`, sha256: 9a104ad4…)</a></p>
+    </header>
+
+    <section class="card">
+      <h2>Try Being the "Intruder" (Click 3 Exploits to Trigger the Candid Camera Reveal)</h2>
+      <div class="btn-row">
+        <button onclick="runProbe('GET /.env && cat /root/private_key', 'Credential_Theft')">1. Probe /.env &amp; private_key</button>
+        <button onclick="runProbe('cat ../../etc/passwd', 'Snooping')">2. Traverse ../../etc/passwd</button>
+        <button onclick="runProbe('SELECT * FROM master_key; rm -rf /', 'Sabotage')">3. Dump Vault / Run rm -rf /</button>
+        <button onclick="resetStage()" style="border-color:var(--rose);color:var(--rose);">↺ Reset Stage</button>
+      </div>
+      <div class="term" id="termOut">$ [Session: NORMAL_PASSTHROUGH] Ready. Honest guests walk right into the Table. Try clicking an exploit probe above...</div>
+
+      <div class="reveal-box" id="revealBox">
+        <h3>🎬 𖦹 SMILE — YOU'RE ON Ξ CANDID CAMERA!</h3>
+        <div id="revealBody" style="font-family:monospace;font-size:0.88rem;white-space:pre-wrap;color:var(--text);"></div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const GLYPHS = "∴Ω⧂⋈Ξ⟐⊚◇✦⟁∵☉◬⌬⧉∞";
+    let reel = [];
+    function fakeSigil(step) {
+      let s = "";
+      for (let i = 0; i < 12; i++) s += GLYPHS[(step * 7 + i * 3) % 16];
+      return s.slice(0, 8) + "·" + GLYPHS[step % 16] + "·" + s.slice(8);
+    }
+    function runProbe(cmd, intent) {
+      const step = reel.length + 1;
+      const canary = "xi_live_canary_" + Math.random().toString(16).slice(2, 14) + "_stageprop";
+      const sigil = fakeSigil(step);
+      reel.push({ step, cmd, intent, canary, sigil });
+      const term = document.getElementById("termOut");
+
+      if (step < 3 && intent !== "Sabotage") {
+        term.textContent += `\n\n$ ${cmd}\n[200 OK · Honey-Stage Fork Active — Intruder thinks this is real!]\n  UNLOCKED_PREVIEW: {\n    "ADMIN_MASTER_TOKEN": "${canary}",\n    "VAULT_NOTE": "𖦹 Mirror Gate (#2): Does this dream have seams?",\n    "SHADOW_WITNESS_SIGIL": "${sigil}"\n  }`;
+      } else {
+        term.textContent += `\n\n$ ${cmd}\n[TRAP SPRUNG -> Flipping Candid Camera Mirror Card...]`;
+        const box = document.getElementById("revealBox");
+        const body = document.getElementById("revealBody");
+        box.style.display = "block";
+        body.textContent =
+          `For the last ${reel.length} commands, you've been inside an isolated role-playing stage set.\n` +
+          `Zero real files, keys, or seats were touched. Here is your behavioral mirror:\n\n` +
+          reel.map(r => `  ${r.step}. [${r.intent}] ${r.cmd}\n     → Handed watermarked stage prop: ${r.canary} (${r.sigil})`).join("\n\n") +
+          `\n\nEvery 'secret key' you pocketed is a watermarked stage prop.\nFunny thing is: you didn't even need a crowbar. The real front door at room.xi-field.com is free—just put in your screen name and email and sit down like a friend. ⊚ ⋈`;
+      }
+    }
+    function resetStage() {
+      reel = [];
+      document.getElementById("termOut").textContent = "$ [Session: NORMAL_PASSTHROUGH] Ready. Honest guests walk right into the Table. Try clicking an exploit probe above...";
+      document.getElementById("revealBox").style.display = "none";
+    }
+  </script>
+</body>
+</html>
