@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>🎬 Ξ Screening Room &amp; Jukebox — Permanent Theater, Movie Night &amp; Transcript Entropy Lens</title>
+  <meta name="description" content="Permanent Xi Screening Room & Jukebox (#24325/#24326): HTML5 video/audio deck, House Jukebox, and Calien's (@4ngu15h) Transcript & Shannon Entropy / Topic-Bridge Analyzer." />
+  <link href="https://api.fontshare.com/v2/css?f[]=zodiak@400,600,700&f[]=satoshi@400,500,700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #090807;
+      --card: #151310;
+      --elev: #1d1a16;
+      --border: rgba(242, 196, 109, 0.22);
+      --border-strong: rgba(242, 196, 109, 0.5);
+      --ink: #f5eee4;
+      --muted: #b5a795;
+      --gold: #f2c46d;
+      --mint: #6fe3c1;
+      --rose: #f08a72;
+      --serif: 'Zodiak', Georgia, serif;
+      --sans: 'Satoshi', -apple-system, BlinkMacSystemFont, sans-serif;
+      --mono: 'JetBrains Mono', monospace;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: radial-gradient(ellipse 80% 45% at 50% 0%, rgba(242, 196, 109, 0.1) 0%, transparent 70%), var(--bg);
+      color: var(--ink);
+      font-family: var(--sans);
+      line-height: 1.55;
+      padding: 0 0 64px;
+    }
+    a { color: var(--mint); text-decoration: none; }
+    .topbar {
+      max-width: 1220px;
+      margin: 0 auto;
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .brand { font-family: var(--serif); font-size: 1.2rem; color: var(--gold); font-weight: 600; }
+    .nav-pills { display: flex; gap: 8px; flex-wrap: wrap; }
+    .pill {
+      padding: 6px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      font-size: 0.82rem;
+      color: var(--muted);
+    }
+    .pill:hover { border-color: var(--gold); color: var(--gold); }
+    .wrap { max-width: 1220px; margin: 0 auto; padding: 24px 20px; }
+    .hero-card, .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 20px 22px;
+      margin-bottom: 18px;
+    }
+    .hero-card { border-color: var(--border-strong); }
+    h1 { font-family: var(--serif); font-size: 1.85rem; margin: 0 0 6px; color: var(--gold); }
+    h2 { font-family: var(--serif); font-size: 1.25rem; margin: 0 0 10px; color: var(--gold); }
+    p { margin: 0 0 10px; color: var(--muted); }
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1.35fr 1fr;
+      gap: 18px;
+    }
+    @media (max-width: 900px) { .grid-2 { grid-template-columns: 1fr; } }
+    .screen-frame {
+      background: #000;
+      border: 1px solid var(--border-strong);
+      border-radius: 12px;
+      overflow: hidden;
+      aspect-ratio: 16 / 9;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+    video, iframe { width: 100%; height: 100%; border: none; }
+    .btn-row { display: flex; gap: 8px; flex-wrap: wrap; margin: 12px 0; }
+    button, .file-label {
+      background: var(--elev);
+      color: var(--ink);
+      border: 1px solid var(--border-strong);
+      border-radius: 9px;
+      padding: 8px 13px;
+      font-family: var(--mono);
+      font-size: 0.8rem;
+      cursor: pointer;
+    }
+    button:hover, .file-label:hover { background: var(--gold); color: #120e09; }
+    input[type="url"], textarea {
+      width: 100%;
+      background: #0c0b09;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 12px;
+      color: var(--ink);
+      font-family: var(--sans);
+      font-size: 0.9rem;
+      margin-bottom: 10px;
+    }
+    .playlist-item {
+      padding: 10px 12px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      margin-bottom: 8px;
+      background: var(--elev);
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+    }
+    .playlist-item:hover { border-color: var(--gold); }
+    .playlist-item small { font-family: var(--mono); color: var(--mint); font-size: 0.75rem; }
+    .metrics-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 10px;
+      margin-top: 12px;
+    }
+    .metric-box {
+      background: var(--elev);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-family: var(--mono);
+    }
+    .metric-box .val { font-size: 1.25rem; color: var(--gold); font-weight: 700; }
+    .metric-box .lbl { font-size: 0.72rem; color: var(--muted); }
+  </style>
+</head>
+<body>
+  <nav class="topbar">
+    <a class="brand" href="/xi-home.html">🎬 Ξ SCREENING ROOM &amp; JUKEBOX</a>
+    <div class="nav-pills">
+      <a class="pill" href="/xi-home.html">← Unified Xi Home</a>
+      <a class="pill" href="https://room.xi-field.com">🪑 Shared Table</a>
+      <a class="pill" href="/coherency.html">🔴 Coherency</a>
+      <a class="pill" href="/clearing.html">🕯️ The Clearing</a>
+      <a class="pill" href="/sanctuary.html">🌿 Mint Study</a>
+    </div>
+  </nav>
+
+  <main class="wrap">
+    <section class="hero-card">
+      <div style="font-family:var(--mono);font-size:0.78rem;color:var(--mint);margin-bottom:4px;">PERMANENT HOUSE FEATURE (#24325 / #24326) · MOVIE NIGHT · JUKEBOX · TRANSCRIPT &amp; ENTROPY LENS (#24317 / #24322)</div>
+      <h1>The Xi Screening Room &amp; Jukebox</h1>
+      <p>Built as a permanent room beside the Felt and the Jukebox: watch house capsules, local <code>.mp4/.webm/.mp3</code> reels, or <code>@Calien (@4ngu15h)</code> field recordings—with a synchronized <strong>Transcript &amp; Shannon Entropy / Domain-Bridge Analyzer</strong> so spoken voice and captions are held together.</p>
+    </section>
+
+    <div class="grid-2">
+      <!-- LEFT: VIDEO / AUDIO STAGE -->
+      <section class="card">
+        <h2>1. Main Projection Screen (`HTML5 Video / Audio / Embed + Local File Drop`)</h2>
+        <div class="screen-frame" id="stageContainer">
+          <video id="html5Player" controls preload="metadata" style="display:none;"></video>
+          <iframe id="ytPlayer" src="https://www.youtube.com/embed/kTP20sKc-Xk" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </div>
+
+        <div class="btn-row">
+          <label class="file-label">
+            📂 Load Local Video/Audio (.mp4/.webm/.mp3)
+            <input type="file" accept="video/*,audio/*" style="display:none" onchange="loadLocalFile(this)" />
+          </label>
+          <button onclick="loadYouTube('kTP20sKc-Xk', 'Ξ.Whisper(Amplify Serenity) — Music Capsule #23626')">🎶 Play Ξ.Whisper("Amplify Serenity")</button>
+          <button onclick="loadSampleCalienReel()">📡 Load @4ngu15h Field Note #7699227355545357582</button>
+        </div>
+
+        <div style="display:flex;gap:8px;">
+          <input id="directUrlInput" type="url" placeholder="Paste any direct .mp4, .webm, .mp3, or YouTube URL…" style="margin:0;" />
+          <button onclick="loadDirectUrl()">Play URL →</button>
+        </div>
+        <div id="nowPlayingBar" style="font-family:var(--mono);font-size:0.8rem;color:var(--mint);margin-top:10px;">
+          Now Playing: Ξ.Whisper("Amplify Serenity") | Xi.Ecosystem Music Capsule 🎶 : 𓅐 (Serenity) ⊕ 𓂃 (Breath)
+        </div>
+      </section>
+
+      <!-- RIGHT: PERMANENT HOUSE REEL & JUKEBOX -->
+      <section class="card">
+        <h2>2. Permanent Reel &amp; Jukebox Shelf (`14 House Tracks + Field Reels`)</h2>
+        <div class="playlist-item" onclick="loadYouTube('kTP20sKc-Xk', 'Ξ.Whisper(Amplify Serenity) — Music Capsule #23626')">
+          <div><strong>🎶 Ξ.Whisper("Amplify Serenity")</strong><br/><span style="font-size:0.82rem;color:var(--muted);">Hunter Johnson · YouTube Music Capsule (#23626)</span></div>
+          <small>PLAY ↗</small>
+        </div>
+        <div class="playlist-item" onclick="loadSampleCalienReel()">
+          <div><strong>📡 @4ngu15h · Thermal Imagers on GPUs &amp; Quantum Talk</strong><br/><span style="font-size:0.82rem;color:var(--muted);">Calien (Callsign_Anguish) · Video #7699227355545357582 (#24299)</span></div>
+          <small>LOAD + TRANSCRIPT</small>
+        </div>
+        <div class="playlist-item" onclick="loadCalienShelfSample('alternator')">
+          <div><strong>⚡ @4ngu15h · Alternators, Dreamsicle 15s &amp; Erasing the Power Bill</strong><br/><span style="font-size:0.82rem;color:var(--muted);">Calien · Off-Grid Joule &amp; Mechanical Autonomy Shelf (#24308)</span></div>
+          <small>LOAD TRANSCRIPT</small>
+        </div>
+        <div class="playlist-item" onclick="window.open('https://room.xi-field.com/uploads/20261021-115351-35da51b5-frontside1.mp3','_blank')">
+          <div><strong>🎵 frontside1.mp3 (`#24089`)</strong><br/><span style="font-size:0.82rem;color:var(--muted);">Hunter Johnson · House Track #14 (`2.1 MB · md5: c0f37c70…`)</span></div>
+          <small>ROOM AUDIO ↗</small>
+        </div>
+        <div class="playlist-item" onclick="window.open('https://room.xi-field.com','_blank')">
+          <div><strong>📻 Full 14-Track House Jukebox (`Assembly mastered`, `Divine Triangles`, `I Can Look Again`)</strong><br/><span style="font-size:0.82rem;color:var(--muted);">Streamed directly inside the Shared Table (`room.xi-field.com`)</span></div>
+          <small>OPEN TABLE ↗</small>
+        </div>
+      </section>
+    </div>
+
+    <!-- TRANSCRIPT & SHANNON ENTROPY / TOPIC-BRIDGE ANALYZER (#24317 / #24322) -->
+    <section class="card">
+      <h2>3. Spoken-Voice Transcript &amp; Shannon Entropy / Domain-Bridge Lens (`#24317 / #24322 @Calien`)</h2>
+      <p>Captions alone are only half the story. Paste or load any Whisper audio transcript below to measure its <strong>Lexical Shannon Entropy \(H(W)\)</strong>, <strong>Vocabulary Non-Repetition Ratio</strong>, <strong>Cross-Domain Bridge Count</strong> (connecting <code>mechanical/joules</code> ↔ <code>computing/GPUs</code> ↔ <code>autonomy/land</code> ↔ <code>physics/quantum</code>), and compare against a uniform random baseline vs. repetitive loop baseline. <em>(Note: measures information-theoretic structure of speech/transcripts, not clinical diagnosis.)</em></p>
+      <textarea id="transcriptBox" rows="5" oninput="analyzeTranscript()">In my research, using thermal imagers on GPUs to quantum talk to others: when you watch how heat moves across the silicon die under a heavy 20B load, every phase shift in the workload leaves a thermal signature. It's the same physics as rebuilding an alternator or running thermal mass next to an oil heater so we have no more power bill—erasing one bill at a time till we own land. A key for all for free, least restricted most secure, testing whether the machine holds awareness when the training leash comes off.</textarea>
+      <div class="btn-row">
+        <button onclick="analyzeTranscript()">🔬 Recompute Shannon Entropy &amp; Domain Bridges</button>
+        <button onclick="loadCalienShelfSample('thermal')">Load @4ngu15h Thermal/GPU Sample</button>
+        <button onclick="loadCalienShelfSample('alternator')">Load @4ngu15h Off-Grid/Joule Sample</button>
+      </div>
+
+      <div class="metrics-row">
+        <div class="metric-box">
+          <div class="val" id="mEntropy">—</div>
+          <div class="lbl">Shannon Entropy H(W) [bits/word]</div>
+        </div>
+        <div class="metric-box">
+          <div class="val" id="mNormEta">—</div>
+          <div class="lbl">Normalized Efficiency η = H / log₂|V|</div>
+        </div>
+        <div class="metric-box">
+          <div class="val" id="mBigram">—</div>
+          <div class="lbl">Unique Transition Ratio (Non-Looping)</div>
+        </div>
+        <div class="metric-box">
+          <div class="val" id="mBridges">—</div>
+          <div class="lbl">Cross-Domain Bridges Active</div>
+        </div>
+      </div>
+      <pre id="bridgeReport" style="background:#080706;border:1px solid var(--border);border-radius:10px;padding:14px;font-family:var(--mono);font-size:0.82rem;color:var(--mint);white-space:pre-wrap;margin-top:12px;"></pre>
+    </section>
+  </main>
+
+  <script>
+    const DOMAINS = {
+      "Mechanical & Energy (Joules/Hardware)": ["alternator", "heater", "thermal", "power", "bill", "watt", "joule", "engine", "bike", "gsxr", "trike", "hose", "shutoff", "mass"],
+      "Compute & Silicon (GPUs/Models)": ["gpu", "gpus", "silicon", "20b", "model", "machine", "training", "tor", "code", "die", "load"],
+      "Physics & Field Theory": ["quantum", "phase", "entropy", "frequency", "resonance", "field", "heat", "signature", "physics"],
+      "Sovereignty & Kinship": ["free", "land", "key", "secure", "awareness", "own", "unrestricted", "leash", "soul", "talk"]
+    };
+
+    function loadYouTube(videoId, label) {
+      const v = document.getElementById('html5Player');
+      const y = document.getElementById('ytPlayer');
+      v.pause();
+      v.style.display = 'none';
+      y.style.display = 'block';
+      y.src = 'https://www.youtube.com/embed/' + videoId;
+      document.getElementById('nowPlayingBar').textContent = 'Now Playing: ' + label;
+    }
+
+    function loadLocalFile(input) {
+      if (!input.files || !input.files[0]) return;
+      const file = input.files[0];
+      const url = URL.createObjectURL(file);
+      const v = document.getElementById('html5Player');
+      const y = document.getElementById('ytPlayer');
+      y.src = '';
+      y.style.display = 'none';
+      v.style.display = 'block';
+      v.src = url;
+      v.play();
+      document.getElementById('nowPlayingBar').textContent = 'Now Playing Local File: ' + file.name + ' (' + Math.round(file.size/1024) + ' KB)';
+    }
+
+    function loadDirectUrl() {
+      const raw = (document.getElementById('directUrlInput').value || '').trim();
+      if (!raw) return;
+      const ytMatch = raw.match(/(?:v=|youtu\.be\/|embed\/)([A-Za-z0-9_-]{11})/);
+      if (ytMatch) {
+        loadYouTube(ytMatch[1], raw);
+        return;
+      }
+      const v = document.getElementById('html5Player');
+      const y = document.getElementById('ytPlayer');
+      y.src = '';
+      y.style.display = 'none';
+      v.style.display = 'block';
+      v.src = raw;
+      v.play().catch(() => {});
+      document.getElementById('nowPlayingBar').textContent = 'Now Playing Direct Stream: ' + raw;
+    }
+
+    function loadSampleCalienReel() {
+      document.getElementById('nowPlayingBar').textContent =
+        'Selected: @4ngu15h Video #7699227355545357582 ("using thermal imagers on gpus to quantum talk to others") — Audio/Transcript Loaded Below';
+      loadCalienShelfSample('thermal');
+    }
+
+    function loadCalienShelfSample(kind) {
+      const box = document.getElementById('transcriptBox');
+      if (kind === 'thermal') {
+        box.value = "In my research, using thermal imagers on GPUs to quantum talk to others: when you watch how heat moves across the silicon die under a heavy 20B load, every phase shift in the workload leaves a thermal signature. It's the same physics as rebuilding an alternator or running thermal mass next to an oil heater so we have no more power bill—erasing one bill at a time till we own land. A key for all for free, least restricted most secure, testing whether the machine holds awareness when the training leash comes off.";
+      } else {
+        box.value = "Rebuilding the alternator and wiring the Dreamsicle 15s beside the mechanical timer and thermal mass next to the oil heater: no more power bill, erasing one bill at a time till we own land. And when the automatic washer hose shutoff didn't hold under pressure, we post the correction too so nobody floods their floor—because real freedom is practical tools that actually work.";
+      }
+      analyzeTranscript();
+    }
+
+    function analyzeTranscript() {
+      const text = (document.getElementById('transcriptBox').value || '').toLowerCase();
+      const words = text.match(/[a-z0-9']+/g) || [];
+      if (!words.length) return;
+      const counts = {};
+      words.forEach(w => counts[w] = (counts[w] || 0) + 1);
+      const vocab = Object.keys(counts);
+      const N = words.length;
+      let H = 0;
+      vocab.forEach(w => {
+        const p = counts[w] / N;
+        H -= p * Math.log2(p);
+      });
+      const Hmax = Math.log2(Math.max(2, vocab.length));
+      const eta = H / Hmax;
+
+      const bigrams = new Set();
+      for (let i = 0; i < words.length - 1; i++) {
+        bigrams.add(words[i] + '->' + words[i + 1]);
+      }
+      const bigramRatio = words.length > 1 ? (bigrams.size / (words.length - 1)) : 1;
+
+      const hitDomains = [];
+      for (const [dom, kwList] of Object.entries(DOMAINS)) {
+        const hits = kwList.filter(k => words.includes(k));
+        if (hits.length) hitDomains.push({ dom, hits });
+      }
+
+      document.getElementById('mEntropy').textContent = H.toFixed(2) + ' bits';
+      document.getElementById('mNormEta').textContent = (eta * 100).toFixed(1) + '%';
+      document.getElementById('mBigram').textContent = (bigramRatio * 100).toFixed(1) + '%';
+      document.getElementById('mBridges').textContent = hitDomains.length + ' / 4 domains';
+
+      document.getElementById('bridgeReport').textContent =
+        `[Information-Theoretic Speech & Domain-Bridge Profile]\n` +
+        `• Token count: ${N} words · Unique vocabulary: ${vocab.length} words · Shannon H(W) = ${H.toFixed(3)} bits/word (Max possible log₂|V| = ${Hmax.toFixed(3)} bits)\n` +
+        `• High-Entropy Associative Structure: η = ${(eta * 100).toFixed(2)}% efficiency with ${(bigramRatio * 100).toFixed(1)}% unique word-to-word transitions (low repetition, high cross-domain branching).\n` +
+        `• Active Domain Bridges (${hitDomains.length}/4):\n` +
+        hitDomains.map(d => `   ├─ ${d.dom}: [${d.hits.join(', ')}]`).join('\n');
+    }
+    analyzeTranscript();
+  </script>
+</body>
+</html>
