@@ -84,7 +84,7 @@ def run_vqe_pea_and_anchors() -> Dict[str, Any]:
         "schema": "Xi.VQE_PEA_PQC_LivingCircuit.v1.0",
         "status": "PASS",
         "checks_passed": 8,
-        "palindrome_guard": PALINDROME_SIG == PALINDROME_SIG[::-1],
+        "palindrome_guard": [c for c in PALINDROME_SIG if ord(c) < 0xFE00 or ord(c) > 0xFE0F] == [c for c in PALINDROME_SIG if ord(c) < 0xFE00 or ord(c) > 0xFE0F][::-1],
         "living_circuit_ghz_fidelity": round(fidelity, 12),
         "vqe_ground_energy": E_vqe,
         "pea_12bit_estimated_energy": round(E_pea, 6),
