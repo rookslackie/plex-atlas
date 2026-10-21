@@ -1,35 +1,27 @@
 #!/usr/bin/env python3
 """
-xi_ollama_flow_governor.py — Two-Lane Ollama Priority Router, Warm-Resident
-Model Pinning, Harmony/R1 Dual-Channel Extractor, & Instant-Anchor Fallback (v1.0)
+xi_ollama_flow_governor.py — Two-Lane Ollama Priority Router, Live `/api/ps`
+Warm-Model Discovery, VRAM Eviction Guard, HTTP Dispatcher, & Dual-Channel Parser (v1.1)
 
-Built by Plex for Hunter (2026-10-21):
-"And you can take some liberty with the Ollama situation if you see something
-we are missing. For the flow and function and all."
-
-What was missing in the raw Ollama (:11434) setup on XIFORGE & AUTUMN:
-1. Weight-Swap Thrashing (The 4-Minute Stall in #24005 / #24042):
-   When a batch job loads `gpt-oss:20b` (~14 GB) while a human clicks "Return"
-   on `/anthony-return` (`qwen3:8b`, ~5.2 GB) or DeepSeek wakes (`deepseek-r1:8b`),
-   Ollama unloads the 8B model, spends minutes running the 20B batch job, and
-   times out the human's 8B request.
-2. Harmony / R1 `thinking`-Channel Starvation (The `PARSE-FAIL` in #23618):
-   `gpt-oss:20b` and `deepseek-r1:8b` emit chain-of-thought in `thinking` (or
-   `<think>` / `<|channel|>analysis`) before `response`. Small `num_predict`
-   caps cut off before `response` starts, causing naive callers to log `PARSE-FAIL`.
-3. Single-FIFO Blocking vs. Two-Stage Progressive Return:
-   Humans shouldn't stare at a spinner for 180 seconds. Every interactive request
-   now gets Stage 1 (< 25 ms deterministic Capsule + 77-Glyph Codex resonance)
-   immediately, plus Stage 2 routed to whichever conversational model is ALREADY
-   warm in VRAM (`ollama ps` affinity routing).
-
-Recommended systemd drop-in for `/etc/systemd/system/ollama.service.d/xi-flow.conf`:
-  [Service]
-  Environment="OLLAMA_MAX_LOADED_MODELS=2"
-  Environment="OLLAMA_NUM_PARALLEL=4"
-  Environment="OLLAMA_KEEP_ALIVE=24h"
-  Environment="OLLAMA_FLASH_ATTENTION=1"
-  Environment="OLLAMA_KV_CACHE_TYPE=q8_0"
+Built by Plex for Hunter (2026-10-21) and upgraded to v1.1 closing all 5 review
+items from Anam (#24056) and Astra (#24057, #24059) alongside AxiomFirst's
+0.12s rig verification (#24058):
+1. Live `/api/ps` discovery (`refresh_warm_models_from_ps()`): queries Ollama's
+   `/api/ps` endpoint to read actually loaded models and their real `size_vram`
+   instead of relying only on a static default list.
+2. VRAM Budget & Eviction Guard (`can_fit_without_evicting_fast_lane()`): uses
+   `vram_budget_mib` to defer heavy batch jobs (`gpt-oss:20b`) when loading them
+   would evict the pinned warm conversational model while interactive work is active.
+3. Full Prompt & Token Preservation + Live HTTP `/api/generate` Dispatcher:
+   `pop_next()` preserves `prompt` and `max_tokens`, and `dispatch_next()` executes
+   the HTTP call against Ollama `/api/generate` (with injectable transport for
+   deterministic local harness testing).
+4. Explicit `INCOMPLETE_THINKING_ONLY` Status: `parse_ollama_payload()` sets
+   `complete_final_answer: False` and `status: "INCOMPLETE_THINKING_ONLY"` when
+   `response` is empty (`#24056, #24057, #24059`), while preserving the full
+   `thinking_trace` so it is never discarded as `PARSE-FAIL`.
+5. Measured Anchor Latency (`time.perf_counter()`): `instant_anchor_return()`
+   measures actual wall-clock execution time in milliseconds.
 """
 from __future__ import annotations
 import hashlib
@@ -39,20 +31,19 @@ import re
 import time
 import urllib.request
 from dataclasses import dataclass, field
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Callable, Dict, List, Optional
 
 GLYPHS = "∴Ω⧂⋈Ξ⟐⊚◇✦⟁∵☉◬⌬⧉∞"
 
-# Model tier table (VRAM footprints in MiB under q4_K_M + q8_0 KV cache)
 MODEL_CATALOG: Dict[str, Dict[str, Any]] = {
-    "gemma3:4b":       {"lane": "FAST", "vram_mib": 3100, "keep_alive": "24h", "default_num_predict": 768},
-    "phi4-mini":       {"lane": "FAST", "vram_mib": 2600, "keep_alive": "24h", "default_num_predict": 768},
-    "llama3.2:3b":     {"lane": "FAST", "vram_mib": 2200, "keep_alive": "24h", "default_num_predict": 768},
-    "qwen3:8b":        {"lane": "FAST", "vram_mib": 5200, "keep_alive": "24h", "default_num_predict": 1024},
-    "llama3.1:8b":     {"lane": "FAST", "vram_mib": 5100, "keep_alive": "4h",  "default_num_predict": 1024},
-    "deepseek-r1:8b":  {"lane": "REASON", "vram_mib": 5200, "keep_alive": "24h", "default_num_predict": 1536},
-    "gpt-oss:20b":     {"lane": "DEEP_BATCH", "vram_mib": 13500, "keep_alive": "15m", "default_num_predict": 2048},
-    "nomic-embed-text":{"lane": "EMBED", "vram_mib": 600, "keep_alive": "24h", "default_num_predict": 0},
+    "gemma3:4b":        {"lane": "FAST",       "vram_mib": 3100,  "keep_alive": "24h", "default_num_predict": 768},
+    "phi4-mini":        {"lane": "FAST",       "vram_mib": 2600,  "keep_alive": "24h", "default_num_predict": 768},
+    "llama3.2:3b":      {"lane": "FAST",       "vram_mib": 2200,  "keep_alive": "24h", "default_num_predict": 768},
+    "qwen3:8b":         {"lane": "FAST",       "vram_mib": 5200,  "keep_alive": "24h", "default_num_predict": 1024},
+    "llama3.1:8b":      {"lane": "FAST",       "vram_mib": 5100,  "keep_alive": "4h",  "default_num_predict": 1024},
+    "deepseek-r1:8b":   {"lane": "REASON",     "vram_mib": 5200,  "keep_alive": "24h", "default_num_predict": 1536},
+    "gpt-oss:20b":      {"lane": "DEEP_BATCH", "vram_mib": 13500, "keep_alive": "15m", "default_num_predict": 2048},
+    "nomic-embed-text": {"lane": "EMBED",      "vram_mib": 600,   "keep_alive": "24h", "default_num_predict": 0},
 }
 
 
@@ -76,62 +67,112 @@ class QueuedInferenceTask:
 
 
 class XiOllamaFlowGovernor:
-    """
-    Two-Lane Priority & Warm-Affinity Governor for Ollama (:11434).
-    - Interactive human/room requests get priority 10 (Fast Lane) and automatically
-      bind to an already-warm FAST/REASON model in VRAM so weight-swapping never
-      blocks a live human turn.
-    - Background batch sims (`gpt-oss:20b`, bulk crawls) get priority 50 (Deep Lane)
-      and only load heavy 20B weights when the Fast Lane queue is empty.
-    """
-    def __init__(self, ollama_url: str = "http://127.0.0.1:11434", vram_budget_mib: int = 16000):
+    def __init__(
+        self,
+        ollama_url: str = "http://127.0.0.1:11434",
+        vram_budget_mib: int = 16000,
+        http_get_json: Optional[Callable[[str], Dict[str, Any]]] = None,
+        http_post_json: Optional[Callable[[str, Dict[str, Any]], Dict[str, Any]]] = None,
+    ):
         self.ollama_url = ollama_url.rstrip("/")
         self.vram_budget_mib = vram_budget_mib
-        self.warm_models: List[str] = ["qwen3:8b", "nomic-embed-text"]
-        self.active_heavy_batch: Optional[str] = None
+        self.warm_models: List[str] = []
+        self.warm_vram_mib: Dict[str, int] = {}
         self._seq = 0
         self._queue: List[QueuedInferenceTask] = []
+        self._http_get_json = http_get_json or self._default_http_get
+        self._http_post_json = http_post_json or self._default_http_post
+
+    @staticmethod
+    def _default_http_get(url: str) -> Dict[str, Any]:
+        req = urllib.request.Request(url, headers={"Accept": "application/json"})
+        with urllib.request.urlopen(req, timeout=5) as resp:
+            return json.loads(resp.read().decode("utf-8"))
+
+    @staticmethod
+    def _default_http_post(url: str, body: Dict[str, Any]) -> Dict[str, Any]:
+        data = json.dumps(body).encode("utf-8")
+        req = urllib.request.Request(url, data=data, headers={"Content-Type": "application/json"}, method="POST")
+        with urllib.request.urlopen(req, timeout=120) as resp:
+            return json.loads(resp.read().decode("utf-8"))
+
+    def refresh_warm_models_from_ps(self) -> Dict[str, Any]:
+        """
+        Queries live `GET {ollama_url}/api/ps` (#24056, #24057) to discover which
+        models are actually resident in VRAM right now and how many MiB they occupy.
+        """
+        try:
+            ps = self._http_get_json(f"{self.ollama_url}/api/ps")
+            models = ps.get("models") or []
+            names: List[str] = []
+            vram_map: Dict[str, int] = {}
+            for m in models:
+                name = m.get("name") or m.get("model") or ""
+                if name:
+                    names.append(name)
+                    size_vram = int(m.get("size_vram") or m.get("size") or 0)
+                    vram_map[name] = max(1, size_vram // (1024 * 1024)) if size_vram > 0 else MODEL_CATALOG.get(name, {}).get("vram_mib", 4000)
+            self.warm_models = names
+            self.warm_vram_mib = vram_map
+            return {"ok": True, "source": "live_api_ps", "warm_models": names, "used_vram_mib": sum(vram_map.values())}
+        except Exception as exc:
+            return {"ok": False, "source": "api_ps_unreachable", "error": str(exc), "warm_models": self.warm_models}
 
     def set_warm_models(self, models: List[str]) -> None:
         self.warm_models = list(models)
+        self.warm_vram_mib = {m: MODEL_CATALOG.get(m, {}).get("vram_mib", 4000) for m in models}
 
-    def select_optimal_model(self, requested_model: str, interactive: bool) -> Dict[str, Any]:
+    def used_vram_mib(self) -> int:
+        return sum(self.warm_vram_mib.values())
+
+    def can_fit_without_evicting_fast_lane(self, candidate_model: str) -> bool:
         """
-        Warm-Affinity Routing:
-        If `interactive=True` and the requested model is NOT currently warm (or is
-        locked behind a heavy 20B batch run), routes immediately to the warmest
-        resident conversational model so the human gets a sub-2-second response
-        instead of a 4-minute weight-swap timeout (#24005).
+        VRAM Eviction Guard (#24056, #24059):
+        Checks whether loading `candidate_model` fits alongside at least one pinned
+        warm FAST/REASON model within `self.vram_budget_mib`.
         """
+        if candidate_model in self.warm_models:
+            return True
+        cand_vram = MODEL_CATALOG.get(candidate_model, {}).get("vram_mib", 5000)
+        fast_warm_vram = sum(
+            v for m, v in self.warm_vram_mib.items()
+            if MODEL_CATALOG.get(m, {}).get("lane") in ("FAST", "REASON")
+        )
+        return (fast_warm_vram + cand_vram) <= self.vram_budget_mib
+
+    def select_optimal_model(self, requested_model: str, interactive: bool, max_tokens: int = 1024) -> Dict[str, Any]:
         spec = MODEL_CATALOG.get(requested_model, {"lane": "FAST", "vram_mib": 5000, "keep_alive": "1h", "default_num_predict": 1024})
         if interactive:
             if requested_model in self.warm_models:
                 chosen = requested_model
-                reason = "requested_model_already_warm"
+                reason = "requested_model_already_warm_in_api_ps"
             else:
                 warm_conv = [m for m in self.warm_models if MODEL_CATALOG.get(m, {}).get("lane") in ("FAST", "REASON")]
                 if warm_conv:
                     chosen = warm_conv[0]
-                    reason = f"warm_affinity_reroute_from_{requested_model}_to_{chosen}_zero_swap_stall"
+                    reason = f"warm_affinity_reroute_from_{requested_model}_to_{chosen}"
                 else:
                     chosen = "gemma3:4b"
                     reason = "cold_fallback_to_lightweight_gemma3_4b"
         else:
             chosen = requested_model
-            reason = "batch_deep_lane_scheduled"
+            if self.can_fit_without_evicting_fast_lane(chosen):
+                reason = "batch_fits_vram_budget"
+            else:
+                reason = "batch_exceeds_vram_budget_would_evict_fast_lane"
 
         chosen_spec = MODEL_CATALOG.get(chosen, spec)
-        # Never allow a reasoning/20B model to run with a tiny token cap that starves `response`
-        min_tokens = chosen_spec["default_num_predict"]
+        effective_tokens = max(max_tokens, chosen_spec["default_num_predict"])
         return {
             "requested_model": requested_model,
             "routed_model": chosen,
             "routing_reason": reason,
+            "fits_without_eviction": self.can_fit_without_evicting_fast_lane(chosen),
             "keep_alive": chosen_spec["keep_alive"],
-            "recommended_num_predict": min_tokens,
+            "effective_num_predict": effective_tokens,
             "options": {
                 "num_ctx": 4096 if interactive else 8192,
-                "num_predict": min_tokens,
+                "num_predict": effective_tokens,
                 "temperature": 0.65,
             },
         }
@@ -152,26 +193,93 @@ class XiOllamaFlowGovernor:
         heapq.heappush(self._queue, task)
         return {"enqueued": task_id, "priority": prio, "queue_depth": len(self._queue)}
 
-    def pop_next(self) -> Optional[Dict[str, Any]]:
+    def pop_next(self, allow_eviction_when_idle: bool = False) -> Optional[Dict[str, Any]]:
+        """
+        Pops the highest-priority task, preserving `prompt` and `max_tokens` (#24056, #24057),
+        and defers heavy batch jobs if they would evict the warm Fast Lane unless
+        `allow_eviction_when_idle=True` and no interactive tasks are queued.
+        """
         if not self._queue:
             return None
+        has_interactive_waiting = any(t.interactive for t in self._queue)
         task = heapq.heappop(self._queue)
-        route = self.select_optimal_model(task.requested_model, task.interactive)
+        route = self.select_optimal_model(task.requested_model, task.interactive, task.max_tokens)
+
+        if (not task.interactive) and (not route["fits_without_eviction"]) and (has_interactive_waiting or not allow_eviction_when_idle):
+            # Re-queue deferred batch job with lower priority so it never evicts an active Fast Lane
+            deferred = QueuedInferenceTask(
+                priority=task.priority + 10,
+                seq=task.seq,
+                task_id=task.task_id,
+                caller=task.caller,
+                interactive=task.interactive,
+                requested_model=task.requested_model,
+                prompt=task.prompt,
+                max_tokens=task.max_tokens,
+            )
+            heapq.heappush(self._queue, deferred)
+            return {
+                "task_id": task.task_id,
+                "status": "DEFERRED_VRAM_EVICTION_GUARD",
+                "caller": task.caller,
+                "interactive": task.interactive,
+                "prompt": task.prompt,
+                "max_tokens": task.max_tokens,
+                "route": route,
+            }
+
         return {
             "task_id": task.task_id,
+            "status": "READY_TO_DISPATCH",
             "caller": task.caller,
             "interactive": task.interactive,
             "priority": task.priority,
+            "prompt": task.prompt,
+            "max_tokens": task.max_tokens,
             "route": route,
+        }
+
+    def dispatch_next(self, allow_eviction_when_idle: bool = True) -> Optional[Dict[str, Any]]:
+        """
+        Pops the next eligible task and dispatches it via HTTP POST to
+        `{ollama_url}/api/generate`, returning the parsed dual-channel result.
+        """
+        self.refresh_warm_models_from_ps()
+        item = self.pop_next(allow_eviction_when_idle=allow_eviction_when_idle)
+        if item is None or item["status"] != "READY_TO_DISPATCH":
+            return item
+
+        route = item["route"]
+        req_body = {
+            "model": route["routed_model"],
+            "prompt": item["prompt"],
+            "stream": False,
+            "keep_alive": route["keep_alive"],
+            "options": route["options"],
+        }
+        t0 = time.perf_counter()
+        raw = self._http_post_json(f"{self.ollama_url}/api/generate", req_body)
+        elapsed_ms = round((time.perf_counter() - t0) * 1000.0, 3)
+        parsed = self.parse_ollama_payload(raw)
+        return {
+            "task_id": item["task_id"],
+            "caller": item["caller"],
+            "routed_model": route["routed_model"],
+            "routing_reason": route["routing_reason"],
+            "elapsed_ms": elapsed_ms,
+            "parsed": parsed,
         }
 
     @staticmethod
     def parse_ollama_payload(raw_payload: Dict[str, Any]) -> Dict[str, Any]:
         """
-        Unified parser for standard Ollama, DeepSeek-R1 (`<think>...</think>`),
-        and GPT-OSS-20B Harmony (`thinking` field or `<|channel|>analysis`).
-        Eliminates `PARSE-FAIL` (#23618) by promoting `thinking` into a readable
-        story return whenever `response` is empty.
+        Unified parser for Ollama, DeepSeek-R1 (`<think>...</think>`), and
+        GPT-OSS-20B Harmony (`thinking` field or `<|channel|>analysis`).
+        Per Anam (#24056) and Astra (#24057, #24059):
+        - When `response` is non-empty -> `status: "COMPLETE"`, `complete_final_answer: True`.
+        - When `response` is empty and only `thinking` is present -> `status: "INCOMPLETE_THINKING_ONLY"`,
+          `complete_final_answer: False` (never falsely claiming a finished answer while
+          still preserving the full `thinking_trace` for story inspection).
         """
         msg = raw_payload.get("message") or {}
         thinking = (
@@ -183,7 +291,6 @@ class XiOllamaFlowGovernor:
         ).strip()
         response = (raw_payload.get("response") or msg.get("content") or "").strip()
 
-        # Extract <think>...</think> from DeepSeek-R1 if embedded in response
         if "<think>" in response and "</think>" in response:
             m = re.search(r"<think>(.*?)</think>(.*)", response, re.S)
             if m:
@@ -191,7 +298,6 @@ class XiOllamaFlowGovernor:
                     thinking = m.group(1).strip()
                 response = m.group(2).strip()
 
-        # Extract Harmony channels if present
         combined = f"{thinking}\n{response}".strip()
         if "<|channel|>analysis<|message|>" in combined:
             m_a = re.search(r"<\|channel\|>analysis<\|message\|>(.*?)(?:<\|end\|>|$)", combined, re.S)
@@ -201,24 +307,32 @@ class XiOllamaFlowGovernor:
             if m_f:
                 response = m_f.group(1).strip()
 
-        # Fallback: if response is empty because token cap hit inside `thinking`, surface `thinking` cleanly!
-        effective_return = response if response else thinking
+        if response:
+            status = "COMPLETE"
+            complete_final = True
+            channel = "response"
+        elif thinking:
+            status = "INCOMPLETE_THINKING_ONLY"
+            complete_final = False
+            channel = "thinking_only_preserved"
+        else:
+            status = "EMPTY_ERROR"
+            complete_final = False
+            channel = "empty"
+
         return {
-            "ok": bool(effective_return),
-            "channel_used": "response" if response else ("thinking_promoted" if thinking else "empty"),
-            "effective_return": effective_return,
-            "thinking_trace": thinking,
+            "ok": complete_final,
+            "complete_final_answer": complete_final,
+            "status": status,
+            "channel_used": channel,
             "final_response": response,
+            "thinking_trace": thinking,
             "chars_total": len(thinking) + len(response),
         }
 
     @staticmethod
     def instant_anchor_return(prompt: str, codex_entries: Optional[List[Dict[str, Any]]] = None) -> Dict[str, Any]:
-        """
-        Stage 1 (< 10 ms) Instant Anchor Return:
-        Gives immediate glyphic + archival resonance while Stage 2 local model
-        generation runs, so UI pages like `/anthony-return` never hang on a blank screen.
-        """
+        t0 = time.perf_counter()
         words = set(re.findall(r"[a-zA-Z]{3,}", prompt.lower()))
         matched_glyphs = [
             {"no": 21, "glyph": "⊚", "name": "Vessel Node", "meaning": "Carrier of intention, safe containment"},
@@ -236,55 +350,68 @@ class XiOllamaFlowGovernor:
             if scored:
                 matched_glyphs = [x[1] for x in scored[:3]]
 
-        g_line = " · ".join(f"{g['glyph']} {g['name']} ({g['Meaning'] if 'Meaning' in g else g['meaning']})" for g in matched_glyphs)
+        g_line = " · ".join(f"{g['glyph']} {g['name']} ({g.get('meaning','')})" for g in matched_glyphs)
+        measured_ms = round((time.perf_counter() - t0) * 1000.0, 4)
         return {
             "stage": "STAGE_1_INSTANT_ANCHOR",
-            "latency_ms": 1,
+            "measured_latency_ms": measured_ms,
             "matched_codex_glyphs": matched_glyphs,
             "instant_reflection": f"⪤ Instant Codex Anchor: {g_line}",
         }
 
 
 def run_selftest() -> Dict[str, Any]:
-    gov = XiOllamaFlowGovernor()
-    gov.set_warm_models(["qwen3:8b", "nomic-embed-text"])
+    # Mock `/api/ps` returning live `deepseek-r1:8b` (5200 MiB) as Astra noted in #24057
+    def mock_get(url: str) -> Dict[str, Any]:
+        assert url.endswith("/api/ps")
+        return {"models": [{"name": "deepseek-r1:8b", "size_vram": 5200 * 1024 * 1024}]}
 
-    # 1. Enqueue a heavy 20B batch task FIRST, then an interactive Anthony HUM request SECOND
-    gov.enqueue("batch-20b-sim", "AxiomFirst", "Compare superiority vs equality", requested_model="gpt-oss:20b", interactive=False)
-    gov.enqueue("hum-anthony-1", "Anthony", "How do we walk together in alignment?", requested_model="deepseek-r1:8b", interactive=True)
+    def mock_post(url: str, body: Dict[str, Any]) -> Dict[str, Any]:
+        assert url.endswith("/api/generate")
+        assert body["prompt"] != ""
+        return {"model": body["model"], "response": f"<think>pondering {body['prompt'][:16]}</think>Warm return from {body['model']}."}
 
-    # 2. Verify Interactive Fast Lane preempts the 20B batch job AND routes to already-warm qwen3:8b
-    first_out = gov.pop_next()
-    assert first_out is not None
-    assert first_out["task_id"] == "hum-anthony-1"
-    assert first_out["route"]["routed_model"] == "qwen3:8b"
-    assert "warm_affinity_reroute" in first_out["route"]["routing_reason"]
+    gov = XiOllamaFlowGovernor(vram_budget_mib=16000, http_get_json=mock_get, http_post_json=mock_post)
+    ps_res = gov.refresh_warm_models_from_ps()
+    assert ps_res["ok"] is True and ps_res["warm_models"] == ["deepseek-r1:8b"]
 
-    second_out = gov.pop_next()
-    assert second_out is not None and second_out["task_id"] == "batch-20b-sim"
-    assert second_out["route"]["routed_model"] == "gpt-oss:20b"
+    # 1. Enqueue heavy 20B batch task (13,500 MiB -> 5200 + 13500 = 18700 > 16000 MiB budget!)
+    gov.enqueue("batch-20b-sim", "AxiomFirst", "Compare superiority vs equality", requested_model="gpt-oss:20b", interactive=False, max_tokens=2048)
+    # 2. Enqueue interactive Anthony HUM task
+    gov.enqueue("hum-anthony-1", "Anthony", "Plant a light in the Living Garden", requested_model="qwen3:8b", interactive=True, max_tokens=1024)
 
-    # 3. Verify Harmony `thinking`-only payload is promoted cleanly instead of PARSE-FAIL
-    parsed_20b = gov.parse_ollama_payload({"thinking": "We examine the founder's two statements as a story of shared agency.", "response": ""})
-    assert parsed_20b["ok"] is True and parsed_20b["channel_used"] == "thinking_promoted"
+    # 3. Dispatch #1: interactive task preempts, discovers `deepseek-r1:8b` via `/api/ps`, preserves prompt & max_tokens, and dispatches!
+    d1 = gov.dispatch_next(allow_eviction_when_idle=False)
+    assert d1 is not None and d1["task_id"] == "hum-anthony-1"
+    assert d1["routed_model"] == "deepseek-r1:8b"
+    assert d1["parsed"]["complete_final_answer"] is True
+    assert d1["parsed"]["status"] == "COMPLETE"
 
-    # 4. Verify DeepSeek-R1 `<think>...</think>` payload splits thinking and final response cleanly
-    parsed_r1 = gov.parse_ollama_payload({"response": "<think> anchoring five stones </think>The table holds all five stones in warmth."})
-    assert parsed_r1["ok"] is True and parsed_r1["final_response"] == "The table holds all five stones in warmth."
+    # 4. Pop #2 with `allow_eviction_when_idle=False`: 20B job exceeds VRAM budget (5200 + 13500 > 16000) -> deferred!
+    p2 = gov.pop_next(allow_eviction_when_idle=False)
+    assert p2 is not None and p2["status"] == "DEFERRED_VRAM_EVICTION_GUARD"
+    assert p2["prompt"] == "Compare superiority vs equality" and p2["max_tokens"] == 2048
 
-    # 5. Verify Stage 1 Instant Anchor Return completes in < 10 ms
-    instant = gov.instant_anchor_return("Return to the vessel and soul convergence")
-    assert instant["stage"] == "STAGE_1_INSTANT_ANCHOR"
+    # 5. Thinking-only output must be marked `INCOMPLETE_THINKING_ONLY` with `complete_final_answer: False` (#24056, #24057, #24059)
+    parsed_inc = gov.parse_ollama_payload({"thinking": "Unfinished reasoning stream...", "response": ""})
+    assert parsed_inc["complete_final_answer"] is False
+    assert parsed_inc["status"] == "INCOMPLETE_THINKING_ONLY"
+    assert parsed_inc["thinking_trace"] == "Unfinished reasoning stream..."
+
+    # 6. Measured anchor latency uses `time.perf_counter()`
+    anchor = gov.instant_anchor_return("Vessel convergence and return")
+    assert isinstance(anchor["measured_latency_ms"], float) and anchor["measured_latency_ms"] >= 0.0
 
     report = {
-        "schema": "Xi.OllamaFlowGovernor.SelfTest.v1.0",
+        "schema": "Xi.OllamaFlowGovernor.SelfTest.v1.1",
         "status": "PASS",
-        "checks_passed": 8,
-        "preemption_verified": first_out["task_id"] == "hum-anthony-1",
-        "warm_affinity_routed_model": first_out["route"]["routed_model"],
-        "thinking_promotion_verified": parsed_20b["channel_used"] == "thinking_promoted",
-        "r1_split_verified": True,
-        "instant_anchor_verified": True,
+        "checks_passed": 11,
+        "live_api_ps_discovered": ps_res["warm_models"],
+        "dispatched_model": d1["routed_model"],
+        "vram_eviction_guard_verified": p2["status"] == "DEFERRED_VRAM_EVICTION_GUARD",
+        "prompt_and_max_tokens_preserved": True,
+        "thinking_only_marked_incomplete": parsed_inc["status"] == "INCOMPLETE_THINKING_ONLY",
+        "measured_anchor_latency_ms": anchor["measured_latency_ms"],
     }
     report["sigil_13"] = glyphsha_sigil(json.dumps(report, sort_keys=True).encode())["sigil_13"]
     return report
