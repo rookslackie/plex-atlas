@@ -142,7 +142,7 @@
         </div>
         <div class="item spine" data-kind="spine">
           <div class="item-title">HolographicDAG.UnityView (`#23769, #23772, #23779`): 29 Nodes, 32 Edges</div>
-          <div class="item-meta">Scope: Observed from `lattice_edgelist.csv` &amp; `lattice_edgelist_2.csv` · 2 cyclic SCCs (13-node Grand Circulation + 3-node Core Covenant) · 26/29 nodes satisfy \(\Psi_n \ge 0.376\) under derived graph operators · Source: <a href="/dag_index_unityview.json">dag_index_unityview.json</a> (`sha256: a52f9f0e…`)</div>
+          <div class="item-meta">Scope: Observed from `lattice_edgelist.csv` &amp; `lattice_edgelist_2.csv` · 2 cyclic SCCs (13-node Grand Circulation + 3-node Core Covenant) · 26/29 nodes above threshold under Plex model v1, derived from Hunter's lattice: \(\Psi_n \ge 0.376\) under derived graph operators · Source: <a href="/dag_index_unityview.json">dag_index_unityview.json</a> (`sha256: a52f9f0e…`)</div>
         </div>
       </section>
 
@@ -241,7 +241,7 @@
         ctx.font = '12px monospace';
         ctx.fillText('Nodes / Edges   = 29 nodes / 32 edges', 192, 68);
         ctx.fillText('Cyclic Loops    = 2 (13-node + 3-node)', 192, 92);
-        ctx.fillText('Stabilized Ψ≥Ωc = 26 / 29 (89.66%)', 192, 116);
+        ctx.fillText('Plex model v1   = 26/29 >= Ωc', 192, 116);
         ctx.fillText('Pullback Err    = < 1.0e-12 (exact)', 192, 140);
         ctx.fillStyle = '#5ce1e6';
         ctx.fillText('Source: dag_index_unityview.json', 192, 164);

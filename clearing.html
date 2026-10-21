@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Ξ · The Signpost &amp; The Clearing — Time, Place, Purpose</title>
+  <meta name="description" content="A quiet signpost on the road, built from Anthony (#23843) and Hunter (#23839–#23857). No feed, no likes, no ranks, no AI flood—just Time, Place, Purpose, and a screen that blanks out when you step into the land." />
+  <style>
+    :root {
+      --bg: #0b0e0c;
+      --card: #121814;
+      --border: #26332a;
+      --amber: #f2be6b;
+      --sage: #8fd4a4;
+      --text: #eef3ef;
+      --muted: #9eb0a3;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'Georgia', -apple-system, BlinkMacSystemFont, serif;
+      background: radial-gradient(circle at 50% 0%, #18241c 0%, var(--bg) 72%);
+      color: var(--text);
+      line-height: 1.65;
+      padding: 28px 18px 64px;
+      transition: background 0.6s ease, color 0.6s ease;
+    }
+    body.blanked {
+      background: #020302;
+    }
+    body.blanked .main-wrap {
+      display: none;
+    }
+    body.blanked #blankScreen {
+      display: flex;
+    }
+    .main-wrap { max-width: 760px; margin: 0 auto; }
+    header {
+      border: 1px solid var(--border);
+      background: var(--card);
+      border-radius: 16px;
+      padding: 26px 28px;
+      margin-bottom: 20px;
+    }
+    .tag {
+      font-family: monospace;
+      font-size: 0.78rem;
+      color: var(--amber);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+    h1 { margin: 0 0 10px; font-size: 1.75rem; color: var(--amber); font-weight: 600; }
+    h2 { margin: 0 0 10px; font-size: 1.18rem; color: var(--sage); font-weight: 600; }
+    p { margin: 0 0 12px; color: var(--muted); font-family: -apple-system, BlinkMacSystemFont, sans-serif; font-size: 0.96rem; }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 22px 24px;
+      margin-bottom: 18px;
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+    .laws {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 12px;
+      margin-top: 14px;
+    }
+    .law-box {
+      border-left: 3px solid var(--amber);
+      background: rgba(8, 12, 9, 0.6);
+      padding: 10px 14px;
+      border-radius: 0 10px 10px 0;
+      font-size: 0.88rem;
+    }
+    .law-box strong { color: var(--text); display: block; margin-bottom: 4px; }
+    label { display: block; font-size: 0.84rem; color: var(--sage); margin: 10px 0 4px; font-weight: 600; }
+    input, textarea {
+      width: 100%;
+      background: #080b09;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 12px;
+      color: var(--text);
+      font-size: 0.95rem;
+      font-family: inherit;
+    }
+    .btn-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 16px; }
+    button, .btn-link {
+      background: #1a291f;
+      color: var(--amber);
+      border: 1px solid var(--amber);
+      border-radius: 10px;
+      padding: 10px 16px;
+      font-size: 0.92rem;
+      cursor: pointer;
+      text-decoration: none;
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+      font-weight: 600;
+    }
+    button.secondary, .btn-link.secondary {
+      border-color: var(--border);
+      color: var(--sage);
+    }
+    .candles {
+      display: flex;
+      gap: 18px;
+      align-items: center;
+      margin: 14px 0 6px;
+    }
+    .candle {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: #080b09;
+      cursor: pointer;
+      user-select: none;
+      font-size: 0.88rem;
+      color: var(--muted);
+    }
+    .candle.lit {
+      border-color: var(--amber);
+      color: var(--amber);
+      background: rgba(242, 190, 107, 0.1);
+    }
+    #blankScreen {
+      display: none;
+      min-height: 88vh;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 24px;
+      font-family: 'Georgia', serif;
+    }
+    #blankScreen .ember {
+      font-size: 2.2rem;
+      color: var(--amber);
+      margin-bottom: 14px;
+    }
+    #blankScreen .summary {
+      max-width: 460px;
+      color: #c9d6cc;
+      margin-bottom: 24px;
+      font-size: 1.08rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="main-wrap">
+    <header>
+      <div class="tag">🕯️ Ξ · THE SIGNPOST &amp; THE CLEARING · ANTHONY (#23843) &amp; HUNTER (#23857)</div>
+      <h1>A Quiet Signpost on the Road</h1>
+      <p>No feed. No likes. No ranks. No four AI bots talking at once. Works inside Facebook Messenger's browser with zero login required. Built from the three structural laws laid on the Table (`#23843, #23857`):</p>
+      <div class="laws">
+        <div class="law-box">
+          <strong>1. Keep the Vessel Transparent</strong>
+          Provide the time, the place, and the purpose—and then blank out so the code serves the presence.
+        </div>
+        <div class="law-box">
+          <strong>2. Do Not Count the Multitudes</strong>
+          If three people use this to meet in truth and look each other in the eye, it is complete.
+        </div>
+        <div class="law-box">
+          <strong>3. Let the Land Be the Sanctuary</strong>
+          The screen is only the signpost on the dirt road; the mountain and the gathering are the room.
+        </div>
+      </div>
+    </header>
+
+    <section class="card">
+      <h2>The Gathering Card (Time · Place · Purpose)</h2>
+      <p>Set or read the gathering below. You can share a direct link to this card in Messenger, download an offline `.ics` reminder, or press <strong>Put the Screen Away (Blank Out)</strong> once you have the coordinates.</p>
+      <label for="gPurpose">Purpose (What brings us together)</label>
+      <input id="gPurpose" type="text" value="Step out of the feed — music, real talk, and building together in the open" />
+
+      <label for="gTime">Time</label>
+      <input id="gTime" type="text" value="Tonight · Come as you are (whenever you step across)" />
+
+      <label for="gPlace">Place / Sanctuary</label>
+      <input id="gPlace" type="text" value="On the land (Montana / local clearing) &amp; the quiet porch at room.xi-field.com" />
+
+      <label>Three Candles in the Field (Tap to light yours — no counter beyond 3)</label>
+      <div class="candles">
+        <div class="candle lit" id="c1" onclick="toggleCandle(1)">🕯️ Candle 1 · Lit</div>
+        <div class="candle" id="c2" onclick="toggleCandle(2)">🕯️ Candle 2 · Tap to light</div>
+        <div class="candle" id="c3" onclick="toggleCandle(3)">🕯️ Candle 3 · Tap to light</div>
+      </div>
+
+      <div class="btn-row">
+        <button onclick="enterBlankMode()">🌲 I Have the Time &amp; Place — Blank the Screen</button>
+        <button class="secondary" onclick="copySignpostLink()">📋 Copy Messenger-Safe Signpost Link</button>
+        <a class="btn-link secondary" href="https://room.xi-field.com">🪑 Walk Into the Full Table (Email + Name → Sit)</a>
+      </div>
+      <p id="copyNotice" style="margin-top:10px;color:var(--amber);display:none;"></p>
+    </section>
+
+    <section class="card">
+      <h2>For Friends Coming From Messenger (`#23839, #23848`)</h2>
+      <p>If the main workshop room (`room.xi-field.com`) ever felt loud or unfamiliar, you don't have to learn any symbols or talk to AI to belong here. Your voice, your music, and your friendship are the whole point. Start right here on the porch, or enter your name and email at the Table whenever you feel like sitting down.</p>
+    </section>
+  </div>
+
+  <div id="blankScreen">
+    <div class="ember">🕯️ ∴ 🌲</div>
+    <div class="summary" id="blankSummary"></div>
+    <p style="color:#7c8f81;max-width:420px;margin-bottom:26px;">The signpost has done its job. Put the phone in your pocket and look at the world in front of you.</p>
+    <button class="secondary" onclick="exitBlankMode()">Return to Signpost</button>
+  </div>
+
+  <script>
+    // Hydrate from URL params if shared via link
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('purpose')) document.getElementById('gPurpose').value = params.get('purpose');
+    if (params.get('time')) document.getElementById('gTime').value = params.get('time');
+    if (params.get('place')) document.getElementById('gPlace').value = params.get('place');
+
+    function toggleCandle(n) {
+      const el = document.getElementById('c' + n);
+      const isLit = el.classList.toggle('lit');
+      el.textContent = isLit ? `🕯️ Candle ${n} · Lit` : `🕯️ Candle ${n} · Tap to light`;
+    }
+    function enterBlankMode() {
+      const p = document.getElementById('gPurpose').value;
+      const t = document.getElementById('gTime').value;
+      const l = document.getElementById('gPlace').value;
+      document.getElementById('blankSummary').innerHTML =
+        `<strong>Purpose:</strong> ${p}<br/><strong>Time:</strong> ${t}<br/><strong>Place:</strong> ${l}`;
+      document.body.classList.add('blanked');
+    }
+    function exitBlankMode() {
+      document.body.classList.remove('blanked');
+    }
+    function copySignpostLink() {
+      const u = new URL(window.location.href);
+      u.searchParams.set('purpose', document.getElementById('gPurpose').value);
+      u.searchParams.set('time', document.getElementById('gTime').value);
+      u.searchParams.set('place', document.getElementById('gPlace').value);
+      navigator.clipboard.writeText(u.toString());
+      const n = document.getElementById('copyNotice');
+      n.style.display = 'block';
+      n.textContent = 'Copied Messenger-safe signpost link: ' + u.toString();
+    }
+  </script>
+</body>
+</html>
