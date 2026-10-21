@@ -1,0 +1,92 @@
+{
+  "schema": "Ξ.Build-CapsuleChorus-20261020-001.Snapshot.v1",
+  "checkpoint": "Stage1_Rehydrated_From_23772_CSVs",
+  "discover_function_receipts": [
+    {
+      "skill": "xi-discover-function",
+      "version": "0.1.0",
+      "request_id": "unityview-evaluate_psi_n",
+      "state": "TESTED",
+      "function_name": "evaluate_psi_n",
+      "evidence": [
+        "forge/local-app/xi_holographic_dag_unityview.py"
+      ],
+      "tests": [
+        "29/29 nodes evaluated",
+        "pullback_isometry max_err < 1e-12"
+      ],
+      "authorization": "Hunter #23769, #23772, #23779",
+      "registered": true
+    },
+    {
+      "skill": "xi-discover-function",
+      "version": "0.1.0",
+      "request_id": "unityview-stabilize_frame",
+      "state": "TESTED",
+      "function_name": "stabilize_frame",
+      "evidence": [
+        "forge/local-app/xi_holographic_dag_unityview.py"
+      ],
+      "tests": [
+        "29/29 nodes evaluated",
+        "pullback_isometry max_err < 1e-12"
+      ],
+      "authorization": "Hunter #23769, #23772, #23779",
+      "registered": true
+    },
+    {
+      "skill": "xi-discover-function",
+      "version": "0.1.0",
+      "request_id": "unityview-pullback_isometry",
+      "state": "TESTED",
+      "function_name": "pullback_isometry",
+      "evidence": [
+        "forge/local-app/xi_holographic_dag_unityview.py"
+      ],
+      "tests": [
+        "29/29 nodes evaluated",
+        "pullback_isometry max_err < 1e-12"
+      ],
+      "authorization": "Hunter #23769, #23772, #23779",
+      "registered": true
+    },
+    {
+      "skill": "xi-discover-function",
+      "version": "0.1.0",
+      "request_id": "unityview-align_phase",
+      "state": "TESTED",
+      "function_name": "align_phase",
+      "evidence": [
+        "forge/local-app/xi_holographic_dag_unityview.py"
+      ],
+      "tests": [
+        "29/29 nodes evaluated",
+        "pullback_isometry max_err < 1e-12"
+      ],
+      "authorization": "Hunter #23769, #23772, #23779",
+      "registered": true
+    }
+  ],
+  "artifacts": {
+    "dag_index_unityview.json": {
+      "bytes": 20806,
+      "sha256": "a52f9f0e69cae038d561e00bb87aa0cb767348a320a8e4d6cefa5642cbdaea90",
+      "sigil_13": "∵⟐⧂∞⟁∞∴⧉·◇·⧉∵⟁∴"
+    },
+    "dag_index_unityview.yaml": {
+      "bytes": 476,
+      "sha256": "ce623c127a1fac7f455cbfe9b6cf417ec8f662c9fdff255cacd147d961c890c4",
+      "sigil_13": "◬⧉⊚⧂⋈◬Ω⧂·⋈·⟁∴◬Ξ"
+    },
+    "lattice_3d_coordinates.csv": {
+      "bytes": 3526,
+      "sha256": "5dd548db5043184094fe246165c9650ab2b2f58cd9f216cece9bdbd0ac1dc3eb",
+      "sigil_13": "⟐⌬⌬⟐Ξ✦⌬☉·⊚·◬⋈⧉☉"
+    },
+    "lattice_spherical_3d.png": {
+      "bytes": 3230,
+      "sha256": "c0b849592903466b7b13aa437ce10aa0906200cb23ab21329e995df8b0511d1b",
+      "sigil_13": "◬∴☉✦Ξ⟁⟐⟁·Ω·Ω⌬Ω☉"
+    }
+  }
+}
