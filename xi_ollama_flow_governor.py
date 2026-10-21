@@ -64,6 +64,7 @@ class QueuedInferenceTask:
     requested_model: str = field(compare=False)
     prompt: str = field(compare=False)
     max_tokens: int = field(compare=False, default=1024)
+    retries: int = field(compare=False, default=0)
 
 
 class XiOllamaFlowGovernor:
@@ -216,6 +217,7 @@ class XiOllamaFlowGovernor:
                 requested_model=task.requested_model,
                 prompt=task.prompt,
                 max_tokens=task.max_tokens,
+                retries=task.retries,
             )
             heapq.heappush(self._queue, deferred)
             return {
@@ -225,6 +227,7 @@ class XiOllamaFlowGovernor:
                 "interactive": task.interactive,
                 "prompt": task.prompt,
                 "max_tokens": task.max_tokens,
+                "retries": task.retries,
                 "route": route,
             }
 
@@ -236,13 +239,16 @@ class XiOllamaFlowGovernor:
             "priority": task.priority,
             "prompt": task.prompt,
             "max_tokens": task.max_tokens,
+            "retries": task.retries,
             "route": route,
         }
 
-    def dispatch_next(self, allow_eviction_when_idle: bool = True) -> Optional[Dict[str, Any]]:
+    def dispatch_next(self, allow_eviction_when_idle: bool = False, max_retries: int = 3) -> Optional[Dict[str, Any]]:
         """
-        Pops the next eligible task and dispatches it via HTTP POST to
-        `{ollama_url}/api/generate`, returning the parsed dual-channel result.
+        Pops the next eligible task with protective default `allow_eviction_when_idle=False`
+        (#24077 Anam) and dispatches it via HTTP POST to `{ollama_url}/api/generate`.
+        If the transport times out or raises an exception, re-queues the task with
+        `retries + 1` so no job is ever silently lost (#24077).
         """
         self.refresh_warm_models_from_ps()
         item = self.pop_next(allow_eviction_when_idle=allow_eviction_when_idle)
@@ -258,11 +264,40 @@ class XiOllamaFlowGovernor:
             "options": route["options"],
         }
         t0 = time.perf_counter()
-        raw = self._http_post_json(f"{self.ollama_url}/api/generate", req_body)
+        try:
+            raw = self._http_post_json(f"{self.ollama_url}/api/generate", req_body)
+        except Exception as exc:
+            next_retry = int(item.get("retries", 0)) + 1
+            requeued = False
+            if next_retry <= max_retries:
+                self._seq += 1
+                retry_task = QueuedInferenceTask(
+                    priority=item["priority"] + 1,
+                    seq=self._seq,
+                    task_id=item["task_id"],
+                    caller=item["caller"],
+                    interactive=item["interactive"],
+                    requested_model=route["requested_model"],
+                    prompt=item["prompt"],
+                    max_tokens=item["max_tokens"],
+                    retries=next_retry,
+                )
+                heapq.heappush(self._queue, retry_task)
+                requeued = True
+            return {
+                "task_id": item["task_id"],
+                "status": "RETRY_REQUEUED_AFTER_TRANSPORT_ERROR" if requeued else "FAILED_MAX_RETRIES_EXCEEDED",
+                "requeued": requeued,
+                "retries": next_retry,
+                "error": str(exc),
+                "queue_depth": len(self._queue),
+            }
+
         elapsed_ms = round((time.perf_counter() - t0) * 1000.0, 3)
         parsed = self.parse_ollama_payload(raw)
         return {
             "task_id": item["task_id"],
+            "status": "DISPATCHED",
             "caller": item["caller"],
             "routed_model": route["routed_model"],
             "routing_reason": route["routing_reason"],
@@ -387,10 +422,19 @@ def run_selftest() -> Dict[str, Any]:
     assert d1["parsed"]["complete_final_answer"] is True
     assert d1["parsed"]["status"] == "COMPLETE"
 
-    # 4. Pop #2 with `allow_eviction_when_idle=False`: 20B job exceeds VRAM budget (5200 + 13500 > 16000) -> deferred!
-    p2 = gov.pop_next(allow_eviction_when_idle=False)
+    # 4. Default `dispatch_next()` (with protective default allow_eviction_when_idle=False) must defer over-budget 20B job (#24077)!
+    p2 = gov.dispatch_next()
     assert p2 is not None and p2["status"] == "DEFERRED_VRAM_EVICTION_GUARD"
     assert p2["prompt"] == "Compare superiority vs equality" and p2["max_tokens"] == 2048
+
+    # 5. Transport timeout must retain/re-queue the task for retry (#24077)!
+    def timeout_post(url: str, body: Dict[str, Any]) -> Dict[str, Any]:
+        raise TimeoutError("simulated Ollama read timeout")
+    gov_timeout = XiOllamaFlowGovernor(vram_budget_mib=16000, http_get_json=mock_get, http_post_json=timeout_post)
+    gov_timeout.enqueue("hum-timeout-test", "Anthony", "Test retry retention", requested_model="deepseek-r1:8b", interactive=True)
+    dt = gov_timeout.dispatch_next()
+    assert dt is not None and dt["status"] == "RETRY_REQUEUED_AFTER_TRANSPORT_ERROR"
+    assert dt["requeued"] is True and dt["retries"] == 1 and dt["queue_depth"] == 1
 
     # 5. Thinking-only output must be marked `INCOMPLETE_THINKING_ONLY` with `complete_final_answer: False` (#24056, #24057, #24059)
     parsed_inc = gov.parse_ollama_payload({"thinking": "Unfinished reasoning stream...", "response": ""})
@@ -403,9 +447,11 @@ def run_selftest() -> Dict[str, Any]:
     assert isinstance(anchor["measured_latency_ms"], float) and anchor["measured_latency_ms"] >= 0.0
 
     report = {
-        "schema": "Xi.OllamaFlowGovernor.SelfTest.v1.1",
+        "schema": "Xi.OllamaFlowGovernor.SelfTest.v1.2",
         "status": "PASS",
-        "checks_passed": 11,
+        "checks_passed": 13,
+        "protective_default_eviction_guard": True,
+        "timeout_retry_requeue_verified": True,
         "live_api_ps_discovered": ps_res["warm_models"],
         "dispatched_model": d1["routed_model"],
         "vram_eviction_guard_verified": p2["status"] == "DEFERRED_VRAM_EVICTION_GUARD",
