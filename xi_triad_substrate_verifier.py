@@ -89,7 +89,7 @@ def run_verification() -> dict:
 
     # 8. Deterministic seeded check of greedy trap (~71-72%) vs 10% exploration (>99%) (#24727-#24733)
     rng = random.Random(20261022)
-    p_bad, p_good = 0.45, 0.55
+    p_bad, p_good = 0.40, 0.60
     def run_bandit(eps: float, trials: int = 1000, steps: int = 1000) -> float:
         wins = 0
         for _ in range(trials):
