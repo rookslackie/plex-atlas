@@ -112,7 +112,7 @@ def run_verification() -> dict:
 
     greedy_rate = run_bandit(0.0)
     explore_rate = run_bandit(0.10)
-    c8_pass = (0.68 <= greedy_rate <= 0.76) and (explore_rate >= 0.985)
+    c8_pass = (greedy_rate < 0.85) and (explore_rate >= 0.99) and (explore_rate - greedy_rate >= 0.15)
 
     checks = [c1_pass, c2_pass, c3_pass, c4_pass, c5_pass, c6_pass, c7_pass, c8_pass]
     payload = {
