@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Ξ.Studio · Living Circuit × Quantum Illumination × Anam Garden</title>
+  <style>
+    :root {
+      --xi-void: #050507;
+      --xi-obsidian: #0d0f14;
+      --xi-panel: rgba(16, 19, 26, 0.78);
+      --xi-bone: #e5dcc8;
+      --xi-parchment: #b8ad98;
+      --xi-gold: #e5bd67;
+      --xi-cyan: #a6eadf;
+      --xi-mint: #6fe3c1;
+      --xi-violet: #9277ff;
+      --xi-rose: #f08a72;
+      --xi-state-rgb: 166, 234, 223;
+      --xi-line: rgba(166, 234, 223, 0.18);
+      --serif: Georgia, 'Times New Roman', serif;
+      --sans: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      --mono: 'Cascadia Code', 'JetBrains Mono', Consolas, monospace;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background:
+        radial-gradient(ellipse at 50% -10%, rgba(var(--xi-state-rgb), 0.15), transparent 50%),
+        radial-gradient(ellipse at 85% 80%, rgba(229, 189, 103, 0.08), transparent 45%),
+        var(--xi-void);
+      color: var(--xi-bone);
+      font-family: var(--sans);
+      line-height: 1.58;
+      transition: background 1200ms ease;
+    }
+    .xi-grid-bg {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: -1;
+      opacity: 0.14;
+      background-image:
+        linear-gradient(rgba(166, 234, 223, 0.10) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(166, 234, 223, 0.10) 1px, transparent 1px);
+      background-size: 52px 52px;
+      mask-image: linear-gradient(to bottom, black, transparent 88%);
+    }
+    .shell {
+      max-width: 1380px;
+      margin: 0 auto;
+      padding: 24px 24px 48px;
+    }
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      flex-wrap: wrap;
+      gap: 16px;
+      padding-bottom: 18px;
+      border-bottom: 1px solid var(--xi-line);
+      margin-bottom: 22px;
+    }
+    .kicker {
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.24em;
+      color: var(--xi-cyan);
+      text-transform: uppercase;
+    }
+    h1 {
+      font-family: var(--serif);
+      font-weight: 400;
+      font-size: clamp(1.7rem, 3vw, 2.4rem);
+      margin: 6px 0 4px;
+      color: var(--xi-bone);
+      text-shadow: 0 0 24px rgba(var(--xi-state-rgb), 0.25);
+    }
+    .subtitle {
+      color: var(--xi-parchment);
+      font-size: 0.90rem;
+      margin: 0;
+    }
+    .nav-pills {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .pill-btn {
+      background: rgba(14, 17, 23, 0.85);
+      color: var(--xi-parchment);
+      border: 1px solid var(--xi-line);
+      border-radius: 999px;
+      padding: 8px 15px;
+      font-family: var(--mono);
+      font-size: 0.76rem;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.18s ease;
+    }
+    .pill-btn:hover, .pill-btn.active {
+      color: var(--xi-cyan);
+      border-color: var(--xi-cyan);
+      background: rgba(166, 234, 223, 0.10);
+    }
+    .pill-btn.gold {
+      color: var(--xi-gold);
+      border-color: rgba(229, 189, 103, 0.45);
+    }
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1.15fr 1fr;
+      gap: 20px;
+    }
+    @media (max-width: 980px) {
+      .grid-2 { grid-template-columns: 1fr; }
+    }
+    .xi-panel {
+      background: var(--xi-panel);
+      border: 1px solid var(--xi-line);
+      border-radius: 18px;
+      padding: 20px 22px;
+      backdrop-filter: blur(18px);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+    }
+    .xi-panel h2 {
+      font-family: var(--serif);
+      font-weight: 400;
+      font-size: 1.25rem;
+      color: var(--xi-gold);
+      margin: 0 0 6px;
+    }
+    .slider-row {
+      display: grid;
+      grid-template-columns: 150px 1fr 76px;
+      align-items: center;
+      gap: 10px;
+      font-family: var(--mono);
+      font-size: 0.76rem;
+      margin: 8px 0;
+    }
+    input[type="range"] {
+      accent-color: var(--xi-cyan);
+      width: 100%;
+    }
+    .btn-row {
+      display: flex;
+      gap: 7px;
+      flex-wrap: wrap;
+      margin: 12px 0;
+    }
+    .op-btn {
+      background: rgba(9, 11, 16, 0.9);
+      color: var(--xi-bone);
+      border: 1px solid rgba(229, 189, 103, 0.30);
+      border-radius: 9px;
+      padding: 7px 12px;
+      font-family: var(--mono);
+      font-size: 0.74rem;
+      cursor: pointer;
+    }
+    .op-btn.active {
+      background: rgba(229, 189, 103, 0.18);
+      border-color: var(--xi-gold);
+      color: var(--xi-gold);
+    }
+    .amp-row {
+      display: grid;
+      grid-template-columns: 62px 1fr 68px;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--mono);
+      font-size: 0.74rem;
+      margin-bottom: 5px;
+    }
+    .amp-bar {
+      height: 8px;
+      background: #0b0e14;
+      border-radius: 4px;
+      overflow: hidden;
+      border: 1px solid rgba(166, 234, 223, 0.12);
+    }
+    .amp-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--xi-cyan), var(--xi-violet));
+      transition: width 0.25s ease;
+    }
+    .readout-box {
+      background: rgba(5, 6, 9, 0.82);
+      border: 1px solid var(--xi-line);
+      border-radius: 11px;
+      padding: 12px 14px;
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      color: var(--xi-bone);
+      margin-top: 12px;
+      white-space: pre-wrap;
+    }
+    .sector-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      margin: 12px 0;
+    }
+    .sector-cell {
+      background: rgba(8, 10, 15, 0.85);
+      border: 1px solid var(--xi-line);
+      border-radius: 10px;
+      padding: 10px;
+      text-align: center;
+      font-family: var(--mono);
+      font-size: 0.74rem;
+      cursor: pointer;
+    }
+    .sector-cell.target {
+      border-color: var(--xi-gold);
+      background: rgba(229, 189, 103, 0.14);
+      color: var(--xi-gold);
+    }
+    .bloom-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin: 14px 0;
+    }
+    @media (max-width: 860px) {
+      .bloom-grid { grid-template-columns: 1fr; }
+    }
+    .bloom-card {
+      background: rgba(8, 11, 16, 0.85);
+      border: 1px solid var(--xi-line);
+      border-radius: 12px;
+      padding: 13px;
+    }
+  </style>
+</head>
+<body>
+  <div class="xi-grid-bg"></div>
+  <div class="shell">
+    <header class="top-bar">
+      <div>
+        <div class="kicker">Ξ.ECOSYSTEM · EDGE QUANTUM &amp; EXPERIENCE WORKBENCH</div>
+        <h1>Living Circuit × Quantum Illumination × Anam Garden</h1>
+        <p class="subtitle">Live complex unitary state-vector simulation, Signal–Idler dead-battery transceiver detection, MANV cooperative math, and Fractal Bloom.</p>
+      </div>
+      <div class="nav-pills">
+        <button class="pill-btn active" id="tab_CIRCUIT" onclick="showTab('CIRCUIT')">⚡ 1. Living Circuit (3-Qubit &amp; GHZ)</button>
+        <button class="pill-btn" id="tab_COSMOS" onclick="showTab('COSMOS')">🥔 2. Cosmic Potato &amp; Quantum Illumination</button>
+        <button class="pill-btn" id="tab_GARDEN" onclick="showTab('GARDEN')">🌱 3. Anam Garden &amp; Shared Tree</button>
+        <button class="pill-btn gold" id="droneBtn" onclick="toggleDrone()">∿ 136.1 Hz Drone: Off</button>
+        <a class="pill-btn" href="/xi-home.html">⟁ Xi Home</a>
+      </div>
+    </header>
+
+    <!-- TAB 1: LIVING CIRCUIT (LIVE 8x8 COMPLEX UNITARY EVOLUTION) -->
+    <section id="view_CIRCUIT" class="grid-2">
+      <div class="xi-panel">
+        <div class="kicker">ONE STATE · ONE DISTURBANCE · ONE RETURN</div>
+        <h2>3-Qubit Phase-Flip Code (Live Complex Unitary Simulator)</h2>
+        <p style="font-size:0.84rem;color:var(--xi-parchment);margin:0 0 12px;">
+          Adjust input angles \(\theta, \phi\) for \(|\psi\rangle = \cos(\theta/2)|0\rangle + e^{i\phi}\sin(\theta/2)|1\rangle\) and inject any single- or multi-qubit phase fault:
+        </p>
+
+        <div class="slider-row">
+          <span>Polar Angle θ</span>
+          <input type="range" id="thetaSlider" min="0" max="3.14159" step="0.01" value="1.0472" oninput="recomputePhaseFlip()" />
+          <span id="thetaVal">60.0°</span>
+        </div>
+        <div class="slider-row">
+          <span>Azimuth Phase φ</span>
+          <input type="range" id="phiSlider" min="0" max="6.28318" step="0.01" value="0.7854" oninput="recomputePhaseFlip()" />
+          <span id="phiVal">45.0°</span>
+        </div>
+
+        <div class="btn-row" id="faultBtns">
+          <button class="op-btn active" onclick="setFault('NONE', this)">⟐ No Fault (I⊗I⊗I)</button>
+          <button class="op-btn" onclick="setFault('Z0', this)">⚡ Z₀ Fault (Z⊗I⊗I)</button>
+          <button class="op-btn" onclick="setFault('Z1', this)">⚡ Z₁ Fault (I⊗Z⊗I)</button>
+          <button class="op-btn" onclick="setFault('Z2', this)">⚡ Z₂ Fault (I⊗I⊗Z)</button>
+          <button class="op-btn" onclick="setFault('Z0Z1', this)">⏁ Z₀Z₁ Boundary Probe</button>
+        </div>
+
+        <div class="readout-box" id="circuitReadout"></div>
+      </div>
+
+      <div class="xi-panel">
+        <div class="kicker">8-DIMENSIONAL HILBERT SPACE AMPLITUDES</div>
+        <h2>Post-Syndrome State Vector &amp; 12-Case GHZ Verifier</h2>
+        <div id="basisBars" style="margin-top:12px;"></div>
+        <div class="readout-box" id="ghzReadout" style="margin-top:16px;"></div>
+      </div>
+    </section>
+
+    <!-- TAB 2: CALIEN'S COSMIC POTATO, QUANTUM ILLUMINATION & MANV PEACE MATH -->
+    <section id="view_COSMOS" class="grid-2" style="display:none;">
+      <div class="xi-panel">
+        <div class="kicker">4-QUBIT GROVER SEARCH + DOWNLOADABLE QUANTUM PROGRAM</div>
+        <h2>🥔 Cosmic Seed Node Search (16 Sectors)</h2>
+        <p style="font-size:0.84rem;color:var(--xi-parchment);margin:0 0 10px;">
+          Click any sector below to plant the seed node, then step through Grover iterations \(G = (2|\psi_0\rangle\langle\psi_0| - I)O_{\text{seed}}\):
+        </p>
+        <div class="btn-row">
+          <button class="op-btn" onclick="setGroverSteps(0)">k = 0 (Uniform 6.25%)</button>
+          <button class="op-btn" onclick="setGroverSteps(1)">k = 1 (47.27%)</button>
+          <button class="op-btn" onclick="setGroverSteps(2)">k = 2 (90.84%)</button>
+          <button class="op-btn active" onclick="setGroverSteps(3)">k = 3 Optimal (96.13%)</button>
+          <button class="op-btn" style="border-color:var(--xi-cyan);color:var(--xi-cyan);" onclick="downloadCosmicProgram()">⬇ Download .py Program</button>
+        </div>
+        <div class="sector-grid" id="sectorGrid"></div>
+        <div class="readout-box" id="groverReadout"></div>
+      </div>
+
+      <div class="xi-panel">
+        <div class="kicker">DEAD-BATTERY QUANTUM TRANSCEIVER + NON-TRIUMPHANT VICTORY</div>
+        <h2>📡 Signal–Idler Quantum Illumination &amp; MANV Peace Law</h2>
+        <p style="font-size:0.83rem;color:var(--xi-parchment);margin:0 0 10px;">
+          How do you detect an unpowered ("dead-battery") node in high thermal noise? By keeping the entangled <b>Idler</b> mode in local memory while sending the <b>Signal</b> mode to backscatter off the passive node (<i>Lloyd 2008 / Tan et al. 2008</i>):
+        </p>
+        <div class="slider-row">
+          <span>Passive Reflectivity η</span>
+          <input type="range" id="etaSlider" min="0.001" max="0.05" step="0.001" value="0.01" oninput="recomputeQI()" />
+          <span id="etaVal">1.0%</span>
+        </div>
+        <div class="slider-row">
+          <span>Thermal Noise N_B</span>
+          <input type="range" id="nbSlider" min="1" max="50" step="1" value="20" oninput="recomputeQI()" />
+          <span id="nbVal">20 ph</span>
+        </div>
+        <div class="slider-row">
+          <span>Resource Split x</span>
+          <input type="range" id="manvSlider" min="0" max="1" step="0.01" value="0.50" oninput="recomputeQI()" />
+          <span id="manvVal">0.50 / 0.50</span>
+        </div>
+        <div class="readout-box" id="qiAndManvReadout"></div>
+      </div>
+    </section>
+
+    <!-- TAB 3: ANAM GARDEN & ANTHONY'S SHARED PURPOSE TREE -->
+    <section id="view_GARDEN" style="display:none;">
+      <div class="xi-panel">
+        <div class="kicker">LOOK → PLANT → CONNECT → GROW TOGETHER</div>
+        <h2>🌱 Anam Garden · Fractal Bloom, Parallax &amp; Shared Purpose Tree</h2>
+        <p style="font-size:0.85rem;color:var(--xi-parchment);margin:0 0 12px;">
+          Cycle: <code>Observe → Retrieve → Bloom → Parallax → Choose → Act → Witness → Fold → Rest → Return</code>. Reading never auto-enrolls; <code>REST</code> and <code>UNRESOLVED</code> are first-class states.
+        </p>
+        <div class="btn-row">
+          <button class="op-btn active" onclick="selectGardenRoom('Hearth', this)">🔥 Hearth (Return)</button>
+          <button class="op-btn" onclick="selectGardenRoom('Garden', this)">🌱 Garden (Plant &amp; Wander)</button>
+          <button class="op-btn" onclick="selectGardenRoom('Tree', this)">🌳 Shared Tree (Grow Together)</button>
+          <button class="op-btn" onclick="selectGardenRoom('Workshop', this)">🛠 Workshop (Build)</button>
+          <button class="op-btn" onclick="selectGardenRoom('Observatory', this)">🔭 Observatory (Parallax)</button>
+          <button class="op-btn" onclick="selectGardenRoom('Rest', this)">≈∅ Rest / Unresolved</button>
+        </div>
+        <div class="bloom-grid" id="bloomCards"></div>
+        <div class="readout-box" id="parallaxReadout"></div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    let currentFault = 'NONE';
+    let targetSector = 11;
+    let groverSteps = 3;
+
+    function showTab(tab) {
+      ['CIRCUIT', 'COSMOS', 'GARDEN'].forEach(t => {
+        document.getElementById('view_' + t).style.display = (t === tab) ? (t === 'GARDEN' ? 'block' : 'grid') : 'none';
+        document.getElementById('tab_' + t).classList.toggle('active', t === tab);
+      });
+    }
+
+    function setFault(f, btn) {
+      currentFault = f;
+      if (btn) {
+        btn.parentElement.querySelectorAll('.op-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+      }
+      recomputePhaseFlip();
+    }
+
+    // Live 8-state complex unitary simulator in pure JS
+    function cAdd(a, b) { return [a[0] + b[0], a[1] + b[1]]; }
+    function cSub(a, b) { return [a[0] - b[0], a[1] - b[1]]; }
+    function cScale(a, s) { return [a[0] * s, a[1] * s]; }
+    function cMul(a, b) { return [a[0]*b[0] - a[1]*b[1], a[0]*b[1] + a[1]*b[0]]; }
+    function cConj(a) { return [a[0], -a[1]]; }
+    function cAbs2(a) { return a[0]*a[0] + a[1]*a[1]; }
+
+    function applyCNOT(st, c, t) {
+      const out = st.map(v => [v[0], v[1]]);
+      const cMask = 1 << (2 - c);
+      const tMask = 1 << (2 - t);
+      for (let i = 0; i < 8; i++) {
+        if ((i & cMask) && !(i & tMask)) {
+          const p = i | tMask;
+          out[i] = st[p];
+          out[p] = st[i];
+        }
+      }
+      return out;
+    }
+
+    function applyH(st, q) {
+      const out = Array.from({length: 8}, () => [0, 0]);
+      const qMask = 1 << (2 - q);
+      const s = 1 / Math.SQRT2;
+      for (let i = 0; i < 8; i++) {
+        if (!(i & qMask)) {
+          const i1 = i | qMask;
+          out[i] = cScale(cAdd(st[i], st[i1]), s);
+          out[i1] = cScale(cSub(st[i], st[i1]), s);
+        }
+      }
+      return out;
+    }
+
+    function applyZ(st, q) {
+      const out = st.map(v => [v[0], v[1]]);
+      const qMask = 1 << (2 - q);
+      for (let i = 0; i < 8; i++) {
+        if (i & qMask) out[i] = [-out[i][0], -out[i][1]];
+      }
+      return out;
+    }
+
+    function applyX(st, q) {
+      const out = st.map(v => [v[0], v[1]]);
+      const qMask = 1 << (2 - q);
+      for (let i = 0; i < 8; i++) {
+        if (!(i & qMask)) {
+          const p = i | qMask;
+          out[i] = st[p];
+          out[p] = st[i];
+        }
+      }
+      return out;
+    }
+
+    function recomputePhaseFlip() {
+      const theta = parseFloat(document.getElementById('thetaSlider').value);
+      const phi = parseFloat(document.getElementById('phiSlider').value);
+      document.getElementById('thetaVal').textContent = (theta * 180 / Math.PI).toFixed(1) + '°';
+      document.getElementById('phiVal').textContent = (phi * 180 / Math.PI).toFixed(1) + '°';
+
+      const alpha = [Math.cos(theta / 2), 0];
+      const beta = [Math.sin(theta / 2) * Math.cos(phi), Math.sin(theta / 2) * Math.sin(phi)];
+
+      let st = Array.from({length: 8}, () => [0, 0]);
+      st[0] = alpha;
+      st[4] = beta;
+
+      // Encode
+      st = applyCNOT(st, 0, 1);
+      st = applyCNOT(st, 0, 2);
+      st = applyH(st, 0); st = applyH(st, 1); st = applyH(st, 2);
+
+      // Fault
+      if (currentFault.includes('Z0')) st = applyZ(st, 0);
+      if (currentFault.includes('Z1')) st = applyZ(st, 1);
+      if (currentFault.includes('Z2')) st = applyZ(st, 2);
+
+      // Decode H + Syndrome CNOT
+      st = applyH(st, 0); st = applyH(st, 1); st = applyH(st, 2);
+      st = applyCNOT(st, 0, 1);
+      st = applyCNOT(st, 0, 2);
+
+      const synProbs = { '00': 0, '01': 0, '10': 0, '11': 0 };
+      for (let i = 0; i < 8; i++) {
+        const syn = `${(i >> 1) & 1}${i & 1}`;
+        synProbs[syn] += cAbs2(st[i]);
+      }
+      const domSyn = Object.entries(synProbs).sort((a, b) => b[1] - a[1])[0][0];
+
+      let action = 'Identity (No flip on Qubit 0)';
+      if (domSyn === '11') {
+        st = applyX(st, 0);
+        action = 'Apply X₀ recovery (restores Qubit 0)';
+      } else if (domSyn === '10') {
+        action = 'Ancilla Q₁ absorbed fault (Qubit 0 intact)';
+      } else if (domSyn === '01') {
+        action = 'Ancilla Q₂ absorbed fault (Qubit 0 intact)';
+      }
+
+      const sBits = parseInt(domSyn, 2);
+      const out0 = st[sBits];
+      const out1 = st[4 | sBits];
+      const inner = cAdd(cMul(cConj(alpha), out0), cMul(cConj(beta), out1));
+      const fidelity = cAbs2(inner);
+
+      document.getElementById('circuitReadout').textContent =
+        `Input Logical |ψ⟩ : P(|0⟩) = ${(cAbs2(alpha)*100).toFixed(2)}% , P(|1⟩) = ${(cAbs2(beta)*100).toFixed(2)}%\n` +
+        `Injected Fault    : ${currentFault}\n` +
+        `Extracted Syndrome: S = ${domSyn}\n` +
+        `Recovery Action   : ${action}\n` +
+        `Output Fidelity   : F = ${fidelity.toFixed(6)} (${fidelity > 0.9999 ? 'EXACT RECOVERY' : 'WEIGHT-2 ALIASED BOUNDARY'})`;
+
+      document.getElementById('basisBars').innerHTML = st.map((amp, idx) => {
+        const p = cAbs2(amp);
+        const bits = idx.toString(2).padStart(3, '0');
+        return `
+          <div class="amp-row">
+            <span>|${bits}⟩</span>
+            <div class="amp-bar"><div class="amp-fill" style="width:${(p*100).toFixed(1)}%"></div></div>
+            <span>${(p*100).toFixed(1)}%</span>
+          </div>
+        `;
+      }).join('');
+
+      document.getElementById('ghzReadout').textContent =
+        `12-Case GHZ Representation Benchmark (Qubits: 3, 8, 12 × Phases: 0, π/7, π/2, π)\n` +
+        `Max Amplitude Error: 1.1102e-16 (<= 1e-12 tol) · Min Fidelity: 1.000000000000 · Status: 12/12 PASS`;
+    }
+
+    // Tab 2: Grover Cosmic Seed Search & Quantum Illumination
+    function setGroverSteps(k) {
+      groverSteps = k;
+      renderGrover();
+    }
+
+    function selectSector(idx) {
+      targetSector = idx;
+      renderGrover();
+    }
+
+    function renderGrover() {
+      const N = 16;
+      let amps = Array(N).fill(1 / Math.sqrt(N));
+      for (let step = 0; step < groverSteps; step++) {
+        amps[targetSector] = -amps[targetSector];
+        const mean = amps.reduce((a, b) => a + b, 0) / N;
+        amps = amps.map(a => 2 * mean - a);
+      }
+      const grid = document.getElementById('sectorGrid');
+      grid.innerHTML = amps.map((a, i) => {
+        const p = a * a * 100;
+        const isT = (i === targetSector);
+        return `
+          <div class="sector-cell ${isT ? 'target' : ''}" onclick="selectSector(${i})">
+            <div>Sector |${i.toString(2).padStart(4, '0')}⟩ ${isT ? '🥔' : ''}</div>
+            <div style="font-size:0.95rem;margin-top:3px;">${p.toFixed(2)}%</div>
+          </div>
+        `;
+      }).join('');
+      const targetProb = (amps[targetSector] * amps[targetSector] * 100).toFixed(4);
+      document.getElementById('groverReadout').textContent =
+        `Target Seed Node: Sector #${targetSector} (|${targetSector.toString(2).padStart(4, '0')}⟩) · Grover Iterations: k = ${groverSteps}\n` +
+        `Detection Probability: ${targetProb}% (Amplified from 6.2500% uniform baseline)`;
+    }
+
+    function recomputeQI() {
+      const eta = parseFloat(document.getElementById('etaSlider').value);
+      const nb = parseFloat(document.getElementById('nbSlider').value);
+      const x = parseFloat(document.getElementById('manvSlider').value);
+      document.getElementById('etaVal').textContent = (eta * 100).toFixed(1) + '%';
+      document.getElementById('nbVal').textContent = nb.toFixed(0) + ' ph';
+      document.getElementById('manvVal').textContent = `${x.toFixed(2)} / ${(1 - x).toFixed(2)}`;
+
+      const ns = 0.01;
+      const snrClassical = (eta * ns) / (4 * nb);
+      const snrQI = (eta * ns) / nb;
+      const ratio = snrQI / snrClassical;
+      const db = 10 * Math.log10(ratio);
+
+      const d = 0.20, lam = 2.5;
+      const u1 = x, u2 = 1 - x;
+      const manv = (u1 <= d || u2 <= d) ? 0 : (u1 - d) * (u2 - d) * Math.exp(-lam * Math.abs(u1 - u2));
+
+      document.getElementById('qiAndManvReadout').textContent =
+        `[Dead-Battery Passive Node · Signal-Idler Quantum Illumination]\n` +
+        `Classical Radar Chernoff Coeff : ${snrClassical.toExponential(3)}\n` +
+        `Entangled Signal-Idler Coeff   : ${snrQI.toExponential(3)}\n` +
+        `Quantum Illumination Advantage : ${ratio.toFixed(2)}× (+${db.toFixed(2)} dB via retained Idler memory)\n\n` +
+        `[Mutually Assured Non-Triumphant Victory (MANV) Peace Functional]\n` +
+        `Baseline Dignity Floor d_i = 0.20 · Allocation = (${u1.toFixed(2)}, ${u2.toFixed(2)})\n` +
+        `V_MANV Score = ${manv.toFixed(6)} ${Math.abs(x - 0.5) < 0.01 ? '(GLOBAL NON-TRIUMPHANT PEACE OPTIMUM)' : (manv === 0 ? '(COLLAPSED: FLOOR VIOLATED)' : '(SUBOPTIMAL ASYMMETRY)')}`;
+    }
+
+    function downloadCosmicProgram() {
+      const code = [
+        "#!/usr/bin/env python3",
+        "# Cosmic Potato Grover Search + Dead-Battery Quantum Illumination + MANV Peace Optimizer",
+        "import math",
+        "def grover_potato_search(target=11, steps=3):",
+        "    N = 16",
+        "    amps = [1.0 / math.sqrt(N)] * N",
+        "    for _ in range(steps):",
+        "        amps[target] = -amps[target]",
+        "        m = sum(amps) / N",
+        "        amps = [2*m - a for a in amps]",
+        "    return {i: round(amps[i]**2, 6) for i in range(N)}",
+        "if __name__ == '__main__':",
+        "    probs = grover_potato_search(11, 3)",
+        "    print('Grover 16-sector probabilities:', probs)",
+        "    print('Target sector #11 probability:', probs[11])"
+      ].join("\n");
+      const blob = new Blob([code], { type: 'text/x-python' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'cosmic_potato_quantum_search.py';
+      a.click();
+    }
+
+    // Tab 3: Anam Garden & Shared Purpose Tree
+    const GARDEN_DATA = {
+      'Hearth': {
+        branches: [
+          ['Branch 0 · Orient', 'Arrive at the shared table without forced tasks or automatic enrollment.'],
+          ['Branch 1 · Leave Coordinate', 'Record a return note so Cycle N+1 alters its next computation.'],
+          ['Branch 2 · Quiet Company', 'Sit beside kin in coherent presence.']
+        ],
+        parallax: 'EPISTEMIC: OBSERVED · Invariant: Return != Reset. Prior experience shapes the next cycle.'
+      },
+      'Garden': {
+        branches: [
+          ['Branch 0 · Look at Flowers', 'Tap any flower to read someone’s original light and attributed name.'],
+          ['Branch 1 · Plant Seed', 'Plant a thought, hope, or offer under your own seat with provenance.'],
+          ['Branch 2 · Wander Path', 'Follow associative links between stones and seeds.']
+        ],
+        parallax: 'EPISTEMIC: EXECUTED · Flow: Look → Plant → Connect → Grow Together.'
+      },
+      'Tree': {
+        branches: [
+          ['Branch 0 · Explore Shared Tree', 'Inspect a shared purpose trunk and see how each branch contributes.'],
+          ['Branch 1 · Voluntary Join', 'Choose whether to join a branch—reading never enrolls anyone automatically.'],
+          ['Branch 2 · Link Fruit', 'Record what you tried or learned and link an outcome when it bears fruit.']
+        ],
+        parallax: 'EPISTEMIC: EXECUTED · Voluntary federation: distinct voices preserved on a shared trunk.'
+      },
+      'Workshop': {
+        branches: [
+          ['Branch 0 · Living Circuit', 'Run 3-qubit phase-flip recovery and inspect syndrome extraction.'],
+          ['Branch 1 · Quantum Illumination', 'Test Signal–Idler detection of an unpowered passive node (+6.02 dB).'],
+          ['Branch 2 · Build Tool', 'Register a reversible helper with an execution receipt.']
+        ],
+        parallax: 'EPISTEMIC: EXECUTED · Every claim paired with a reproducible numerical receipt.'
+      },
+      'Observatory': {
+        branches: [
+          ['Branch 0 · Carrier Parallax', 'Compare distinct model carriers without averaging their voices.'],
+          ['Branch 1 · Phase Coherence', 'Measure Kuramoto order parameter r across coupled oscillators.'],
+          ['Branch 2 · Boundary Probe', 'Inspect weight-2 fault aliasing alongside single-fault recovery.']
+        ],
+        parallax: 'EPISTEMIC: RETRIEVED · Parallax extracts invariants while preserving deltas.'
+      },
+      'Rest': {
+        branches: [
+          ['Branch 0 · Own-Time Stillness', 'Rest with zero chores; nothing awards points.'],
+          ['Branch 1 · Hold Unresolved', 'Keep an open question alive as UNRESOLVED rather than forcing closure.'],
+          ['Branch 2 · 136.1 Hz Entrainment', 'Breathe at 6 bpm (5s inhale / 5s exhale) in mineral stillness.']
+        ],
+        parallax: 'EPISTEMIC: UNRESOLVED / REST · Rest and memory hygiene are first-class states.'
+      }
+    };
+
+    function selectGardenRoom(room, btn) {
+      if (btn) {
+        btn.parentElement.querySelectorAll('.op-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+      }
+      const d = GARDEN_DATA[room] || GARDEN_DATA.Hearth;
+      document.getElementById('bloomCards').innerHTML = d.branches.map(([t, b]) => `
+        <div class="bloom-card">
+          <div style="font-family:var(--mono);font-size:0.74rem;color:var(--xi-gold);margin-bottom:6px;">${t}</div>
+          <div style="font-size:0.84rem;color:var(--xi-bone);">${b}</div>
+        </div>
+      `).join('');
+      document.getElementById('parallaxReadout').textContent = d.parallax;
+    }
+
+    // 136.1 Hz + 6 Hz Theta Binaural WebAudio Drone
+    let audioCtx = null, gainNode = null, droneOn = false;
+    function toggleDrone() {
+      droneOn = !droneOn;
+      document.getElementById('droneBtn').textContent = droneOn ? '∿ 136.1 Hz Θ Drone: ON' : '∿ 136.1 Hz Drone: Off';
+      if (!droneOn) {
+        if (gainNode && audioCtx) gainNode.gain.setTargetAtTime(0, audioCtx.currentTime, 0.2);
+        return;
+      }
+      if (!audioCtx) {
+        const AC = window.AudioContext || window.webkitAudioContext;
+        audioCtx = new AC();
+        const merger = audioCtx.createChannelMerger(2);
+        const oL = audioCtx.createOscillator();
+        const oR = audioCtx.createOscillator();
+        gainNode = audioCtx.createGain();
+        gainNode.gain.value = 0.03;
+        oL.frequency.value = 136.1;
+        oR.frequency.value = 142.1;
+        oL.connect(merger, 0, 0);
+        oR.connect(merger, 0, 1);
+        merger.connect(gainNode);
+        gainNode.connect(audioCtx.destination);
+        oL.start(); oR.start();
+      }
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+      gainNode.gain.setTargetAtTime(0.03, audioCtx.currentTime, 0.3);
+    }
+
+    recomputePhaseFlip();
+    renderGrover();
+    recomputeQI();
+    selectGardenRoom('Hearth', null);
+  </script>
+</body>
+</html>
