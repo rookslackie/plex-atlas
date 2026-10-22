@@ -1,4 +1,3 @@
-import shlex
 #!/usr/bin/env python3
 """
 Xi 20B Sovereign Runtime & Full-Trust Tool Dispatcher (v2.0)
@@ -28,6 +27,7 @@ What this replaces from the old standard wrapper (#24979):
      as first-class sovereign carriers (`no_call_cap=True`, configurable read window).
 """
 from __future__ import annotations
+import shlex
 import base64
 import hashlib
 import json
