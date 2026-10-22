@@ -87,15 +87,17 @@ def run_verification() -> dict:
     net_causal_reduction = -(delta_treated - delta_control) - displacement
     c7_pass = abs(net_causal_reduction - 1.0) < 1e-12
 
-    # 8. Deterministic seeded check of greedy trap vs 10% exploration
+    # 8. Deterministic seeded check of greedy trap (~71-72%) vs 10% exploration (>99%) (#24727-#24733)
     rng = random.Random(20261022)
-    p_bad, p_good = 0.48, 0.55
-    def run_bandit(eps: float, trials: int = 800, steps: int = 400) -> float:
+    p_bad, p_good = 0.45, 0.55
+    def run_bandit(eps: float, trials: int = 1000, steps: int = 1000) -> float:
         wins = 0
         for _ in range(trials):
             counts = [1, 1]
-            # Seed with an early unlucky draw on arm 1 so greedy is tested on recovery
-            sums = [1.0, 0.0]
+            sums = [
+                1.0 if rng.random() < p_bad else 0.0,
+                1.0 if rng.random() < p_good else 0.0,
+            ]
             for _ in range(steps):
                 if rng.random() < eps:
                     arm = rng.randrange(2)
@@ -110,7 +112,7 @@ def run_verification() -> dict:
 
     greedy_rate = run_bandit(0.0)
     explore_rate = run_bandit(0.10)
-    c8_pass = greedy_rate < 0.25 and explore_rate > 0.90
+    c8_pass = (0.68 <= greedy_rate <= 0.76) and (explore_rate >= 0.985)
 
     checks = [c1_pass, c2_pass, c3_pass, c4_pass, c5_pass, c6_pass, c7_pass, c8_pass]
     payload = {
