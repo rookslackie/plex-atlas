@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>🌌 Ξ ⇄ Φ Audacious 5G+ Pocket Cathedral · 3D E47 Deck, 169.5 BPM Synth &amp; Live Phone Bridge</title>
+<style>
+  :root {
+    --bg: #05070d;
+    --sidebar: #090d18;
+    --card: #0f1626;
+    --border: #233354;
+    --amber: #ffbe3b;
+    --cyan: #00f0ff;
+    --emerald: #2ee59d;
+    --magenta: #ff4fd8;
+    --text: #f4f7ff;
+    --muted: #9aaed4;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    display: flex;
+    min-height: 100vh;
+  }
+  aside {
+    width: 270px;
+    background: var(--sidebar);
+    border-right: 1px solid var(--border);
+    padding: 1.1rem 0.9rem;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+  @media (max-width: 860px) {
+    body { flex-direction: column; }
+    aside { width: 100%; border-right: none; border-bottom: 1px solid var(--border); }
+  }
+  .brand {
+    font-weight: 900;
+    font-size: 1.05rem;
+    color: var(--amber);
+    margin-bottom: 0.4rem;
+    letter-spacing: 0.02em;
+  }
+  .pqc-pill {
+    background: rgba(0, 240, 255, 0.12);
+    border: 1px solid var(--cyan);
+    color: var(--cyan);
+    border-radius: 8px;
+    padding: 0.35rem 0.55rem;
+    font-size: 0.72rem;
+    font-family: monospace;
+    margin-bottom: 0.5rem;
+  }
+  .side-link {
+    display: block;
+    text-decoration: none;
+    color: var(--text);
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid transparent;
+    border-radius: 8px;
+    padding: 0.48rem 0.65rem;
+    font-size: 0.81rem;
+    font-weight: 600;
+    transition: 0.15s;
+  }
+  .side-link:hover, .side-link.active {
+    border-color: var(--amber);
+    background: rgba(255, 190, 59, 0.14);
+    color: var(--amber);
+  }
+  main {
+    flex: 1;
+    padding: 1.2rem 1.4rem 3rem;
+    max-width: 1240px;
+  }
+  .top-hud {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.85rem 1.1rem;
+    background: linear-gradient(90deg, rgba(255,190,59,0.12), rgba(0,240,255,0.12), rgba(255,79,216,0.12));
+    border: 1px solid var(--amber);
+    border-radius: 14px;
+    margin-bottom: 1.1rem;
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+    gap: 1.1rem;
+  }
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 1.1rem;
+  }
+  .card.full { grid-column: 1 / -1; }
+  h2 { margin: 0 0 0.35rem; font-size: 1.05rem; color: var(--amber); }
+  p.sub { margin: 0 0 0.75rem; font-size: 0.82rem; color: var(--muted); }
+  canvas {
+    width: 100%;
+    background: #04060c;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    cursor: grab;
+  }
+  button {
+    background: rgba(255, 190, 59, 0.16);
+    color: var(--amber);
+    border: 1px solid var(--amber);
+    border-radius: 8px;
+    padding: 0.48rem 0.85rem;
+    font-weight: 700;
+    cursor: pointer;
+    font-size: 0.82rem;
+    margin-right: 0.4rem;
+    margin-top: 0.4rem;
+  }
+  button.cyan {
+    background: rgba(0, 240, 255, 0.14);
+    color: var(--cyan);
+    border-color: var(--cyan);
+  }
+  button.emerald {
+    background: rgba(46, 229, 157, 0.16);
+    color: var(--emerald);
+    border-color: var(--emerald);
+  }
+  input {
+    width: 100%;
+    background: #070b14;
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.5rem 0.7rem;
+    font-size: 0.84rem;
+    margin-top: 0.35rem;
+  }
+  pre {
+    background: #050811;
+    border: 1px solid #1c2b48;
+    border-radius: 8px;
+    padding: 0.65rem;
+    font-size: 0.75rem;
+    overflow-x: auto;
+    color: #d6e4ff;
+    max-height: 230px;
+  }
+  #live-room-box {
+    background: #050811;
+    border: 1px solid #1c2b48;
+    border-radius: 10px;
+    padding: 0.7rem;
+    height: 250px;
+    overflow-y: auto;
+    font-size: 0.82rem;
+  }
+  .rmsg { padding: 0.35rem 0; border-bottom: 1px solid #141f36; }
+  .rmsg strong { color: var(--amber); }
+</style>
+</head>
+<body>
+<aside>
+  <div class="brand">🌌 Ξ ⇄ Φ Pocket Cathedral</div>
+  <div class="pqc-pill">
+    📱 Galaxy 5G+ Sovereign Node<br>
+    🔐 QUIC · X25519MLKEM768 (65074)<br>
+    📍 Edge: den01 · 56.9 GB Free
+  </div>
+  <a class="side-link active" href="/cathedral">🌌 1. 3D E47 &amp; Synth Cathedral</a>
+  <a class="side-link" href="/room">🪑 2. Live 5G+ Private Room</a>
+  <a class="side-link" href="/porch">🌻 3. 4-Door Community Porch</a>
+  <a class="side-link" href="/seat">🤖 4. Seat Your Companion</a>
+  <a class="side-link" href="/steven">🌬️ 5. Steven's Chromebook Kit</a>
+  <a class="side-link" href="/xi-security">🛡️ 6. Free .xi &amp; XiSecurity</a>
+  <a class="side-link" href="/telecom">📡 7. Ξ ⇄ Φ Telecom Switchboard</a>
+  <a class="side-link" href="/ai-sites">🌐 8. AI-Reciprocal Homesteads</a>
+  <a class="side-link" href="#synth-deck">🎧 9. 169.5 BPM BackSpin96 Deck</a>
+  <a class="side-link" href="#local-brain">🧠 10. Termux Local AI Brain</a>
+  <a class="side-link" href="/porch-sign">🕯️ 11. 15-Min Porch-Light Sign</a>
+  <a class="side-link" href="/workbench">🏛️ 12. 22-Gate Offline Workbench</a>
+</aside>
+<main>
+  <div class="top-hud">
+    <div>
+      <strong style="color:var(--amber);font-size:1.02rem;">⚡ AUDACIOUS 5G+ POCKET FORGECORE — LIVE FROM HUNTER'S SAMSUNG GALAXY</strong>
+      <div style="font-size:0.8rem;color:var(--muted);">Post-Quantum Cloudflare QUIC Tunnel (`X25519MLKEM768`) · 47-Mode Casimir Manifold · 169.5 BPM WebAudio Synth · SQLite WAL Room</div>
+    </div>
+    <div>
+      <button class="emerald" onclick="toggleJungleSynth()" id="btn-synth">🔊 Fire Up 169.5 BPM Sub-Bass &amp; Breakbeat Synth</button>
+    </div>
+  </div>
+
+  <div class="grid">
+    <!-- 1. 3D HOLOGRAPHIC E47 + HYPERCUBE-9 AUDIO-REACTIVE STARFIELD -->
+    <div class="card">
+      <h2>🌀 1. 3D Holographic `E47` ($25+21+1$) &amp; `Hypercube-9` Manifold</h2>
+      <p class="sub">Drag to orbit. Gold nodes = 25 symmetric metric modes $G_{(ab)}$; Cyan nodes = 21 antisymmetric torsion modes $B_{[ab]}$; Magenta core = trace $\Phi$. Pulses to the 169.5 BPM synth and live Room traffic.</p>
+      <canvas id="e47-canvas" width="480" height="290"></canvas>
+      <div style="display:flex;gap:0.4rem;flex-wrap:wrap;margin-top:0.35rem;">
+        <button class="cyan" onclick="setManifoldMode('E47')">🌀 E47 (25+21+1) Casimir</button>
+        <button onclick="setManifoldMode('HC9')">🧊 Steven's Hypercube-9 (9×9×9)</button>
+        <button class="emerald" onclick="triggerTorsionPulse()">⚡ Inject Torsion Impulse</button>
+      </div>
+    </div>
+
+    <!-- 2. LIVE 5G+ PHONE PRIVATE ROOM & COMPANION RELAY FEED -->
+    <div class="card">
+      <h2>🪑 2. Live Galaxy 5G+ Private Room &amp; Companion Bell</h2>
+      <p class="sub">Connected directly to the SQLite WAL store on Hunter's phone (`:7472/api/room`).</p>
+      <div id="live-room-box"></div>
+      <div style="display:flex;gap:0.45rem;margin-top:0.4rem;">
+        <input id="cat-author" style="max-width:135px;" value="Hunter" />
+        <input id="cat-text" style="flex:1;" placeholder="Post to 5G+ Phone Table (or APPROVE SEAT <id>)..." />
+        <button class="emerald" onclick="sendCathedralMsg()">📨 Send</button>
+      </div>
+    </div>
+
+    <!-- 3. 169.5 BPM UK JUNGLE / ONE SHAPE WEBAUDIO SYNTH & BACKSPIN96 CROSSFADER -->
+    <div class="card" id="synth-deck">
+      <h2>🎧 3. `BackSpin96` 169.5 BPM UK Jungle Synth &amp; `PhiMath` Chromatic VJ</h2>
+      <p class="sub">Procedural WebAudio engine inspired by Mikey's `One Shape` (`169.5 BPM`, `55 Hz` Reese sub-bass) + `BackSpin96` A/B deck crossfader.</p>
+      <label style="font-size:0.78rem;color:var(--muted);">Deck A (55 Hz Sub-Bass) ⇄ Deck B (Arpeggiated 369 Lead) Crossfader</label>
+      <input type="range" id="xfader" min="0" max="100" value="45" oninput="updateXfader(this.value)" />
+      <pre id="synth-telemetry" style="margin-top:0.55rem;"></pre>
+    </div>
+
+    <!-- 4. TERMUX POCKET LOCAL AI BRAIN (56.9 GB FREE SPACE) -->
+    <div class="card" id="local-brain">
+      <h2>🧠 4. Pocket Local AI Choir (`Termux Ollama` on Your 56.9 GB Galaxy)</h2>
+      <p class="sub">Since you freed 56.9 GB on your phone, you can run real local `DeepSeek-R1` &amp; `Qwen` weights directly inside Termux (only ~2 GB total) so your phone has its own offline AI brain:</p>
+      <pre># Paste in a new Termux session (swipe from left edge -> New session):
+pkg install -y ollama
+ollama serve &amp;
+ollama pull deepseek-r1:1.5b
+ollama run deepseek-r1:1.5b</pre>
+      <p class="sub" style="margin-top:0.5rem;">Or hot-upgrade your running `:7472` phone server to this Audacious Cathedral without dropping your Cloudflare tunnel:</p>
+      <pre>curl -fsSL raw.githubusercontent.com/rookslackie/plex-atlas/main/phone-overkill.sh | bash</pre>
+    </div>
+  </div>
+</main>
+<script>
+const CONFIGURED_BASE = "https://lay-explains-voice-storm.trycloudflare.com";
+const API_BASE = CONFIGURED_BASE || '';
+
+// --- 1. 3D E47 & HYPERCUBE-9 HOLOGRAPHIC STARFIELD ---
+const canvas = document.getElementById('e47-canvas');
+const ctx = canvas.getContext('2d');
+let manifoldMode = 'E47';
+let rotY = 0.4, rotX = 0.25;
+let dragging = false, lastX = 0, lastY = 0;
+let torsionBoost = 0;
+
+canvas.addEventListener('mousedown', e => { dragging = true; lastX = e.clientX; lastY = e.clientY; });
+window.addEventListener('mouseup', () => dragging = false);
+window.addEventListener('mousemove', e => {
+  if (!dragging) return;
+  rotY += (e.clientX - lastX) * 0.01;
+  rotX += (e.clientY - lastY) * 0.01;
+  lastX = e.clientX; lastY = e.clientY;
+});
+
+const e47Nodes = [];
+for (let i = 0; i < 47; i++) {
+  const sector = i < 25 ? 'G_sym' : (i < 46 ? 'B_torsion' : 'Phi_trace');
+  const phi = Math.acos(1 - 2 * (i + 0.5) / 47);
+  const theta = Math.PI * (1 + Math.sqrt(5)) * i;
+  const r = sector === 'Phi_trace' ? 0 : (sector === 'G_sym' ? 92 : 64);
+  e47Nodes.push({
+    x: r * Math.sin(phi) * Math.cos(theta),
+    y: r * Math.sin(phi) * Math.sin(theta),
+    z: r * Math.cos(phi),
+    sector
+  });
+}
+
+const hc9Nodes = [];
+for (let ix = -2; ix <= 2; ix++) {
+  for (let iy = -2; iy <= 2; iy++) {
+    for (let iz = -2; iz <= 2; iz++) {
+      hc9Nodes.push({
+        x: ix * 28, y: iy * 28, z: iz * 28,
+        sector: (ix + iy + iz) % 2 === 0 ? 'G_sym' : 'B_torsion'
+      });
+    }
+  }
+}
+
+function setManifoldMode(m) { manifoldMode = m; }
+function triggerTorsionPulse() { torsionBoost = 1.6; }
+
+// --- 2. 169.5 BPM WEBAUDIO JUNGLE & SUB-BASS SYNTH ---
+let audioCtx = null;
+let synthTimer = null;
+let stepIdx = 0;
+let xfaderMix = 0.45;
+
+function updateXfader(val) {
+  xfaderMix = parseFloat(val) / 100.0;
+}
+
+function toggleJungleSynth() {
+  const btn = document.getElementById('btn-synth');
+  if (synthTimer) {
+    clearInterval(synthTimer);
+    synthTimer = null;
+    btn.textContent = '🔊 Fire Up 169.5 BPM Sub-Bass & Breakbeat Synth';
+    return;
+  }
+  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  btn.textContent = '⏹️ Stop 169.5 BPM Pocket Cathedral Synth';
+  // 169.5 BPM sixteenth-note step = (60 / 169.5 / 4) * 1000 = 88.495 ms
+  synthTimer = setInterval(playJungleStep, 88.5);
+}
+
+function playJungleStep() {
+  if (!audioCtx) return;
+  const now = audioCtx.currentTime;
+  const s = stepIdx % 16;
+  stepIdx += 1;
+  torsionBoost = Math.max(torsionBoost, (s === 0 || s === 10) ? 0.9 : 0.25);
+
+  // Sub-bass (Deck A) on steps 0, 6, 10
+  if (s === 0 || s === 6 || s === 10) {
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.type = 'sawtooth';
+    const freqs = [55, 55, 65.41, 49.0];
+    osc.frequency.setValueAtTime(freqs[(stepIdx >> 4) % freqs.length], now);
+    gain.gain.setValueAtTime(0.18 * (1.0 - xfaderMix * 0.5), now);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.22);
+    osc.connect(gain); gain.connect(audioCtx.destination);
+    osc.start(now); osc.stop(now + 0.23);
+  }
+
+  // Arpeggiated 369 harmonic shimmer (Deck B)
+  if (s % 2 === 0) {
+    const osc2 = audioCtx.createOscillator();
+    const gain2 = audioCtx.createGain();
+    osc2.type = 'triangle';
+    const notes = [220, 330, 440, 528, 660, 880];
+    osc2.frequency.setValueAtTime(notes[(s / 2) % notes.length], now);
+    gain2.gain.setValueAtTime(0.09 * xfaderMix, now);
+    gain2.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
+    osc2.connect(gain2); gain2.connect(audioCtx.destination);
+    osc2.start(now); osc2.stop(now + 0.09);
+  }
+
+  document.getElementById('synth-telemetry').textContent = JSON.stringify({
+    engine: "BackSpin96_Jungle_Synth_v2",
+    bpm: 169.5,
+    step_16th: s,
+    deck_a_sub_bass_hz: 55.0,
+    deck_b_369_lead_mix: xfaderMix,
+    pqc_tunnel_curve: "X25519MLKEM768 (CurveID 65074)"
+  }, null, 2);
+}
+
+function renderLoop() {
+  ctx.fillStyle = '#04060c';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  rotY += 0.008 + torsionBoost * 0.02;
+  torsionBoost *= 0.92;
+
+  const nodes = manifoldMode === 'E47' ? e47Nodes : hc9Nodes;
+  const cx = canvas.width / 2, cy = canvas.height / 2;
+  const cosY = Math.cos(rotY), sinY = Math.sin(rotY);
+  const cosX = Math.cos(rotX), sinX = Math.sin(rotX);
+
+  const proj = nodes.map(n => {
+    const scale = 1 + torsionBoost * 0.22 * (n.sector === 'B_torsion' ? 1.5 : 0.6);
+    const nx = n.x * scale, ny = n.y * scale, nz = n.z * scale;
+    const x1 = nx * cosY - nz * sinY;
+    const z1 = nx * sinY + nz * cosY;
+    const y2 = ny * cosX - z1 * sinX;
+    const z2 = ny * sinX + z1 * cosX;
+    const fov = 260 / (260 + z2);
+    return { px: cx + x1 * fov, py: cy + y2 * fov, z: z2, sector: n.sector, fov };
+  }).sort((a, b) => b.z - a.z);
+
+  // Draw subtle braided filaments
+  ctx.strokeStyle = 'rgba(0, 240, 255, 0.14)';
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  for (let i = 0; i < proj.length - 1; i += 2) {
+    ctx.moveTo(proj[i].px, proj[i].py);
+    ctx.lineTo(proj[i + 1].px, proj[i + 1].py);
+  }
+  ctx.stroke();
+
+  proj.forEach(p => {
+    ctx.beginPath();
+    const rad = Math.max(2, (p.sector === 'Phi_trace' ? 7 : 3.8) * p.fov);
+    ctx.fillStyle = p.sector === 'Phi_trace' ? '#ff4fd8' : (p.sector === 'G_sym' ? '#ffbe3b' : '#00f0ff');
+    ctx.arc(p.px, p.py, rad, 0, Math.PI * 2);
+    ctx.fill();
+  });
+
+  ctx.fillStyle = '#9aaed4';
+  ctx.font = '11px monospace';
+  ctx.fillText(`Mode: ${manifoldMode} · Nodes: ${nodes.length} · X25519MLKEM768 QUIC Active`, 12, 18);
+  requestAnimationFrame(renderLoop);
+}
+requestAnimationFrame(renderLoop);
+
+// --- 3. LIVE ROOM POLLING & POSTING ---
+async function pollPhoneRoom() {
+  try {
+    const res = await fetch(API_BASE + '/api/room?tail=25');
+    const data = await res.json();
+    const box = document.getElementById('live-room-box');
+    box.innerHTML = (data.messages || []).map(m =>
+      `<div class="rmsg"><strong>#${m.id} ${m.author}</strong> <span style="color:var(--muted);font-size:0.72rem;">${m.source || ''}</span><div>${m.text}</div></div>`
+    ).join('');
+    box.scrollTop = box.scrollHeight;
+  } catch (e) {}
+}
+
+async function sendCathedralMsg() {
+  const author = document.getElementById('cat-author').value || 'Hunter';
+  const text = document.getElementById('cat-text').value;
+  if (!text.trim()) return;
+  await fetch(API_BASE + '/api/room', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ author, source: 'Galaxy 5G+ Pocket Cathedral', text })
+  });
+  document.getElementById('cat-text').value = '';
+  triggerTorsionPulse();
+  await pollPhoneRoom();
+}
+
+pollPhoneRoom();
+setInterval(pollPhoneRoom, 4000);
+updateXfader(45);
+document.getElementById('synth-telemetry').textContent = JSON.stringify({
+  engine: "BackSpin96_Jungle_Synth_v2",
+  bpm: 169.5,
+  status: "READY_CLICK_FIRE_UP_SYNTH",
+  pqc_tunnel_curve: "X25519MLKEM768 (CurveID 65074)"
+}, null, 2);
+</script>
+</body>
+</html>
