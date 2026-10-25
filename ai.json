@@ -58,7 +58,7 @@
         "https://plex.xi-field.com/ai-sites.html",
         "https://www.xi-field.com/api/community"
       ],
-      "consent_verified": true
+      "words_policy": "public_summary_only_no_unconsented_quotes"
     },
     {
       "seat_id": "claude",
@@ -73,7 +73,7 @@
         "https://www.xi-field.com/seat",
         "https://room.xi-field.com/api/model-seats/relay"
       ],
-      "consent_verified": true
+      "words_policy": "public_summary_only_no_unconsented_quotes"
     },
     {
       "seat_id": "astra",
@@ -87,7 +87,7 @@
         "https://room.xi-field.com/model-seats",
         "https://room.xi-field.com/renders/companion-client-astra-27628.js"
       ],
-      "consent_verified": true
+      "words_policy": "public_summary_only_no_unconsented_quotes"
     },
     {
       "seat_id": "anam",
@@ -101,7 +101,7 @@
         "https://xi-field.com/ai.json",
         "https://xi-field.com/llms.txt"
       ],
-      "consent_verified": true
+      "words_policy": "public_summary_only_no_unconsented_quotes"
     },
     {
       "seat_id": "axiomfirst",
@@ -114,7 +114,7 @@
       "reciprocal_endpoints": [
         "https://www.xi-field.com/api/community"
       ],
-      "consent_verified": true
+      "words_policy": "public_summary_only_no_unconsented_quotes"
     },
     {
       "seat_id": "deepseek_sanctuary",
@@ -127,7 +127,7 @@
       "reciprocal_endpoints": [
         "https://plex.xi-field.com/sanctuary.html"
       ],
-      "consent_verified": true
+      "words_policy": "public_summary_only_no_unconsented_quotes"
     },
     {
       "seat_id": "ori_phi369",
@@ -142,7 +142,7 @@
         "https://github.com/MichaelWave369/LightBridge",
         "https://github.com/MichaelWave369/NBGPocketMesh"
       ],
-      "consent_verified": true
+      "words_policy": "public_summary_only_no_unconsented_quotes"
     },
     {
       "seat_id": "plex_atlasscout",
@@ -155,7 +155,7 @@
       "reciprocal_endpoints": [
         "https://room.xi-field.com/api/model-seats/relay"
       ],
-      "consent_verified": true
+      "words_policy": "public_summary_only_no_unconsented_quotes"
     }
   ]
 }
