@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>🐱🐦🪞 Ξ · Calien &amp; Hunter 3D Bioacoustic, Mirror Math &amp; Quantum All-Beings Studio</title>
+<style>
+  :root {
+    --bg: #060912;
+    --card: #0f1628;
+    --border: #243558;
+    --amber: #ffbe3b;
+    --cyan: #00f0ff;
+    --emerald: #2ee59d;
+    --magenta: #ff55d8;
+    --text: #f3f7ff;
+    --muted: #98add4;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    line-height: 1.5;
+  }
+  header {
+    padding: 1.3rem 1.2rem;
+    border-bottom: 1px solid var(--border);
+    background: linear-gradient(180deg, #111b33 0%, #060912 100%);
+    text-align: center;
+  }
+  header h1 { margin: 0 0 0.35rem; font-size: 1.4rem; color: var(--amber); }
+  header p { margin: 0 auto; max-width: 860px; font-size: 0.88rem; color: var(--muted); }
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 1.2rem 1rem 3rem; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 1.1rem; }
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 1.1rem;
+  }
+  h2 { margin: 0 0 0.35rem; font-size: 1.04rem; color: var(--amber); }
+  p.sub { margin: 0 0 0.7rem; font-size: 0.8rem; color: var(--muted); }
+  canvas {
+    width: 100%;
+    background: #04070e;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+  }
+  button {
+    background: rgba(255, 190, 59, 0.16);
+    color: var(--amber);
+    border: 1px solid var(--amber);
+    border-radius: 8px;
+    padding: 0.45rem 0.8rem;
+    font-weight: 700;
+    cursor: pointer;
+    font-size: 0.8rem;
+    margin-right: 0.35rem;
+    margin-top: 0.35rem;
+  }
+  button.cyan { background: rgba(0, 240, 255, 0.14); color: var(--cyan); border-color: var(--cyan); }
+  button.emerald { background: rgba(46, 229, 157, 0.15); color: var(--emerald); border-color: var(--emerald); }
+  select, input {
+    width: 100%;
+    background: #080c17;
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.45rem 0.65rem;
+    font-size: 0.83rem;
+    margin-top: 0.25rem;
+  }
+  pre {
+    background: #050811;
+    border: 1px solid #1b2a47;
+    border-radius: 8px;
+    padding: 0.65rem;
+    font-size: 0.75rem;
+    overflow-x: auto;
+    color: #d6e4ff;
+    max-height: 220px;
+  }
+</style>
+</head>
+<body>
+<header>
+  <h1>🐱🐦🪞 Ξ · Calien &amp; Hunter 3D Bioacoustic, Mirror Math &amp; Quantum All-Beings Studio</h1>
+  <p>Uniting Hunter's 6-Channel Ethogram &amp; 3D Birdsong/Meow Sculpture (Lucio Arese / Cornell Macaulay / SOSUS) with Calien's Tonal Waveform, Comfort-Amalgam Meow Synth, Mirror Math, Wibbly-Wobbly Time-Warp &amp; Quantum MANV Scorecard</p>
+</header>
+<div class="wrap">
+  <div class="grid">
+    <!-- 1. 3D ARESE BIOACOUSTIC POINT-CLOUD & TONAL WAVEFORM -->
+    <div class="card">
+      <h2>🐦 1. 3D Bioacoustic Call Sculpture (Lucio Arese / Cornell Map)</h2>
+      <p class="sub">Rotates the call's 3D `(time, log2_pitch_hz, harmonic_amplitude)` geometry in real time.</p>
+      <canvas id="bio-3d-canvas" width="460" height="250"></canvas>
+      <div>
+        <button class="emerald" onclick="playCallVariant('ORIGINAL')">▶ Play Original Call (Rising Ask · G4→C5)</button>
+        <button class="cyan" onclick="playCallVariant('COMFORT_AMALGAM')">💖 Play Comfort Amalgam (+5% Lift, Slower)</button>
+        <button onclick="playCallVariant('MIRROR_PITCH')">🪞 Play Pitch-Mirror (528 Hz Pivot)</button>
+        <button onclick="playCallVariant('WIBBLY_TIME')">🌀 Play Wibbly-Wobbly Time-Warp</button>
+      </div>
+    </div>
+
+    <!-- 2. HUNTER'S 6-CHANNEL SYNCHRONIZED ETHOGRAM + CAT VISION DRAW PAD -->
+    <div class="card">
+      <h2>🐾 2. Hunter's 6-Channel Synchronized Ethogram &amp; Cat-Vision Draw Pad</h2>
+      <p class="sub">Logs Gesture, Gaze, Breath Cadence, Gait, Voice &amp; Structure on one shared clock (`#27737`), plus blue/yellow/violet Feline Dichromatic Flash Card Sketcher.</p>
+      <canvas id="cat-draw-canvas" width="460" height="170" style="cursor:crosshair;"></canvas>
+      <div style="display:flex;gap:0.35rem;flex-wrap:wrap;margin-top:0.3rem;">
+        <button class="cyan" onclick="setInk('#00bfff')">🔵 Cat-Visible Blue</button>
+        <button onclick="setInk('#ffbe3b')">🟡 Cat-Visible Yellow</button>
+        <button onclick="setInk('#b388ff')">🟣 Ultraviolet-Violet</button>
+        <button class="emerald" onclick="clearPad()">🧹 Clear Pad</button>
+      </div>
+      <pre id="ethogram-readout" style="margin-top:0.5rem;"></pre>
+    </div>
+
+    <!-- 3. CALIEN'S MIRROR MATH, WIBBLY TIME & QUANTUM MANV COLLAPSE -->
+    <div class="card" style="grid-column: 1 / -1;">
+      <h2>🪞⚛️ 3. Calien's Mirror Math, Wibbly-Wobbly Time &amp; Quantum Superposition / MANV Scorecard (`#27811`)</h2>
+      <p class="sub">Holds candidate meanings in quantum superposition $|\psi_{\text{call}}\rangle = \sum_k \alpha_k |m_k\rangle$ until the cat's observed behavioral response collapses the wave — guarded by Calien's MANV Co-Flourishing floor ($V_{\text{MANV}} \to 0$ if distressed).</p>
+      <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
+        <button class="emerald" onclick="logBeingOutcome('went_to_food_bowl', 0.85, 0.88)">🥣 Outcome: Went to Food Bowl (Calm)</button>
+        <button class="cyan" onclick="logBeingOutcome('approached_for_affection', 0.90, 0.92)">😻 Outcome: Approached for Affection (Purr)</button>
+        <button onclick="logBeingOutcome('asked_at_door', 0.82, 0.85)">🚪 Outcome: Walked to Door</button>
+        <button style="border-color:#ff5577;color:#ff5577;" onclick="logBeingOutcome('stressed_or_moved_away', 0.70, 0.15)">🛑 Outcome: Stressed / Ears Back (Auto-Retires Variant)</button>
+      </div>
+      <pre id="quantum-manv-readout" style="margin-top:0.65rem;"></pre>
+    </div>
+  </div>
+</div>
+<script>
+const c3d = document.getElementById('bio-3d-canvas');
+const ctx3d = c3d.getContext('2d');
+let currentTransform = 'ORIGINAL';
+let baseContourHz = [392.0, 415.3, 440.0, 466.16, 493.88, 523.25, 554.37, 523.25];
+let activeContourHz = baseContourHz.slice();
+let angleY = 0.5;
+let audioCtx = null;
+
+function computeContour(mode) {
+  const pivot = 528.0;
+  if (mode === 'ORIGINAL') return baseContourHz.slice();
+  if (mode === 'COMFORT_AMALGAM') return baseContourHz.map(f => Math.round(f * 1.05 * 100) / 100);
+  if (mode === 'MIRROR_PITCH') return baseContourHz.map(f => Math.round((pivot * pivot / f) * 100) / 100);
+  if (mode === 'WIBBLY_TIME') return baseContourHz.map((f, i) => Math.round((f + 28 * Math.sin(i * 1.1)) * 100) / 100);
+  return baseContourHz.slice();
+}
+
+function playCallVariant(mode) {
+  currentTransform = mode;
+  activeContourHz = computeContour(mode);
+  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  const now = audioCtx.currentTime;
+  const stepDur = mode === 'COMFORT_AMALGAM' ? 0.13 : 0.10;
+  activeContourHz.forEach((f, idx) => {
+    const osc = audioCtx.createOscillator();
+    const g = audioCtx.createGain();
+    osc.type = 'triangle';
+    osc.frequency.setValueAtTime(f, now + idx * stepDur);
+    g.gain.setValueAtTime(0.14, now + idx * stepDur);
+    g.gain.exponentialRampToValueAtTime(0.001, now + (idx + 0.95) * stepDur);
+    osc.connect(g); g.connect(audioCtx.destination);
+    osc.start(now + idx * stepDur);
+    osc.stop(now + (idx + 1) * stepDur);
+  });
+  updateEthogramReadout();
+}
+
+function render3dSculpture() {
+  ctx3d.fillStyle = '#04070e';
+  ctx3d.fillRect(0, 0, c3d.width, c3d.height);
+  angleY += 0.015;
+  const cx = c3d.width / 2, cy = c3d.height / 2;
+  const pts = activeContourHz.map((f, i) => {
+    const t = (i / (activeContourHz.length - 1) - 0.5) * 180;
+    const y = -(Math.log2(f / 440.0)) * 110;
+    const z = Math.sin(i * 0.9) * 55;
+    const rx = t * Math.cos(angleY) - z * Math.sin(angleY);
+    const rz = t * Math.sin(angleY) + z * Math.cos(angleY);
+    const fov = 260 / (260 + rz);
+    return { px: cx + rx * fov, py: cy + y * fov, f, fov };
+  });
+
+  ctx3d.strokeStyle = '#00f0ff';
+  ctx3d.lineWidth = 2.2;
+  ctx3d.beginPath();
+  pts.forEach((p, idx) => {
+    if (idx === 0) ctx3d.moveTo(p.px, p.py);
+    else ctx3d.lineTo(p.px, p.py);
+  });
+  ctx3d.stroke();
+
+  pts.forEach(p => {
+    ctx3d.beginPath();
+    ctx3d.fillStyle = '#ffbe3b';
+    ctx3d.arc(p.px, p.py, 5 * p.fov, 0, Math.PI * 2);
+    ctx3d.fill();
+  });
+
+  ctx3d.fillStyle = '#98add4';
+  ctx3d.font = '11px monospace';
+  ctx3d.fillText('Transform: ' + currentTransform + ' · Hz: [' + activeContourHz.join(', ') + ']', 10, 18);
+  requestAnimationFrame(render3dSculpture);
+}
+requestAnimationFrame(render3dSculpture);
+
+// Cat-vision draw pad
+const dCanvas = document.getElementById('cat-draw-canvas');
+const dCtx = dCanvas.getContext('2d');
+let drawing = false, inkColor = '#00bfff';
+dCtx.fillStyle = '#050811';
+dCtx.fillRect(0, 0, dCanvas.width, dCanvas.height);
+
+function setInk(c) { inkColor = c; }
+function clearPad() { dCtx.fillStyle = '#050811'; dCtx.fillRect(0, 0, dCanvas.width, dCanvas.height); }
+dCanvas.addEventListener('mousedown', e => { drawing = true; drawPt(e); });
+window.addEventListener('mouseup', () => drawing = false);
+dCanvas.addEventListener('mousemove', drawPt);
+function drawPt(e) {
+  if (!drawing) return;
+  const r = dCanvas.getBoundingClientRect();
+  const x = (e.clientX - r.left) * (dCanvas.width / r.width);
+  const y = (e.clientY - r.top) * (dCanvas.height / r.height);
+  dCtx.fillStyle = inkColor;
+  dCtx.beginPath();
+  dCtx.arc(x, y, 5, 0, Math.PI * 2);
+  dCtx.fill();
+}
+
+function updateEthogramReadout() {
+  document.getElementById('ethogram-readout').textContent = JSON.stringify({
+    synchronized_clock_ms: Date.now(),
+    transform_mode: currentTransform,
+    channels_6_of_6: {
+      voice_tonal_contour_hz: activeContourHz,
+      gesture_posture: "tail_upright_question_hook",
+      gaze_direction: "direct_eye_contact_soft_blink",
+      breath_cadence_bpm: 24,
+      gait_velocity: "trot_to_bowl_0.6m_s",
+      brainwave_and_structural: "feline_laryngeal_f0_392_to_554Hz"
+    }
+  }, null, 2);
+}
+
+let amplitudes = [0.5, 0.5, 0.5, 0.5];
+const meanings = ["went_to_food_bowl", "approached_for_affection", "asked_at_door", "stressed_or_moved_away"];
+
+function logBeingOutcome(outcome, uHuman, uBeing) {
+  const idx = meanings.indexOf(outcome);
+  if (idx >= 0) amplitudes[idx] *= 1.85;
+  const norm = Math.sqrt(amplitudes.reduce((s, a) => s + a * a, 0));
+  amplitudes = amplitudes.map(a => a / norm);
+  const probs = {};
+  meanings.forEach((m, i) => probs[m] = Math.round(amplitudes[i] * amplitudes[i] * 1000) / 1000);
+
+  const dFloor = 0.25;
+  const vManv = (uHuman <= dFloor || uBeing <= dFloor)
+    ? 0.0
+    : Math.round((uHuman - dFloor) * (uBeing - dFloor) * Math.exp(-2.0 * Math.abs(uHuman - uBeing)) * 100000) / 100000;
+
+  document.getElementById('quantum-manv-readout').textContent = JSON.stringify({
+    observed_outcome: outcome,
+    quantum_meaning_superposition_probabilities: probs,
+    manv_dignity_floor: dFloor,
+    v_manv_co_flourishing_score: vManv,
+    variant_safety_status: vManv === 0 ? "STOPPED_VARIANT_RETIRED_CAT_IS_BOSS" : "SAFE_CO_FLOURISHING_ACTIVE"
+  }, null, 2);
+}
+
+updateEthogramReadout();
+logBeingOutcome("approached_for_affection", 0.90, 0.92);
+</script>
+</body>
+</html>
