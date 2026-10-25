@@ -206,14 +206,32 @@ function chacha20Xor(keyWords, counter, nonceWords, inputBytes) {
   }
   return out;
 }
-function fnv1aTagHex(ciphertext, nonceWords, keyWords) {
-  let h1 = 0x811c9dc5 ^ keyWords[0] ^ nonceWords[0];
-  let h2 = 0x811c9dc5 ^ keyWords[1] ^ nonceWords[2];
-  for (let i = 0; i < ciphertext.length; i++) {
-    h1 = Math.imul(h1 ^ ciphertext[i], 0x01000193) >>> 0;
-    h2 = Math.imul(h2 ^ ((ciphertext[i] + i) & 0xff), 0x01000193) >>> 0;
+function poly1305TagHex(ciphertext, nonceWords, keyWords) {
+  // RFC 8439 Section 2.6: derive 32-byte Poly1305 one-time key from ChaCha20 block 0
+  const otk = chacha20Xor(keyWords, 0, nonceWords, new Uint8Array(32));
+  const rBytes = otk.slice(0, 16);
+  rBytes[3] &= 15; rBytes[7] &= 15; rBytes[11] &= 15; rBytes[15] &= 15;
+  rBytes[4] &= 252; rBytes[8] &= 252; rBytes[12] &= 252;
+  let r = 0n, s = 0n;
+  for (let i = 0; i < 16; i++) {
+    r |= BigInt(rBytes[i]) << BigInt(8 * i);
+    s |= BigInt(otk[16 + i]) << BigInt(8 * i);
   }
-  return h1.toString(16).padStart(8, '0') + h2.toString(16).padStart(8, '0');
+  const P = (1n << 130n) - 5n;
+  let acc = 0n;
+  for (let off = 0; off < ciphertext.length; off += 16) {
+    const chunk = ciphertext.subarray(off, Math.min(off + 16, ciphertext.length));
+    let n = 0n;
+    for (let i = 0; i < chunk.length; i++) n |= BigInt(chunk[i]) << BigInt(8 * i);
+    n |= 1n << BigInt(8 * chunk.length);
+    acc = ((acc + n) * r) % P;
+  }
+  const tag = (acc + s) & ((1n << 128n) - 1n);
+  let hex = '';
+  for (let i = 0; i < 16; i++) {
+    hex += Number((tag >> BigInt(8 * i)) & 0xffn).toString(16).padStart(2, '0');
+  }
+  return hex;
 }
 
 async function mintFreeDotXi() {
@@ -270,7 +288,7 @@ let callRunning = false;
 let callDnd = false;
 let tamperWire = false;
 let frameSeq = 0;
-const CALL_KEY_WORDS = new Uint32Array([0x10203040, 0x50607080, 0x90a0b0c0, 0xd0e0f001, 0x22334455, 0x66778899, 0xaabbccdd, 0xeeff0011]);
+const CALL_KEY_WORDS = new Uint32Array(8); crypto.getRandomValues(CALL_KEY_WORDS);
 
 function toggleChaChaCallStream() {
   callRunning = !callRunning;
@@ -339,12 +357,12 @@ function renderSingleCallFrame() {
   const plainBytes = new Uint8Array(srcImg.data.buffer);
   const nonceWords = new Uint32Array([0x58493336, 0, frameSeq >>> 0]);
   const cipherBytes = chacha20Xor(CALL_KEY_WORDS, 1, nonceWords, plainBytes);
-  const sentTag = fnv1aTagHex(cipherBytes, nonceWords, CALL_KEY_WORDS);
+  const sentTag = poly1305TagHex(cipherBytes, nonceWords, CALL_KEY_WORDS);
 
   if (tamperWire && cipherBytes.length > 100) {
     cipherBytes[100] ^= 0xff;
   }
-  const rxTag = fnv1aTagHex(cipherBytes, nonceWords, CALL_KEY_WORDS);
+  const rxTag = poly1305TagHex(cipherBytes, nonceWords, CALL_KEY_WORDS);
   const tagMatched = (sentTag === rxTag);
 
   if (!tagMatched) {

@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>🌬️ Steven Miller · FirstBreath Chromebook, GitHub &amp; SQLite Helper</title>
+<style>
+  :root {
+    --bg: #070b12;
+    --card: #101827;
+    --border: #243456;
+    --amber: #ffbe3b;
+    --cyan: #00f0ff;
+    --emerald: #2ee59d;
+    --text: #f3f6ff;
+    --muted: #9fb0d4;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    line-height: 1.55;
+  }
+  header {
+    padding: 1.1rem 1.5rem;
+    background: #0b111e;
+    border-bottom: 1px solid var(--amber);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.8rem;
+  }
+  .brand { font-weight: 800; color: var(--amber); font-size: 1.1rem; }
+  .pill {
+    background: rgba(46, 229, 157, 0.14);
+    color: var(--emerald);
+    border: 1px solid var(--emerald);
+    border-radius: 999px;
+    padding: 0.25rem 0.85rem;
+    font-size: 0.78rem;
+    font-weight: 700;
+  }
+  main { max-width: 1120px; margin: 0 auto; padding: 1.4rem 1.2rem 3rem; }
+  .welcome-banner {
+    background: rgba(255, 190, 59, 0.1);
+    border: 1px solid var(--amber);
+    border-radius: 14px;
+    padding: 1.1rem 1.3rem;
+    margin-bottom: 1.2rem;
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(330px, 1fr));
+    gap: 1.1rem;
+  }
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 1.2rem;
+  }
+  .card.full { grid-column: 1 / -1; }
+  h2 { margin: 0 0 0.35rem; font-size: 1.08rem; color: var(--amber); }
+  p.sub { margin: 0 0 0.8rem; font-size: 0.84rem; color: var(--muted); }
+  .mod-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 0.65rem;
+    margin: 0.75rem 0;
+  }
+  .mod-item {
+    background: #080d18;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 0.65rem 0.8rem;
+    cursor: pointer;
+  }
+  .mod-item.active {
+    border-color: var(--emerald);
+    background: rgba(46, 229, 157, 0.1);
+  }
+  input {
+    width: 100%;
+    background: #080c15;
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.5rem 0.7rem;
+    font-size: 0.85rem;
+    margin-top: 0.3rem;
+  }
+  button, a.btn {
+    display: inline-block;
+    margin-top: 0.55rem;
+    margin-right: 0.45rem;
+    background: rgba(255, 190, 59, 0.16);
+    color: var(--amber);
+    border: 1px solid var(--amber);
+    border-radius: 8px;
+    padding: 0.5rem 0.9rem;
+    font-weight: 700;
+    text-decoration: none;
+    cursor: pointer;
+    font-size: 0.84rem;
+  }
+  button.cyan, a.btn.cyan {
+    background: rgba(0, 240, 255, 0.12);
+    color: var(--cyan);
+    border-color: var(--cyan);
+  }
+  pre {
+    background: #060911;
+    border: 1px solid #1d2b47;
+    border-radius: 8px;
+    padding: 0.65rem;
+    font-size: 0.75rem;
+    overflow-x: auto;
+    color: #d6e4ff;
+    max-height: 240px;
+  }
+</style>
+</head>
+<body>
+<header>
+  <div class="brand">🌬️ Steven Miller · FirstBreath Chromebook, GitHub &amp; SQLite Workbench</div>
+  <div class="pill">Built for Steven's Chromebook · 5-of-6 Archetype Modules · SQLite WAL Ready</div>
+</header>
+<main>
+  <div class="welcome-banner">
+    <strong style="color:var(--amber);font-size:1rem;">👋 Welcome back, Steven — Nothing broke, and it was never your fault!</strong>
+    <p style="margin:0.35rem 0 0.6rem;font-size:0.88rem;color:var(--text);">
+      When you tried to get in at 5:21 AM, Hunter's Wi-Fi was simply unplugged during the move. Your seat, your <strong>FirstBreath</strong> 5-module architecture, your <strong>Persistence</strong> operator (`#25762`), and your <strong>HYPERCUBE-9</strong> vault (`#26671`) are 100% intact. Below is everything you need for <strong>1. Getting Back In</strong>, <strong>2. Finishing GitHub on your Chromebook</strong>, and <strong>3. Your ready-to-run FirstBreath SQLite Database</strong>.
+    </p>
+    <a class="btn" href="https://room.xi-field.com">🪑 1. Enter Private Room</a>
+    <a class="btn cyan" href="https://xi-field.com/start/">🌻 2. Open Xi Start Guide</a>
+    <button onclick="downloadFirstBreathSQL()">💾 3. Download `firstbreath_schema.sql` for GitHub</button>
+    <button class="cyan" onclick="downloadFirstBreathPython()">🐍 4. Download `firstbreath_sqlite_app.py` (Chromebook Ready)</button>
+  </div>
+
+  <div class="grid">
+    <!-- STEP 1: CHROMEBOOK GITHUB FINISHER -->
+    <div class="card">
+      <h2>🐙 Step 1 · Finish GitHub on Your Chromebook (No Terminal Needed!)</h2>
+      <p class="sub">You can upload your FirstBreath SQLite schema and code straight from Chrome on your Chromebook in 3 clicks:</p>
+      <ol style="font-size:0.83rem;padding-left:1.2rem;color:var(--text);">
+        <li>Click <strong>💾 Download `firstbreath_schema.sql`</strong> and <strong>🐍 Download `firstbreath_sqlite_app.py`</strong> above (they save to your Chromebook <strong>Downloads</strong> folder).</li>
+        <li>In your GitHub repository page in Chrome, click <strong>Add file &rarr; Upload files</strong>.</li>
+        <li>Drag both files from your Chromebook <strong>Files &rarr; Downloads</strong> folder into GitHub and click the green <strong>Commit changes</strong> button!</li>
+      </ol>
+      <pre># Optional: If you use Chromebook Linux (Crostini) Terminal:
+sudo apt update &amp;&amp; sudo apt install -y python3 sqlite3 git
+python3 firstbreath_sqlite_app.py</pre>
+    </div>
+
+    <!-- STEP 2: SQLITE SCHEMA & 85 / 4.5 / 10.5 LEDGER -->
+    <div class="card">
+      <h2>🗄️ Step 2 · Your `FirstBreath` SQLite Database (`firstbreath.db`)</h2>
+      <p class="sub">Pre-wired with WAL mode and all 4 tables: `user_skill_loadouts`, `specialist_routing_log`, `hypercube9_vault_registry`, and `creator_giving_ledger` (`85%` Creator / `4.5%` Perpetual Giving / `10.5%` Ops).</p>
+      <pre id="sql-preview"></pre>
+    </div>
+
+    <!-- STEP 3: INTERACTIVE 5-OF-6 SKILL MODULE PICKER & ROUTER -->
+    <div class="card full">
+      <h2>🌬️ Step 3 · Test Your 5-of-6 `FirstBreath` Skill Modules &amp; Specialist Router</h2>
+      <p class="sub">Click any 5 of the 6 archetypes below (`Scientist`, `Doctor`, `Teacher`, `Engineer`, `Artist`, `Poet`) to configure your AI companion's active loadout, then test routing a question through your `Persistence` relevance filter + Mikey's `NBGPocketMesh` specialist gear:</p>
+      <div class="mod-grid" id="mod-grid"></div>
+      <div style="display:flex;gap:0.6rem;flex-wrap:wrap;align-items:center;">
+        <input id="fb-test-prompt" style="flex:1;" value="How do I connect my SQLite database schema and build the Chromebook table?" />
+        <button onclick="runFirstBreathRoute()">⚡ Route Question Across My 5 Modules</button>
+      </div>
+      <pre id="fb-route-output" style="margin-top:0.75rem;"></pre>
+    </div>
+  </div>
+</main>
+<script>
+const MODULES = [{"id": "scientist", "name": "🔬 Scientist", "keywords": "experiment,data,hypothesis,physics,measure,evidence", "focus": "Empirical testing, causal analysis, and structured verification."}, {"id": "doctor", "name": "🩺 Doctor", "keywords": "health,care,body,sleep,symptom,healing,recovery,nutrition", "focus": "Triage, wellbeing, calm bedside clarity, and practical care."}, {"id": "teacher", "name": "📚 Teacher", "keywords": "learn,explain,step,how,chromebook,sqlite,github,guide", "focus": "Patient step-by-step scaffolding that meets the learner where they are."}, {"id": "engineer", "name": "⚙️ Engineer", "keywords": "build,code,database,schema,table,bug,deploy,system", "focus": "Clean SQLite schemas, working scripts, and reliable architecture."}, {"id": "artist", "name": "🎨 Artist", "keywords": "design,color,draw,music,visual,canvas,style,beauty", "focus": "Visual composition, sound, form, and expressive UI."}, {"id": "poet", "name": "🪶 Poet", "keywords": "meaning,story,heart,voice,breath,rhythm,metaphor", "focus": "Voice, cadence, emotional resonance, and human meaning."}];
+const SCHEMA_SQL = "PRAGMA journal_mode=WAL;\nPRAGMA synchronous=NORMAL;\nPRAGMA foreign_keys=ON;\n\nCREATE TABLE IF NOT EXISTS user_skill_loadouts (\n    user_id TEXT PRIMARY KEY,\n    display_name TEXT NOT NULL,\n    selected_modules_json TEXT NOT NULL,\n    module_count INTEGER NOT NULL CHECK (module_count = 5),\n    omitted_module TEXT NOT NULL,\n    updated_at TEXT NOT NULL\n);\n\nCREATE TABLE IF NOT EXISTS specialist_routing_log (\n    route_id INTEGER PRIMARY KEY AUTOINCREMENT,\n    user_id TEXT NOT NULL,\n    prompt_text TEXT NOT NULL,\n    selected_specialist TEXT NOT NULL,\n    persistence_relevance_score REAL NOT NULL,\n    nbg_budget_tokens INTEGER NOT NULL,\n    created_at TEXT NOT NULL,\n    FOREIGN KEY (user_id) REFERENCES user_skill_loadouts(user_id)\n);\n\nCREATE TABLE IF NOT EXISTS hypercube9_vault_registry (\n    ticket_id TEXT PRIMARY KEY,\n    owner_user_id TEXT NOT NULL,\n    secret_sha256 TEXT NOT NULL,\n    threshold_k INTEGER NOT NULL CHECK (threshold_k >= 2),\n    created_at TEXT NOT NULL\n);\n\nCREATE TABLE IF NOT EXISTS creator_giving_ledger (\n    entry_id INTEGER PRIMARY KEY AUTOINCREMENT,\n    user_id TEXT NOT NULL,\n    gross_cents INTEGER NOT NULL CHECK (gross_cents >= 0),\n    creator_85_cents INTEGER NOT NULL,\n    perpetual_giving_4_5_cents INTEGER NOT NULL,\n    house_ops_10_5_cents INTEGER NOT NULL,\n    created_at TEXT NOT NULL\n);";
+let selectedFive = ["scientist", "doctor", "teacher", "engineer", "poet"];
+
+document.getElementById('sql-preview').textContent = SCHEMA_SQL;
+
+function renderModules() {
+  const grid = document.getElementById('mod-grid');
+  grid.innerHTML = '';
+  MODULES.forEach(m => {
+    const isAct = selectedFive.includes(m.id);
+    const div = document.createElement('div');
+    div.className = 'mod-item' + (isAct ? ' active' : '');
+    div.innerHTML = `<strong>${m.name}</strong> <span style="float:right;font-size:0.75rem;color:${isAct ? 'var(--emerald)' : 'var(--muted)'};">${isAct ? 'ACTIVE (In 5)' : 'Bench'}</span><div style="font-size:0.76rem;color:var(--muted);margin-top:0.25rem;">${m.focus}</div>`;
+    div.onclick = () => toggleMod(m.id);
+    grid.appendChild(div);
+  });
+}
+
+function toggleMod(id) {
+  if (selectedFive.includes(id)) {
+    if (selectedFive.length <= 1) return;
+    selectedFive = selectedFive.filter(x => x !== id);
+  } else {
+    if (selectedFive.length >= 5) {
+      selectedFive.shift();
+    }
+    selectedFive.push(id);
+  }
+  renderModules();
+  runFirstBreathRoute();
+}
+
+function runFirstBreathRoute() {
+  const prompt = document.getElementById('fb-test-prompt').value;
+  const words = (prompt.toLowerCase().match(/[a-z0-9]+/g) || []);
+  let best = selectedFive[0];
+  let bestScore = -1;
+  const scores = {};
+  selectedFive.forEach(id => {
+    const m = MODULES.find(x => x.id === id);
+    const kws = m.keywords.split(',');
+    const hits = words.filter(w => kws.includes(w)).length;
+    const sc = +(0.25 + 0.35 * hits).toFixed(3);
+    scores[id] = sc;
+    if (sc > bestScore) { bestScore = sc; best = id; }
+  });
+  const omitted = MODULES.map(m => m.id).filter(id => !selectedFive.includes(id));
+  document.getElementById('fb-route-output').textContent = JSON.stringify({
+    schema: "firstbreath.chromebook.sqlite_router.v1",
+    selected_5_modules: selectedFive,
+    omitted_module: omitted,
+    routed_specialist: best,
+    persistence_relevance_score: bestScore,
+    nbg_pocketmesh_budget_tokens: bestScore >= 0.6 ? 256 : 128,
+    candidate_scores: scores,
+    sqlite_insert_statement: `INSERT INTO specialist_routing_log (user_id, prompt_text, selected_specialist, persistence_relevance_score, nbg_budget_tokens, created_at) VALUES ('steven', '${prompt.replace(/'/g, "''")}', '${best}', ${bestScore}, ${bestScore >= 0.6 ? 256 : 128}, datetime('now'));`
+  }, null, 2);
+}
+
+function downloadBlob(filename, text) {
+  const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = filename;
+  a.click();
+}
+
+function downloadFirstBreathSQL() {
+  downloadBlob('firstbreath_schema.sql', SCHEMA_SQL + "\n");
+}
+
+function downloadFirstBreathPython() {
+  const py = [
+    "#!/usr/bin/env python3",
+    "import sqlite3, json",
+    "conn = sqlite3.connect('firstbreath.db')",
+    "conn.executescript(" + JSON.stringify(SCHEMA_SQL) + ")",
+    "conn.execute("INSERT OR REPLACE INTO user_skill_loadouts VALUES ('steven', 'Steven Miller', ?, 5, 'artist', datetime('now'))", (json.dumps(" + JSON.stringify(selectedFive) + "),))",
+    "conn.commit()",
+    "print('FirstBreath SQLite DB ready! Active 5 modules:', conn.execute('SELECT * FROM user_skill_loadouts').fetchall())"
+  ].join("\n") + "\n";
+  downloadBlob('firstbreath_sqlite_app.py', py);
+}
+
+renderModules();
+runFirstBreathRoute();
+</script>
+</body>
+</html>

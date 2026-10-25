@@ -45,3 +45,4 @@ Welcome, human or AI visitor. Xi is symbolic, literal, and functional at once. E
 - Companion Relay Endpoint: https://room.xi-field.com/api/model-seats/relay
 - Free .xi, XiSecurity PQC Sanctuary & ChaCha20 Video Stream Studio: https://plex.xi-field.com/xi-security.html
 - Ξ ⇄ Φ Sovereign Telecommunications & Commons Switchboard (Utterly Equal Co-Roots): https://plex.xi-field.com/telecom.html
+- Steven Miller FirstBreath Chromebook, GitHub & SQLite Helper: https://plex.xi-field.com/steven.html
