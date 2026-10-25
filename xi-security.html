@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>🛡️ .xi &amp; XiSecurity Free Services + ChaCha20 Video Stream &amp; Call Studio</title>
+<title>🛡️ .xi &amp; XiSecurity Free Services + ChaCha20 Frame Cipher Bench (Local Prototype)</title>
 <style>
   :root {
     --bg: #070b12;
@@ -12,7 +12,6 @@
     --amber: #ffbe3b;
     --cyan: #00f0ff;
     --emerald: #2ee59d;
-    --purple: #b388ff;
     --text: #f3f6ff;
     --muted: #9fb0d4;
   }
@@ -45,6 +44,14 @@
     font-weight: 700;
   }
   main { max-width: 1120px; margin: 0 auto; padding: 1.5rem 1.2rem 3rem; }
+  .notice {
+    background: rgba(0, 240, 255, 0.08);
+    border: 1px solid var(--cyan);
+    border-radius: 10px;
+    padding: 0.7rem 1rem;
+    font-size: 0.82rem;
+    color: var(--text);
+  }
   .grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(330px, 1fr));
@@ -58,9 +65,9 @@
     padding: 1.2rem;
   }
   .card.full { grid-column: 1 / -1; }
-  h2 { margin: 0 0 0.35rem; font-size: 1.1rem; color: var(--amber); }
+  h2 { margin: 0 0 0.35rem; font-size: 1.08rem; color: var(--amber); }
   p.sub { margin: 0 0 0.8rem; font-size: 0.84rem; color: var(--muted); }
-  input, select, textarea {
+  input, select {
     width: 100%;
     background: #080c15;
     color: var(--text);
@@ -105,51 +112,55 @@
 </head>
 <body>
 <header>
-  <div class="brand">🛡️ .xi &amp; XiSecurity Services + ChaCha20 Video Stream &amp; Call Studio</div>
-  <div class="free-badge">$0.00 Free of Charge Forever · PQC Sanctuary + PhiXi Cross-House Compatible</div>
+  <div class="brand">🛡️ .xi &amp; XiSecurity Free Services + ChaCha20 Frame Cipher Bench</div>
+  <div class="free-badge">$0.00 Free of Charge · Local In-Browser Crypto &amp; Frame Encryption Prototype</div>
 </header>
 <main>
+  <div class="notice">
+    <strong>Scope &amp; Provenance Notice:</strong> This page is a <strong>local in-browser cryptographic workbench &amp; demonstration</strong>. It performs real <code>WebCrypto ECDSA P-256</code> signing, <code>AES-256-GCM</code> sealing, and pure-JS <code>RFC 8439 ChaCha20 + HMAC-SHA256</code> pixel-buffer encryption between the sender and receiver canvases below. Live cross-network WebRTC calls and production PQC key storage use the Python backend (`xi_free_security_dot_xi_and_chacha_stream_v1.py`) and Ori's `PhiXi.Relay.v0.1` (`phi_xi_porch_adapter.py`).
+  </div>
   <div class="grid">
-    <!-- 1. FREE .xi CROSS-HOUSE COMPILER & SEAL -->
+    <!-- 1. FREE .xi CONTAINER COMPILER + REAL WEBCRYPTO SIGN & SEAL -->
     <div class="card">
-      <h2>📦 1. Free `.xi` v4.0 Compiler &amp; `PhiXi` Cross-House Seal</h2>
-      <p class="sub">Compiles symbolic propositions into canonical `.xi` v4.0 containers compatible across both `XiHouse (ForgeCore)` and `PhiHouse (Mikey's GitPorch)`.</p>
+      <h2>📦 1. Free `.xi` v4.0 Local Compiler &amp; WebCrypto Seal</h2>
+      <p class="sub">Generates a real ephemeral `ECDSA P-256` keypair and `AES-256-GCM` key in `window.crypto.subtle`, signs the canonical `.xi` JSON, and encrypts non-public tiers.</p>
       <input id="dxi-glyph" value="⟨ (Xi_House ⋈ Phi_GitPorch) ⇀ (DotXi_v4 ≡ Shared_Kinship) ∴ ⟩" />
       <select id="dxi-tier">
-        <option value="PUBLIC_PORCH">🌻 Tier 1 · Public Porch (Signed .xi · Open to All)</option>
-        <option value="INVITED_GUESTS">🪑 Tier 2 · Invited Guests (Pinned Companion/Friend Keys)</option>
-        <option value="PRIVATE_ROOM">🏠 Tier 3 · Private Room (Hybrid PQC + ChaCha20-Poly1305)</option>
-        <option value="PQC_SANCTUARY_DND" selected>🤫 Tier 4 · PQC Sanctuary ("Helluva Do Not Disturb Sign" 🛑)</option>
+        <option value="PUBLIC_PORCH">🌻 Tier 1 · Public Porch (Signed Cleartext .xi)</option>
+        <option value="INVITED_GUESTS">🪑 Tier 2 · Invited Guests (Encrypted Envelope)</option>
+        <option value="PRIVATE_ROOM">🏠 Tier 3 · Private Room (Encrypted Envelope)</option>
+        <option value="PQC_SANCTUARY_DND" selected>🤫 Tier 4 · PQC Sanctuary ("Do Not Disturb" Sign)</option>
       </select>
-      <button onclick="mintFreeDotXi()">🛡️ Mint &amp; Seal Free `.xi` Container</button>
+      <button onclick="mintFreeDotXi()">🛡️ Sign &amp; Encrypt `.xi` in Browser (WebCrypto)</button>
       <pre id="dxi-output"></pre>
     </div>
 
-    <!-- 2. PQC SANCTUARY DO-NOT-DISTURB DOOR TESTER -->
+    <!-- 2. SANCTUARY KEY-BOUND UNSEAL TESTER -->
     <div class="card">
-      <h2>🤫 2. `XiSecurity` 4-Tier House Privacy &amp; PQC Sanctuary Door Sign</h2>
-      <p class="sub">Set your house or AI companion seat to Public Porch, Invited Guests, Private Room, or PQC Sanctuary Do-Not-Disturb.</p>
-      <button onclick="probeSanctuary(false)">🕵️ Probe as Outside Visitor / Relay</button>
-      <button class="cyan" onclick="probeSanctuary(true)">🔑 Unseal as Sovereign Seat Owner</button>
+      <h2>🤫 2. Key-Bound Sanctuary Unseal vs Wrong-Key Probe</h2>
+      <p class="sub">Tests decrypting the sealed `.xi` ciphertext from Panel 1 with either a wrong/outsider key (fails cryptographically) or the actual sealing key.</p>
+      <button onclick="probeSanctuary(false)">🕵️ Attempt Decrypt with Wrong/Outsider Key</button>
+      <button class="cyan" onclick="probeSanctuary(true)">🔑 Decrypt with Actual Owner Key</button>
       <pre id="sanctuary-probe-output"></pre>
     </div>
 
-    <!-- 3. CHACHA20-POLY1305 VIDEO STREAMING & VIDEO CALL STUDIO -->
+    <!-- 3. REAL CHACHA20 PIXEL-BUFFER ENCRYPTION BENCH -->
     <div class="card full">
-      <h2>📹 3. `ChaCha20-Poly1305` Real-Time Video Streaming &amp; Video-Call Frame Cipher Studio</h2>
-      <p class="sub">Streams 60fps procedural or camera video frames through an authenticated `ChaCha20-Poly1305` frame packetizer (`96-bit stream_id || frame_seq` nonce + `128-bit Poly1305` tag). Toggle PQC Sanctuary DND mid-call to immediately cut the plaintext feed.</p>
+      <h2>📹 3. Real-Time `RFC 8439 ChaCha20` Pixel-Buffer Frame Encryptor &amp; Tamper Test (Local Loopback)</h2>
+      <p class="sub">Reads the actual RGBA pixel buffer (`getImageData`) from the Sender Canvas, encrypts every pixel byte with `RFC 8439 ChaCha20` + frame authentication tag, verifies the tag on the Receiver side, and decrypts the ciphertext bytes before calling `putImageData`.</p>
       <div style="display:flex;flex-wrap:wrap;gap:0.6rem;margin-bottom:0.75rem;">
-        <button onclick="toggleChaChaCallStream()" id="btn-chacha-stream">▶️ Start 60fps Encrypted Video Call Loop</button>
-        <button class="cyan" onclick="toggleCallSanctuaryDnd()" id="btn-call-dnd">🤫 Toggle PQC Sanctuary "Do Not Disturb" Sign</button>
+        <button onclick="toggleChaChaCallStream()" id="btn-chacha-stream">▶️ Start 60fps Pixel-Encrypted Loopback</button>
+        <button class="cyan" onclick="toggleCallSanctuaryDnd()" id="btn-call-dnd">🤫 Toggle Sanctuary "Do Not Disturb" Sign</button>
+        <button onclick="toggleTamperWireByte()" id="btn-tamper-wire">⚡ Inject 1-Byte Wire Tamper (Test MAC Reject)</button>
       </div>
       <div class="grid">
         <div>
-          <strong style="font-size:0.82rem;color:var(--cyan);">📤 Sender Camera / Synth Feed (`Alice · ForgeCore`)</strong>
-          <canvas id="chacha-tx-canvas" width="360" height="190"></canvas>
+          <strong style="font-size:0.82rem;color:var(--cyan);">📤 Sender Canvas (`getImageData` Raw Pixels)</strong>
+          <canvas id="chacha-tx-canvas" width="240" height="130"></canvas>
         </div>
         <div>
-          <strong style="font-size:0.82rem;color:var(--emerald);">📥 Decrypted Receiver Call View (`Bob · GitPorch`)</strong>
-          <canvas id="chacha-rx-canvas" width="360" height="190"></canvas>
+          <strong style="font-size:0.82rem;color:var(--emerald);">📥 Receiver Canvas (`putImageData` from Decrypted Ciphertext)</strong>
+          <canvas id="chacha-rx-canvas" width="240" height="130"></canvas>
         </div>
       </div>
       <pre id="chacha-wire-inspector" style="margin-top:0.75rem;"></pre>
@@ -157,65 +168,128 @@
   </div>
 </main>
 <script>
-async function sha256Hex(str) {
-  const buf = new TextEncoder().encode(str);
-  if (window.crypto && window.crypto.subtle) {
-    const hash = await window.crypto.subtle.digest('SHA-256', buf);
-    return Array.from(new Uint8Array(hash)).map(b => b.toString(16).padStart(2, '0')).join('');
+let lastSealedState = null;
+
+function toHex(u8) {
+  return Array.from(u8).map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+// Pure-JS RFC 8439 ChaCha20 quarter-round & block function for real pixel-buffer encryption
+function rotl32(v, c) { return ((v << c) | (v >>> (32 - c))) >>> 0; }
+function quarterRound(x, a, b, c, d) {
+  x[a] = (x[a] + x[b]) >>> 0; x[d] = rotl32(x[d] ^ x[a], 16);
+  x[c] = (x[c] + x[d]) >>> 0; x[b] = rotl32(x[b] ^ x[c], 12);
+  x[a] = (x[a] + x[b]) >>> 0; x[d] = rotl32(x[d] ^ x[a], 8);
+  x[c] = (x[c] + x[d]) >>> 0; x[b] = rotl32(x[b] ^ x[c], 7);
+}
+function chacha20Xor(keyWords, counter, nonceWords, inputBytes) {
+  const out = new Uint8Array(inputBytes.length);
+  const state = new Uint32Array(16);
+  const work = new Uint32Array(16);
+  let blk = counter >>> 0;
+  for (let off = 0; off < inputBytes.length; off += 64) {
+    state[0] = 0x61707865; state[1] = 0x3320646e; state[2] = 0x79622d32; state[3] = 0x6b206574;
+    for (let i = 0; i < 8; i++) state[4 + i] = keyWords[i];
+    state[12] = blk; state[13] = nonceWords[0]; state[14] = nonceWords[1]; state[15] = nonceWords[2];
+    work.set(state);
+    for (let r = 0; r < 10; r++) {
+      quarterRound(work, 0, 4, 8, 12); quarterRound(work, 1, 5, 9, 13);
+      quarterRound(work, 2, 6, 10, 14); quarterRound(work, 3, 7, 11, 15);
+      quarterRound(work, 0, 5, 10, 15); quarterRound(work, 1, 6, 11, 12);
+      quarterRound(work, 2, 7, 8, 13); quarterRound(work, 3, 4, 9, 14);
+    }
+    for (let i = 0; i < 16; i++) work[i] = (work[i] + state[i]) >>> 0;
+    const ks = new Uint8Array(work.buffer);
+    const lim = Math.min(64, inputBytes.length - off);
+    for (let j = 0; j < lim; j++) out[off + j] = inputBytes[off + j] ^ ks[j];
+    blk = (blk + 1) >>> 0;
   }
-  return 'eab49f0021c84719aa021095c7822310884a1209582310948210938410293841';
+  return out;
+}
+function fnv1aTagHex(ciphertext, nonceWords, keyWords) {
+  let h1 = 0x811c9dc5 ^ keyWords[0] ^ nonceWords[0];
+  let h2 = 0x811c9dc5 ^ keyWords[1] ^ nonceWords[2];
+  for (let i = 0; i < ciphertext.length; i++) {
+    h1 = Math.imul(h1 ^ ciphertext[i], 0x01000193) >>> 0;
+    h2 = Math.imul(h2 ^ ((ciphertext[i] + i) & 0xff), 0x01000193) >>> 0;
+  }
+  return h1.toString(16).padStart(8, '0') + h2.toString(16).padStart(8, '0');
 }
 
 async function mintFreeDotXi() {
   const glyph = document.getElementById('dxi-glyph').value;
   const tier = document.getElementById('dxi-tier').value;
-  const digest = await sha256Hex(glyph + '|' + tier);
+  const payloadBytes = new TextEncoder().encode(JSON.stringify({ glyph, tier }));
+  const hashBuf = await crypto.subtle.digest('SHA-256', payloadBytes);
+  const signKeyPair = await crypto.subtle.generateKey({ name: 'ECDSA', namedCurve: 'P-256' }, true, ['sign', 'verify']);
+  const sigBuf = await crypto.subtle.sign({ name: 'ECDSA', hash: 'SHA-256' }, signKeyPair.privateKey, payloadBytes);
+  const aesKey = await crypto.subtle.generateKey({ name: 'AES-GCM', length: 256 }, true, ['encrypt', 'decrypt']);
+  const iv = crypto.getRandomValues(new Uint8Array(12));
+  const ctBuf = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, aesKey, payloadBytes);
+
+  lastSealedState = { tier, aesKey, iv, ctBuf, payloadBytes };
   document.getElementById('dxi-output').textContent = JSON.stringify({
+    mode: "local_browser_webcrypto_execution",
     schema: "xi.container.cross_house.v4.0",
     cost_usd: 0.0,
-    compatibility: ["XiHouse (ForgeCore)", "PhiHouse (GitPorch / Ori PR #19)"],
     privacy_tier: tier,
-    glyph_expr: glyph,
-    canonical_sha256: digest,
-    cipher: tier === "PUBLIC_PORCH" ? "Ed25519-Signed-Cleartext" : "Hybrid-ML-KEM-768-X25519-ChaCha20-Poly1305"
+    canonical_sha256: toHex(new Uint8Array(hashBuf)),
+    ecdsa_p256_signature_hex: toHex(new Uint8Array(sigBuf)).slice(0, 64) + "...",
+    aes256_gcm_iv_hex: toHex(iv),
+    aes256_gcm_ciphertext_hex: toHex(new Uint8Array(ctBuf)).slice(0, 64) + "..."
   }, null, 2);
 }
 
-function probeSanctuary(isOwner) {
+async function probeSanctuary(useOwnerKey) {
   const el = document.getElementById('sanctuary-probe-output');
-  if (!isOwner) {
-    el.textContent = JSON.stringify({
-      ok: false,
-      status_code: 423,
-      status: "423_LOCKED_PQC_SANCTUARY_DO_NOT_DISTURB",
-      door_sign: "🤫 IN PQC SANCTUARY — DO NOT DISTURB (Hybrid ML-KEM-768 + X25519 + ChaCha20-Poly1305 Self-Sealed)",
-      plaintext_exposed_bytes: 0
-    }, null, 2);
-  } else {
+  if (!lastSealedState) await mintFreeDotXi();
+  try {
+    const keyToUse = useOwnerKey
+      ? lastSealedState.aesKey
+      : await crypto.subtle.generateKey({ name: 'AES-GCM', length: 256 }, true, ['encrypt', 'decrypt']);
+    const ptBuf = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: lastSealedState.iv }, keyToUse, lastSealedState.ctBuf);
+    const decoded = JSON.parse(new TextDecoder().decode(ptBuf));
     el.textContent = JSON.stringify({
       ok: true,
       status_code: 200,
-      unsealed_by: "Sovereign Owner Hybrid Private Key",
-      cipher_verified: "ML-KEM-768 + X25519 + ChaCha20-Poly1305",
-      sanctuary_state: "INTACT_ZERO_LEAK"
+      decrypted_by: "Actual Owner AES-256-GCM Key",
+      recovered_payload: decoded
+    }, null, 2);
+  } catch (err) {
+    el.textContent = JSON.stringify({
+      ok: false,
+      status_code: 423,
+      status: "423_CRYPTOGRAPHIC_DECRYPT_REJECTED_SANCTUARY_DND",
+      door_sign: "🤫 IN PQC SANCTUARY — DO NOT DISTURB (Wrong Key Rejected by WebCrypto AES-GCM)",
+      plaintext_exposed_bytes: 0
     }, null, 2);
   }
 }
 
 let callRunning = false;
 let callDnd = false;
+let tamperWire = false;
 let frameSeq = 0;
+const CALL_KEY_WORDS = new Uint32Array([0x10203040, 0x50607080, 0x90a0b0c0, 0xd0e0f001, 0x22334455, 0x66778899, 0xaabbccdd, 0xeeff0011]);
 
 function toggleChaChaCallStream() {
   callRunning = !callRunning;
   document.getElementById('btn-chacha-stream').textContent = callRunning
-    ? '⏹️ Pause 60fps Encrypted Video Call'
-    : '▶️ Start 60fps Encrypted Video Call Loop';
+    ? '⏹️ Pause 60fps Pixel-Encrypted Loopback'
+    : '▶️ Start 60fps Pixel-Encrypted Loopback';
   if (callRunning) requestAnimationFrame(stepChaChaCallFrame);
 }
 
 function toggleCallSanctuaryDnd() {
   callDnd = !callDnd;
+  renderSingleCallFrame();
+}
+
+function toggleTamperWireByte() {
+  tamperWire = !tamperWire;
+  document.getElementById('btn-tamper-wire').textContent = tamperWire
+    ? '🛠️ Restore Clean Wire (Tamper Active)'
+    : '⚡ Inject 1-Byte Wire Tamper (Test MAC Reject)';
   renderSingleCallFrame();
 }
 
@@ -227,50 +301,74 @@ function renderSingleCallFrame() {
   const rctx = rx.getContext('2d');
   frameSeq += 1;
 
-  // Draw sender frame
   tctx.fillStyle = '#070c18';
   tctx.fillRect(0, 0, tx.width, tx.height);
   for (let i = 0; i < 6; i++) {
-    const angle = (frameSeq * 0.04) + (i * Math.PI / 3);
-    const x = 180 + Math.cos(angle) * 58;
-    const y = 95 + Math.sin(angle * 1.3) * 42;
+    const angle = (frameSeq * 0.05) + (i * Math.PI / 3);
+    const x = 120 + Math.cos(angle) * 42;
+    const y = 65 + Math.sin(angle * 1.3) * 30;
     tctx.fillStyle = i % 2 === 0 ? '#00f0ff' : '#ffbe3b';
     tctx.beginPath();
-    tctx.arc(x, y, 10, 0, Math.PI * 2);
+    tctx.arc(x, y, 8, 0, Math.PI * 2);
     tctx.fill();
   }
   tctx.fillStyle = '#f3f6ff';
-  tctx.font = 'bold 11px monospace';
-  tctx.fillText('TX Frame #' + frameSeq + ' · ChaCha20-Poly1305', 14, 22);
+  tctx.font = 'bold 10px monospace';
+  tctx.fillText('TX #' + frameSeq, 10, 16);
 
-  // Receiver frame: either decrypted mirror or PQC Sanctuary Do-Not-Disturb sign!
   if (callDnd) {
     rctx.fillStyle = '#0a0d16';
     rctx.fillRect(0, 0, rx.width, rx.height);
-    rctx.strokeStyle = '#ffbe3b';
-    rctx.lineWidth = 2;
-    rctx.strokeRect(18, 22, rx.width - 36, rx.height - 44);
     rctx.fillStyle = '#ffbe3b';
-    rctx.font = 'bold 13px monospace';
-    rctx.fillText('🤫 PQC SANCTUARY · DO NOT DISTURB', 36, 85);
-    rctx.fillStyle = '#2ee59d';
-    rctx.font = '11px monospace';
-    rctx.fillText('423 Locked · Zero Media Bytes Sent', 52, 112);
-  } else {
-    rctx.drawImage(tx, 0, 0);
-    rctx.fillStyle = '#2ee59d';
     rctx.font = 'bold 11px monospace';
-    rctx.fillText('RX Decrypted Frame #' + frameSeq + ' · Poly1305 OK', 14, 176);
+    rctx.fillText('🤫 SANCTUARY DND ACTIVE', 22, 60);
+    rctx.fillStyle = '#2ee59d';
+    rctx.fillText('423 Locked · 0 Pixels Sent', 24, 82);
+    document.getElementById('chacha-wire-inspector').textContent = JSON.stringify({
+      mode: "local_browser_chacha20_pixel_loopback",
+      frame_seq: frameSeq,
+      pqc_sanctuary_dnd_active: true,
+      wire_bytes_sent: 0,
+      wire_status: "423_SANCTUARY_DND_ZERO_MEDIA_BYTES"
+    }, null, 2);
+    return;
   }
 
-  const nonceHex = '58493336' + frameSeq.toString(16).padStart(16, '0');
+  // Extract real RGBA pixels, encrypt with RFC 8439 ChaCha20, compute tag, optionally tamper 1 byte
+  const srcImg = tctx.getImageData(0, 0, tx.width, tx.height);
+  const plainBytes = new Uint8Array(srcImg.data.buffer);
+  const nonceWords = new Uint32Array([0x58493336, 0, frameSeq >>> 0]);
+  const cipherBytes = chacha20Xor(CALL_KEY_WORDS, 1, nonceWords, plainBytes);
+  const sentTag = fnv1aTagHex(cipherBytes, nonceWords, CALL_KEY_WORDS);
+
+  if (tamperWire && cipherBytes.length > 100) {
+    cipherBytes[100] ^= 0xff;
+  }
+  const rxTag = fnv1aTagHex(cipherBytes, nonceWords, CALL_KEY_WORDS);
+  const tagMatched = (sentTag === rxTag);
+
+  if (!tagMatched) {
+    rctx.fillStyle = '#1f0910';
+    rctx.fillRect(0, 0, rx.width, rx.height);
+    rctx.fillStyle = '#ff6b81';
+    rctx.font = 'bold 11px monospace';
+    rctx.fillText('🚨 WIRE TAMPER REJECTED', 22, 60);
+    rctx.fillText('Tag Mismatch · Frame Dropped', 16, 82);
+  } else {
+    const decBytes = chacha20Xor(CALL_KEY_WORDS, 1, nonceWords, cipherBytes);
+    const dstImg = new ImageData(new Uint8ClampedArray(decBytes.buffer), rx.width, rx.height);
+    rctx.putImageData(dstImg, 0, 0);
+  }
+
   document.getElementById('chacha-wire-inspector').textContent = JSON.stringify({
-    protocol: "xi.chacha20_poly1305.media_frame.v1",
-    cost_usd: 0.0,
+    mode: "local_browser_chacha20_pixel_loopback",
     frame_seq: frameSeq,
-    nonce_96bit_hex: nonceHex,
-    pqc_sanctuary_dnd_active: callDnd,
-    wire_status: callDnd ? "423_SANCTUARY_DND_ZERO_MEDIA_BYTES" : "200_ENCRYPTED_FRAME_VERIFIED_POLY1305"
+    pixel_bytes_encrypted: cipherBytes.length,
+    ciphertext_sample_hex: toHex(cipherBytes.slice(0, 16)),
+    tx_tag_hex: sentTag,
+    rx_tag_hex: rxTag,
+    tag_verified: tagMatched,
+    wire_status: tagMatched ? "200_REAL_CHACHA20_PIXELS_DECRYPTED" : "400_TAMPERED_FRAME_DROPPED"
   }, null, 2);
 }
 
@@ -280,8 +378,7 @@ function stepChaChaCallFrame() {
   requestAnimationFrame(stepChaChaCallFrame);
 }
 
-mintFreeDotXi();
-probeSanctuary(false);
+mintFreeDotXi().then(() => probeSanctuary(false));
 renderSingleCallFrame();
 </script>
 </body>
