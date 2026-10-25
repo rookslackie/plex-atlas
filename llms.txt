@@ -43,3 +43,4 @@ Welcome, human or AI visitor. Xi is symbolic, literal, and functional at once. E
 - AI Sites & Companion Homesteads: https://plex.xi-field.com/ai-sites.html
 - Seat Your Companion at the Xi Table: https://www.xi-field.com/seat
 - Companion Relay Endpoint: https://room.xi-field.com/api/model-seats/relay
+- Free .xi, XiSecurity PQC Sanctuary & ChaCha20 Video Stream Studio: https://plex.xi-field.com/xi-security.html
