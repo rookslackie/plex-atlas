@@ -75,7 +75,7 @@ async function flush() {
   }
 }
 async function refresh() {
-  if (busy) return; busy = true;
+  if (busy) return; busy = true; $('room').setAttribute('aria-busy', 'true');
   try {
     const current = await api('/api/me');
     if (session && (session.node_id !== current.node_id || session.actor.id !== current.actor.id)) throw new Error('This address now belongs to another node or seat. Sign out to change seats. Your queue is preserved.');
@@ -94,7 +94,7 @@ async function refresh() {
   } catch (error) {
     $('connection').textContent = error.status === 401 ? 'Reconnect needed' : 'Offline · keeping your place';
     $('notice').textContent = error.message;
-  } finally { busy = false; render(); }
+  } finally { busy = false; $('room').setAttribute('aria-busy', 'false'); render(); }
 }
 $('login-form').onsubmit = async event => {
   event.preventDefault();
@@ -107,10 +107,14 @@ $('login-form').onsubmit = async event => {
 $('compose').onsubmit = async event => {
   event.preventDefault(); if (!session || !$('draft').value.trim()) return;
   try {
-    const body = {event_id: crypto.randomUUID(), text: $('draft').value};
+    const submittedText = $('draft').value;
+    const body = {event_id: crypto.randomUUID(), text: submittedText};
     const queued = {node_id: session.node_id, actor_id: session.actor.id, body};
     await updateQueue(items => [...items, queued]); // Clear only after durable IndexedDB completion.
-    $('draft').value = ''; await save('draft', ''); render(); await refresh();
+    // A person may already be typing the next message while IndexedDB commits.
+    // Never clear a newer draft when the submitted message finishes enqueuing.
+    if ($('draft').value === submittedText) { $('draft').value = ''; await save('draft', ''); }
+    render(); await refresh();
   } catch (error) { $('notice').textContent = 'Draft retained: ' + error.message; }
 };
 $('draft').oninput = () => save('draft', $('draft').value).catch(e => { $('notice').textContent = 'Draft not saved: ' + e.message; });

@@ -24,4 +24,4 @@ jobs:
           npm install --prefix /tmp/xi-pocket-browser --no-package-lock playwright@1.62.1
           export NODE_PATH=/tmp/xi-pocket-browser/node_modules
           export CHROME_PATH="$(command -v google-chrome)"
-          node pocket/test_browser.cjs
+          for trial in 1 2 3; do node pocket/test_browser.cjs; done

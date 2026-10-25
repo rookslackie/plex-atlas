@@ -32,7 +32,9 @@ const pause = ms => new Promise(resolve => setTimeout(resolve, ms));
     await page.waitForSelector('#room:not([hidden])');
     await page.waitForFunction(() => !!navigator.serviceWorker.controller);
     await page.fill('#draft', '<img src=x onerror="window.PWNED=true"> Ω');
-    await page.click('#compose button'); await page.waitForFunction(() => document.querySelector('#pending').textContent === 'Queue clear');
+    await page.click('#compose button');
+    await page.waitForFunction(() => document.querySelector('#feed').textContent.includes('window.PWNED=true'));
+    await page.waitForFunction(() => document.querySelector('#pending').textContent === 'Queue clear');
     assert.equal(await page.locator('#feed img').count(), 0);
     assert.equal(await page.evaluate(() => !!window.PWNED), false);
     if (process.env.XI_TEST_EXPORTS) {
@@ -60,6 +62,7 @@ const pause = ms => new Promise(resolve => setTimeout(resolve, ms));
     await page.waitForFunction(() => document.querySelector('#notice').textContent.length > 0);
     for (let i=0;i<30 && !lostResponse;i++) await pause(100);
     assert.equal(lostResponse, true);
+    await page.waitForFunction(() => document.querySelector('#room').getAttribute('aria-busy') === 'false');
     await page.click('#refresh'); await page.waitForFunction(() => document.querySelector('#pending').textContent === 'Queue clear');
     const events = await (await fetch(base+'/api/room', {headers:{Authorization:'Bearer '+token}})).json();
     assert.equal(events.events.filter(e=>e.text === 'offline event · one durable receipt').length, 1);
