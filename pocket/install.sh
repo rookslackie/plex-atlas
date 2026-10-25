@@ -45,6 +45,24 @@ for name,(_,expected) in COLLECTIONS.items():
 print('Five actual carried collection files installed for owner-only access.')
 PY
 fi
+if [[ -f "$phone_root/xi_phone_platform.db" ]]; then
+  python3 - "$source_dir" "$data_dir" "$phone_root/xi_phone_platform.db" <<'PY'
+from datetime import datetime,timezone
+import os,pathlib,secrets,sqlite3,sys
+sys.path.insert(0,sys.argv[1]);from server import Store
+source=pathlib.Path(sys.argv[3]).resolve();directory=pathlib.Path(sys.argv[2]);backups=directory/'legacy-backups';backups.mkdir(mode=0o700,exist_ok=True)
+target=backups/(datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%S')+'-'+secrets.token_hex(3)+'.sqlite3')
+old=sqlite3.connect(source.as_uri()+'?mode=ro',uri=True);copy=sqlite3.connect(target)
+try:
+ old.backup(copy)
+ if copy.execute('PRAGMA integrity_check').fetchone()[0]!='ok':raise SystemExit('Legacy backup did not verify; existing platform preserved.')
+finally:copy.close();old.close()
+os.chmod(target,0o600)
+store=Store(directory)
+try:print('Preserved previous phone Room:',store.import_legacy(source))
+finally:store.db.close()
+PY
+fi
 if command -v termux-wake-lock >/dev/null 2>&1; then termux-wake-lock; fi
 if ! python3 - <<'PY'
 import json,urllib.request

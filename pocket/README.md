@@ -50,8 +50,9 @@ of a tunnel pointing to a different, unsynchronized database is not failover.
 
 ## Preserve the original phone Room
 
-First back it up using SQLite's backup API while its current service is running.
-Then import all messages, preserving original bytes in the old database:
+When the original `~/xi-phone-home/xi_phone_platform.db` exists, the installer
+automatically makes a verified SQLite backup and imports all its Room messages
+without editing that database. Later catch-up or an alternate source can use:
 
 ```bash
 python3 pocket/server.py import-legacy "$HOME/xi-phone-home/xi_phone_platform.db"
