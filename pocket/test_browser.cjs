@@ -28,6 +28,15 @@ const pause = ms => new Promise(resolve => setTimeout(resolve, ms));
     const context = await browser.newContext({viewport:{width:390,height:844}});
     const page = await context.newPage(); const errors = [];
     page.on('pageerror', error => errors.push(error.message));
+    // CI uses synthetic projections; private exports never leave the local kit.
+    const fixtureCounts = {Capsules:500,CanonicalTruths:200,XiJournals:200,GuardianRuntimes:9,ObserverProfiles:95};
+    if (!process.env.XI_TEST_EXPORTS) {
+      await page.route('**/api/library', route => route.fulfill({json:{collections:Object.entries(fixtureCounts).map(([name,records])=>({name,records,available:true}))}}));
+      await page.route('**/api/library/*', route => {
+        const name = new URL(route.request().url()).pathname.split('/').pop();
+        route.fulfill({json:{collection:name,records:Array.from({length:fixtureCounts[name]},(_,i)=>({id:'synthetic-'+name+'-'+i,title:'Synthetic offline fixture '+i,content:'Test data; not historical Xi material.'}))}});
+      });
+    }
     await page.goto(base); await page.fill('#secret', token); await page.click('#login-form button');
     await page.waitForSelector('#room:not([hidden])');
     await page.waitForFunction(() => !!navigator.serviceWorker.controller);
@@ -37,9 +46,7 @@ const pause = ms => new Promise(resolve => setTimeout(resolve, ms));
     await page.waitForFunction(() => document.querySelector('#pending').textContent === 'Queue clear');
     assert.equal(await page.locator('#feed img').count(), 0);
     assert.equal(await page.evaluate(() => !!window.PWNED), false);
-    if (process.env.XI_TEST_EXPORTS) {
-      await page.click('#cache-library'); await page.waitForFunction(() => document.querySelector('#library-state').textContent.startsWith('1004'));
-    }
+    await page.click('#cache-library'); await page.waitForFunction(() => document.querySelector('#library-state').textContent.startsWith('1004'));
     await page.fill('#draft', 'draft survives offline reload ⟁');
     await page.waitForFunction(async () => {
       const db = await new Promise(resolve => { const r=indexedDB.open('xi-pocket-v1');r.onsuccess=()=>resolve(r.result); });
@@ -49,7 +56,7 @@ const pause = ms => new Promise(resolve => setTimeout(resolve, ms));
     await context.setOffline(true); await page.reload({waitUntil:'domcontentloaded'});
     await page.waitForSelector('#room:not([hidden])');
     assert.equal(await page.inputValue('#draft'), 'draft survives offline reload ⟁');
-    if (process.env.XI_TEST_EXPORTS) assert.match(await page.textContent('#library-state'), /^1004/);
+    assert.match(await page.textContent('#library-state'), /^1004/);
     await page.fill('#draft', 'offline event · one durable receipt'); await page.click('#compose button');
     await page.waitForFunction(() => document.querySelector('#pending').textContent.startsWith('1 kept'));
     let lostResponse = false;
@@ -68,9 +75,16 @@ const pause = ms => new Promise(resolve => setTimeout(resolve, ms));
     assert.equal(events.events.filter(e=>e.text === 'offline event · one durable receipt').length, 1);
     assert.equal(errors.length, 0, errors.join('\n'));
     if (process.env.XI_TEST_SCREENSHOT) await page.screenshot({path:process.env.XI_TEST_SCREENSHOT,fullPage:true});
+    await page.click('#logout'); await page.waitForSelector('#login:not([hidden])');
+    const remains = await page.evaluate(async () => {
+      const db=await new Promise(resolve=>{const r=indexedDB.open('xi-pocket-v1');r.onsuccess=()=>resolve(r.result);});
+      const value=await new Promise(resolve=>{const r=db.transaction('state').objectStore('state').get('library');r.onsuccess=()=>resolve(r.result);});
+      db.close();return value!==undefined;
+    });
+    assert.equal(remains,false);
     console.log(JSON.stringify({status:'PASS',viewport:'390x844',offline_reload:true,draft_preserved:true,
       offline_queue:true,lost_post_response_reconciled:true,duplicate_events:0,script_injection_executed:false,
-      private_archive_records:process.env.XI_TEST_EXPORTS?1004:'not supplied',javascript_errors:errors.length}));
+      cached_archive_records:1004,archive_fixture:process.env.XI_TEST_EXPORTS?'supplied local exports':'synthetic projections',logout_clears_private_cache:true,javascript_errors:errors.length}));
     await context.close();
   } finally {
     if (browser) await browser.close(); server.kill('SIGTERM');
