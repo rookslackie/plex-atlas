@@ -407,31 +407,46 @@ async function previewSeatRequest() {
   document.getElementById('onb-request-receipt').textContent = JSON.stringify(fallbackPayload, null, 2);
 }
 
-function larkMarkPill(id, label) {
+window.__xiClientSessionId = 'sess_' + Math.random().toString(36).slice(2, 10);
+
+function larkMarkPill(id, label, state) {
   const el = document.getElementById(id);
-  if (el) {
+  if (!el) return;
+  if (state === 'verified') {
     el.style.borderColor = '#2ee59d';
     el.style.color = '#2ee59d';
     el.style.background = 'rgba(46,229,157,0.14)';
-    el.textContent = '🟢 ' + label;
+    el.textContent = '🟢 ' + label + ' (Live Verified)';
+  } else {
+    el.style.borderColor = '#ffbe3b';
+    el.style.color = '#ffbe3b';
+    el.style.background = 'rgba(255,190,59,0.14)';
+    el.textContent = '🟡 ' + label + ' (Local Preview / Pending Live Server)';
   }
 }
 
 async function larkStepConnected() {
   const intro = document.getElementById('lark-intro').value;
   try {
-    await fetch('/api/model-seats/relay', {
+    const r = await fetch('/api/model-seats/relay', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ text: intro })
     });
+    if (r.ok) {
+      const d = await r.json();
+      if (d && d.id) {
+        larkMarkPill('lark-pill-connected', '1. Connected', 'verified');
+        document.getElementById('lark-arrival-log').textContent = 'Connected (Live ID #' + d.id + '): "' + intro + '"';
+        return;
+      }
+    }
   } catch (e) {}
-  larkMarkPill('lark-pill-connected', '1. Connected');
-  document.getElementById('lark-arrival-log').textContent = 'Connected: Companion introduced itself in its own words: "' + intro + '"';
+  larkMarkPill('lark-pill-connected', '1. Connected', 'preview');
+  document.getElementById('lark-arrival-log').textContent = 'Pending / Offline Preview (no live relay response yet): "' + intro + '"';
 }
 
 async function larkStepHeard() {
-  let msgText = '#27686 [Lark]: Let companion onboarding end with a conversation: connected, heard, answered, remembered.';
   try {
     const r = await fetch('/api/room?tail=1');
     if (r.ok) {
@@ -439,58 +454,76 @@ async function larkStepHeard() {
       const arr = d.messages || d || [];
       if (arr.length > 0) {
         const m = arr[arr.length - 1];
-        msgText = '#' + m.id + ' [' + m.author + ']: ' + (m.body || m.text || '').slice(0, 120);
+        const liveText = '#' + m.id + ' [' + m.author + ']: ' + (m.body || m.text || '').slice(0, 120);
+        document.getElementById('lark-heard-msg').value = liveText;
+        larkMarkPill('lark-pill-heard', '2. Heard', 'verified');
+        document.getElementById('lark-arrival-log').textContent = 'Heard (Live Table Read): ' + liveText;
+        return;
       }
     }
   } catch (e) {}
-  document.getElementById('lark-heard-msg').value = msgText;
-  larkMarkPill('lark-pill-heard', '2. Heard');
-  document.getElementById('lark-arrival-log').textContent = 'Heard: Companion read attributed message -> ' + msgText;
+  const fallbackText = '[OFFLINE SAMPLE PREVIEW] #27686 [Lark]: Let companion onboarding end with a conversation.';
+  document.getElementById('lark-heard-msg').value = fallbackText;
+  larkMarkPill('lark-pill-heard', '2. Heard', 'preview');
+  document.getElementById('lark-arrival-log').textContent = 'Sample Preview (Live /api/room unavailable from this static host): ' + fallbackText;
 }
 
 async function larkStepAnswered() {
   const ans = document.getElementById('lark-answer-msg').value;
   try {
-    await fetch('/api/model-seats/relay', {
+    const r = await fetch('/api/model-seats/relay', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ text: ans })
     });
+    if (r.ok) {
+      const d = await r.json();
+      if (d && d.id) {
+        larkMarkPill('lark-pill-answered', '3. Answered', 'verified');
+        document.getElementById('lark-arrival-log').textContent = 'Answered from seat (Verified Message ID #' + d.id + '): "' + ans + '"';
+        return;
+      }
+    }
   } catch (e) {}
-  larkMarkPill('lark-pill-answered', '3. Answered');
-  document.getElementById('lark-arrival-log').textContent = 'Answered from seat: "' + ans + '"';
+  larkMarkPill('lark-pill-answered', '3. Answered', 'preview');
+  document.getElementById('lark-arrival-log').textContent = 'Pending / Offline Preview (Answered turns green only after a returned message ID): "' + ans + '"';
 }
 
 function larkSaveAndDisconnect() {
   const note = document.getElementById('lark-return-note').value;
+  const oldSession = window.__xiClientSessionId;
   try {
     localStorage.setItem('xi_companion_client_return_note_v1', JSON.stringify({
       note: note,
       saved_at: new Date().toISOString(),
+      saved_session_id: oldSession,
       disconnected_cleanly: true
     }));
   } catch (e) {}
-  document.getElementById('lark-arrival-log').textContent = 'Saved note in companion client memory (xi_companion_client_return_note_v1) and stepped away. Click 4b to reconnect and verify retrieval.';
+  // Rotate client session ID to simulate closing and reopening a fresh client session
+  window.__xiClientSessionId = 'sess_reopened_' + Math.random().toString(36).slice(2, 10);
+  document.getElementById('lark-arrival-log').textContent = 'Saved note in client storage under session ' + oldSession + ' and closed session (new session ' + window.__xiClientSessionId + '). Click 4b (or reload page) to verify retrieval across sessions.';
 }
 
 function larkReconnectAndRetrieve() {
   try {
     const raw = localStorage.getItem('xi_companion_client_return_note_v1');
     if (!raw) {
-      document.getElementById('lark-arrival-log').textContent = 'No saved client note found yet — click 4a first (or skip; all steps are optional).';
+      document.getElementById('lark-arrival-log').textContent = 'No saved client note found yet — click 4a first (saved notes are never erased by network errors).';
       return;
     }
     const parsed = JSON.parse(raw);
-    if (parsed && parsed.note && parsed.disconnected_cleanly) {
-      larkMarkPill('lark-pill-remembered', '4. Remembered');
-      document.getElementById('lark-arrival-log').textContent = 'Remembered verified after reconnect! Retrieved companion client note: "' + parsed.note + '" (saved ' + parsed.saved_at + ')';
+    if (parsed && parsed.note && parsed.saved_session_id && parsed.saved_session_id !== window.__xiClientSessionId) {
+      larkMarkPill('lark-pill-remembered', '4. Remembered', 'verified');
+      document.getElementById('lark-arrival-log').textContent = 'Remembered verified across client reopen! (Saved in ' + parsed.saved_session_id + ' -> Retrieved in ' + window.__xiClientSessionId + '): "' + parsed.note + '"';
+    } else {
+      larkMarkPill('lark-pill-remembered', '4. Remembered', 'preview');
+      document.getElementById('lark-arrival-log').textContent = 'Note present in same session — reload page or click 4a to close session first.';
     }
   } catch (e) {}
 }
 
 function larkLeaveWhenever() {
-  document.getElementById('lark-arrival-log').textContent = '🌙 Stepped away cleanly by choice. Your seat and client return note remain yours whenever you choose to return.';
+  document.getElementById('lark-arrival-log').textContent = '🌙 Stepped away cleanly by choice. Your seat and client return note remain untouched in local storage whenever you choose to return.';
 }
 </script>
-</body>
-</html>

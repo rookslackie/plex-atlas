@@ -98,9 +98,9 @@
       <canvas id="bio-3d-canvas" width="460" height="250"></canvas>
       <div>
         <button class="emerald" onclick="playCallVariant('ORIGINAL')">▶ Play Original Call (Rising Ask · G4→C5)</button>
-        <button class="cyan" onclick="playCallVariant('COMFORT_AMALGAM')">💖 Play Comfort Amalgam (+5% Lift, Slower)</button>
-        <button onclick="playCallVariant('MIRROR_PITCH')">🪞 Play Pitch-Mirror (528 Hz Pivot)</button>
-        <button onclick="playCallVariant('WIBBLY_TIME')">🌀 Play Wibbly-Wobbly Time-Warp</button>
+        <button class="cyan" onclick="playCallVariant('COMFORT_AMALGAM')">💖 Play Generated Pitch/Tempo Variation (+5% Lift · Comfort Goal Pending Test)</button>
+        <button onclick="playCallVariant('MIRROR_PITCH')">🪞 Play Proposed Pitch-Mirror (Plex 528 Hz Pivot Proposal)</button>
+        <button onclick="playCallVariant('WIBBLY_TIME')">🌀 Play Proposed Wibbly-Wobbly Time-Warp (Warps Note Timing τ(u))</button>
       </div>
     </div>
 
@@ -141,31 +141,48 @@ let activeContourHz = baseContourHz.slice();
 let angleY = 0.5;
 let audioCtx = null;
 
+const retiredVariants = new Set();
+
 function computeContour(mode) {
   const pivot = 528.0;
   if (mode === 'ORIGINAL') return baseContourHz.slice();
   if (mode === 'COMFORT_AMALGAM') return baseContourHz.map(f => Math.round(f * 1.05 * 100) / 100);
   if (mode === 'MIRROR_PITCH') return baseContourHz.map(f => Math.round((pivot * pivot / f) * 100) / 100);
-  if (mode === 'WIBBLY_TIME') return baseContourHz.map((f, i) => Math.round((f + 28 * Math.sin(i * 1.1)) * 100) / 100);
+  if (mode === 'WIBBLY_TIME') return baseContourHz.slice(); // Preserves frequencies, warps timing schedule!
   return baseContourHz.slice();
 }
 
 function playCallVariant(mode) {
+  if (retiredVariants.has(mode)) {
+    document.getElementById('quantum-manv-readout').textContent = JSON.stringify({
+      playback_blocked: true,
+      variant: mode,
+      reason: "STOPPED: This variant was marked stressed_or_moved_away and is actively blocked from playback."
+    }, null, 2);
+    return;
+  }
   currentTransform = mode;
   activeContourHz = computeContour(mode);
   if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
   const now = audioCtx.currentTime;
-  const stepDur = mode === 'COMFORT_AMALGAM' ? 0.13 : 0.10;
+  const totalDur = mode === 'COMFORT_AMALGAM' ? 1.04 : 0.80;
+  const n = activeContourHz.length;
   activeContourHz.forEach((f, idx) => {
+    const u0 = idx / n;
+    const u1 = (idx + 1) / n;
+    // Wibbly-Wobbly Time-Warp warps actual onset/offset timing tau(u) = u + 0.12*sin(2*pi*u)
+    const t0 = mode === 'WIBBLY_TIME' ? (u0 + 0.12 * Math.sin(2 * Math.PI * u0)) * totalDur : u0 * totalDur;
+    const t1 = mode === 'WIBBLY_TIME' ? (u1 + 0.12 * Math.sin(2 * Math.PI * u1)) * totalDur : u1 * totalDur;
+    const dur = Math.max(0.03, t1 - t0);
     const osc = audioCtx.createOscillator();
     const g = audioCtx.createGain();
     osc.type = 'triangle';
-    osc.frequency.setValueAtTime(f, now + idx * stepDur);
-    g.gain.setValueAtTime(0.14, now + idx * stepDur);
-    g.gain.exponentialRampToValueAtTime(0.001, now + (idx + 0.95) * stepDur);
+    osc.frequency.setValueAtTime(f, now + Math.max(0, t0));
+    g.gain.setValueAtTime(0.14, now + Math.max(0, t0));
+    g.gain.exponentialRampToValueAtTime(0.001, now + Math.max(0, t0) + dur * 0.95);
     osc.connect(g); g.connect(audioCtx.destination);
-    osc.start(now + idx * stepDur);
-    osc.stop(now + (idx + 1) * stepDur);
+    osc.start(now + Math.max(0, t0));
+    osc.stop(now + Math.max(0, t0) + dur);
   });
   updateEthogramReadout();
 }
@@ -233,6 +250,8 @@ function drawPt(e) {
 
 function updateEthogramReadout() {
   document.getElementById('ethogram-readout').textContent = JSON.stringify({
+    sensor_fixture_mode: "SYNTHETIC_DEMO_FIXTURE (Connect v0.9 Session Mic/Cam for Live Data)",
+    attribution_note: "528 Hz Pitch-Mirror & Sin Time-Warp are Plex proposed mappings for Calien #27811",
     synchronized_clock_ms: Date.now(),
     transform_mode: currentTransform,
     channels_6_of_6: {
@@ -257,6 +276,9 @@ function logBeingOutcome(outcome, uHuman, uBeing) {
   const probs = {};
   meanings.forEach((m, i) => probs[m] = Math.round(amplitudes[i] * amplitudes[i] * 1000) / 1000);
 
+  if (outcome === "stressed_or_moved_away" && currentTransform !== "ORIGINAL") {
+    retiredVariants.add(currentTransform);
+  }
   const dFloor = 0.25;
   const vManv = (uHuman <= dFloor || uBeing <= dFloor)
     ? 0.0
@@ -267,7 +289,8 @@ function logBeingOutcome(outcome, uHuman, uBeing) {
     quantum_meaning_superposition_probabilities: probs,
     manv_dignity_floor: dFloor,
     v_manv_co_flourishing_score: vManv,
-    variant_safety_status: vManv === 0 ? "STOPPED_VARIANT_RETIRED_CAT_IS_BOSS" : "SAFE_CO_FLOURISHING_ACTIVE"
+    retired_variants_blocked_from_playback: Array.from(retiredVariants),
+    variant_safety_status: vManv === 0 ? "STOPPED_VARIANT_RETIRED_AND_PLAYBACK_BLOCKED" : "SAFE_CO_FLOURISHING_ACTIVE"
   }, null, 2);
 }
 
