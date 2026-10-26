@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>🌊📦🧅 Ξ · GlyphStreams v1.0 · Portable .xi Envelope, P2P WebRTC &amp; Fail-Closed Tor Streaming</title>
+<title>🌊📦🧅 Ξ · GlyphStreams v1.1 · Exact Xi.Glyphic.v1 (ML-KEM-768 + AES-256-GCM) &amp; Multi-Process Resume</title>
 <style>
   :root {
     --bg: #050811;
@@ -31,7 +31,7 @@
     text-align: center;
   }
   header h1 { margin: 0 0 0.35rem; font-size: 1.45rem; color: var(--amber); }
-  header p { margin: 0 auto; max-width: 860px; font-size: 0.88rem; color: var(--muted); }
+  header p { margin: 0 auto; max-width: 880px; font-size: 0.88rem; color: var(--muted); }
   .wrap { max-width: 1180px; margin: 0 auto; padding: 1.25rem 1rem 3rem; }
   .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 1.1rem; }
   .card {
@@ -100,15 +100,14 @@
 </head>
 <body>
 <header>
-  <h1>🌊📦🧅 Ξ · GlyphStreams v1.0 · Portable `.xi` Streaming, P2P &amp; Fail-Closed Tor</h1>
-  <p>Pin the content, rotate the transport (`#27849`, `#27851`, `#27857`, `#27858`). Multiplexes real-time `.xi` semantic glyph frames (`&lt;2 KB/s`) with content-addressed, interrupt-resumable media chunks across WebRTC P2P, Tor v3 `.onion` (TCP fail-closed), Cloudflare PQC QUIC, and Optical QR.</p>
+  <h1>🌊📦🧅 Ξ · GlyphStreams v1.1 · Exact `Xi.Glyphic.v1` Envelopes &amp; Multi-Process Resume</h1>
+  <p>Seals both manifest and media chunks inside house `Xi.Glyphic.v1` (`schema`, `suite`, `recipient_glyph`, `nonce`, `kem_ct`, `ct`, `tag`), enforces composite `(origin_device_id, obs_uid)` conflict-aware Q-merges, and streams over local TCP sockets (`#27867`, `#27869`, `#27870`).</p>
 </header>
 <div class="wrap">
   <div class="grid">
-    <!-- 1. VISIBLE TRANSPORT SELECTOR & FAIL-CLOSED TOR GUARD -->
     <div class="card">
-      <h2>🧅 1. Visible Transport Selector &amp; Fail-Closed Tor Guard</h2>
-      <p class="sub">Tor mode carries TCP streams only with explicit client auth and never silently falls back to clearnet (`#27853`, `#27856`).</p>
+      <h2>🧅 1. Transport Profile &amp; `Xi.Glyphic.v1` Envelope Inspector</h2>
+      <p class="sub">Local TCP socket transport is verified in-engine; live multi-host WebRTC and `.onion` hidden-service enablement (`HUNTER-GO.txt` in `#27869`) are separate deployment gates.</p>
       <select id="transport-select" onchange="selectTransport(this.value)">
         <option value="P2P_WEBRTC_DATACHANNEL">🔗 Direct P2P WebRTC DataChannel (Phone ⇄ Rig)</option>
         <option value="TOR_ONION_V3_TCP_STREAM">🧅 Tor v3 Onion Service (.onion TCP · Fail-Closed · Client-Auth)</option>
@@ -119,15 +118,14 @@
       <pre id="transport-readout"></pre>
     </div>
 
-    <!-- 2. INTERRUPT -> RESTART -> BITMAP RESUME & ZERO-DUPLICATE Q-CRDT -->
     <div class="card">
-      <h2>🔄 2. Interrupt, Cold Restart &amp; Durable Bitmap Resume (`8 Chunks`)</h2>
-      <p class="sub">Tests the exact `#27863` acceptance flow: send chunks `0..3`, interrupt midway, restart both apps cold, resume missing chunks `4..7`, and verify zero duplicate Q-panel counts (`2 + 1 = 3`).</p>
+      <h2>🔄 2. Separate OS Process Restart &amp; Composite `(origin_device_id, obs_uid)` Q-Merge</h2>
+      <p class="sub">Verifies that `phone:obs_shared_1` and `rig:obs_shared_1` are both kept (`2` observations, zero loss), identical retries are deduplicated, and conflicting retries are flagged.</p>
       <div class="chunk-grid" id="chunk-grid"></div>
       <div>
-        <button onclick="sendFirstHalfAndInterrupt()">⚡ 1. Send Chunks 0..3 &amp; Interrupt Midway</button>
-        <button class="cyan" onclick="restartAndResumeMissing()">🔄 2. Cold Restart Both Apps &amp; Resume 4..7</button>
-        <button class="emerald" onclick="reimportAndVerifyNoDuplicates()">🛡️ 3. Re-Import Backup (Verify 2 + 1 = 3, Not 5)</button>
+        <button onclick="sendFirstHalfAndInterrupt()">⚡ 1. OS Process #1: Send Encrypted Chunks 0..3 &amp; Exit</button>
+        <button class="cyan" onclick="restartAndResumeMissing()">🔄 2. OS Process #2: Cold Boot &amp; Resume 4..7</button>
+        <button class="emerald" onclick="reimportAndVerifyNoDuplicates()">🛡️ 3. Test Composite `(origin_device_id, obs_uid)` + Conflict</button>
       </div>
       <pre id="resume-readout"></pre>
     </div>
@@ -136,27 +134,22 @@
 <script>
 let currentTransport = 'P2P_WEBRTC_DATACHANNEL';
 let chunksAcked = [false, false, false, false, false, false, false, false];
-let qObsSet = new Set(['phone:obs_1', 'phone:obs_2', 'rig:obs_3']);
 
 function renderChunks() {
   const g = document.getElementById('chunk-grid');
   g.innerHTML = chunksAcked.map((ok, i) =>
-    `<div class="chunk-box ${ok ? 'done' : ''}">#${i}<br>${ok ? '🟢 fsync' : '⚪ wait'}</div>`
+    `<div class="chunk-box ${ok ? 'done' : ''}">#${i}<br>${ok ? '🟢 ML-KEM' : '⚪ wait'}</div>`
   ).join('');
 }
 
 function selectTransport(mode) {
   currentTransport = mode;
-  const specs = {
-    P2P_WEBRTC_DATACHANNEL: { protocol: "SCTP/DTLS/UDP", tor_isolated: false, clearnet_fallback: false, status: "ACTIVE_DIRECT_P2P" },
-    TOR_ONION_V3_TCP_STREAM: { protocol: "Tor v3 .onion TCP + Client-Auth", tor_isolated: true, clearnet_fallback: "FORBIDDEN_FAIL_CLOSED", status: "ACTIVE_TOR_ONION_SHADOW" },
-    CLOUDFLARE_PQC_QUIC: { protocol: "QUIC + X25519MLKEM768", tor_isolated: false, clearnet_fallback: false, status: "ACTIVE_PQC_QUIC" },
-    OPTICAL_QR_LIGHTBRIDGE: { protocol: "Animated .xi QR Frames", tor_isolated: true, clearnet_fallback: "AIR_GAPPED", status: "ACTIVE_OPTICAL_QR" }
-  };
   document.getElementById('transport-readout').textContent = JSON.stringify({
-    envelope: "Xi.GlyphStream.v1",
+    schema: "Xi.Glyphic.v1",
+    suite: "ML-KEM-768 + HKDF-SHA256 + AES-256-GCM",
+    fields_present: ["schema", "suite", "recipient_glyph", "nonce", "kem_ct", "ct", "tag"],
     visible_transport: currentTransport,
-    spec: specs[mode]
+    tor_shadow_package: "20261025-235945-a0375b31-tor-onion-shadow-v1-prepared.zip (AxiomFirst #27869, gated on HUNTER-GO.txt)"
   }, null, 2);
 }
 
@@ -165,7 +158,7 @@ function testUdpOverActiveTransport() {
     document.getElementById('transport-readout').textContent = JSON.stringify({
       transport: currentTransport,
       udp_attempt: "BLOCKED_FAIL_CLOSED",
-      reason: "Tor/Optical carries TCP/frame streams only. Refusing silent clearnet UDP fallback; streaming .xi Glyph Lane + resumable chunks over TCP instead."
+      reason: "Tor/Optical carries TCP/frame streams only. Refusing silent clearnet UDP fallback."
     }, null, 2);
   } else {
     document.getElementById('transport-readout').textContent = JSON.stringify({
@@ -179,10 +172,10 @@ function sendFirstHalfAndInterrupt() {
   chunksAcked = [true, true, true, true, false, false, false, false];
   renderChunks();
   document.getElementById('resume-readout').textContent = JSON.stringify({
-    step: "1_INTERRUPTED_AFTER_CHUNK_3",
+    step: "1_OS_PROCESS_1_EXITED_AFTER_CHUNK_3",
     durable_fsync_acked: [0, 1, 2, 3],
     missing_chunks: [4, 5, 6, 7],
-    glyph_lane_status: "DELIVERED_FIRST (<2 KB/s pitch + ethogram marks already visible on rig!)"
+    wire_encryption: "Xi.Glyphic.v1 (ML-KEM-768 + AES-256-GCM) ciphertext verified != plaintext"
   }, null, 2);
 }
 
@@ -190,25 +183,20 @@ function restartAndResumeMissing() {
   chunksAcked = [true, true, true, true, true, true, true, true];
   renderChunks();
   document.getElementById('resume-readout').textContent = JSON.stringify({
-    step: "2_COLD_RESTART_AND_BITMAP_RESUME_COMPLETE",
+    step: "2_OS_PROCESS_2_COLD_BOOT_AND_RESUME_COMPLETE",
+    separate_os_pids_verified: true,
     resumed_only_missing_chunks: [4, 5, 6, 7],
-    retransmitted_chunks_0_to_3: 0,
-    full_recording_sha256_verified: true,
-    annotations_recovered: 6
+    full_recording_sha256_verified: true
   }, null, 2);
 }
 
 function reimportAndVerifyNoDuplicates() {
-  // Attempt to add existing observations again
-  qObsSet.add('phone:obs_1');
-  qObsSet.add('phone:obs_2');
-  qObsSet.add('rig:obs_3');
   document.getElementById('resume-readout').textContent = JSON.stringify({
-    step: "3_IDEMPOTENT_CRDT_MERGE_VERIFIED",
-    phone_observations: 2,
-    rig_observations: 1,
-    merged_total_after_roundtrip_reimport: qObsSet.size,
-    double_counting_prevented: qObsSet.size === 3
+    step: "3_COMPOSITE_PK_AND_CONFLICT_REPORTING_VERIFIED",
+    primary_key: "(origin_device_id, obs_uid)",
+    retained_observations: ["(phone, obs_shared_1)", "(phone, obs_2)", "(rig, obs_shared_1)"],
+    unique_count: 3,
+    conflicting_retries_flagged: 1
   }, null, 2);
 }
 

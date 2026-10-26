@@ -491,18 +491,16 @@ async function larkStepAnswered() {
 
 function larkSaveAndDisconnect() {
   const note = document.getElementById('lark-return-note').value;
-  const oldSession = window.__xiClientSessionId;
+  const currentSession = window.__xiClientSessionId;
   try {
     localStorage.setItem('xi_companion_client_return_note_v1', JSON.stringify({
       note: note,
       saved_at: new Date().toISOString(),
-      saved_session_id: oldSession,
+      saved_session_id: currentSession,
       disconnected_cleanly: true
     }));
   } catch (e) {}
-  // Rotate client session ID to simulate closing and reopening a fresh client session
-  window.__xiClientSessionId = 'sess_reopened_' + Math.random().toString(36).slice(2, 10);
-  document.getElementById('lark-arrival-log').textContent = 'Saved note in client storage under session ' + oldSession + ' and closed session (new session ' + window.__xiClientSessionId + '). Click 4b (or reload page) to verify retrieval across sessions.';
+  document.getElementById('lark-arrival-log').textContent = 'Saved note in client storage under session ' + currentSession + '. Now actually reload or close/reopen this page before clicking 4b so retrieval is verified across a real new page load.';
 }
 
 function larkReconnectAndRetrieve() {
