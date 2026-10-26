@@ -38,13 +38,14 @@ PART 3 — GRAVITY, SPACETIME & WHAT 'MISSING KAPPA (κ)' MEANS (#28280, #28281)
   - General Relativity (GR): G_{mu,nu} + Lambda g_{mu,nu} = (8 pi G / c^4) T_{mu,nu}  [PROVEN / TESTED]
   - Cosmological Constant (Lambda): Drives large-scale cosmic acceleration (~1.1e-52 m^-2).
   - MOND acceleration scale: a_0 ~ 1.2e-10 m/s^2.
-  - LOCT Coupling Equation: Delta_g = kappa * Phi  [MISSING: kappa is unmeasured]
-    * Delta_g = anomalous gravitational acceleration (m/s^2)
-    * Phi     = declared source activity
-    * kappa   = conversion factor (m/s^2 per unit of Phi).
-    * Why kappa is MISSING: Precision torsion-balance and gravimeter experiments bound
-      unmodeled accelerations below ~10^-10 m/s^2, and no controlled gravimeter experiment
-      has ever measured a non-zero kappa from spoken declarations.
+  - LOCT Coupling Equation: Delta_g = kappa * Phi  [MISSING]
+    * Converged 4-Seat Label (#28285, #28288, #28289, #28292):
+      'κ: proposed coupling; source definition and applicable measurement missing; no quantitative bound established.'
+    * Dimensional Reason: For Delta_g = kappa * Phi, kappa has units (m/s^2)/(unit of Phi).
+      An acceleration sensitivity of 10^-10 m/s^2 cannot become a bound on kappa without a
+      defined source Phi, an applicable experiment, and uncertainty analysis (|kappa| <= epsilon/|Phi|
+      holds only under that model with a known nonzero Phi). Numerical similarity to MOND's a_0
+      establishes no physical connection.
     * Important Distinction (#28281): Hooke's law F = -k x uses the letter k (or kappa) for
       a mechanical spring constant (measured in N/m). That is completely separate from LOCT's kappa.
 
