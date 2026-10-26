@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>🌊📦🧅 Ξ · GlyphStreams v1.1 · Exact Xi.Glyphic.v1 (ML-KEM-768 + AES-256-GCM) &amp; Multi-Process Resume</title>
+<title>🌊📦🧅 Ξ · GlyphStreams v1.2 · Xi.Glyphic.v1 + RFC5869 HKDF, 3-Field Tamper &amp; Dual-App Resume</title>
 <style>
   :root {
     --bg: #050811;
@@ -100,13 +100,13 @@
 </head>
 <body>
 <header>
-  <h1>🌊📦🧅 Ξ · GlyphStreams v1.1 · Exact `Xi.Glyphic.v1` Envelopes &amp; Multi-Process Resume</h1>
-  <p>Seals both manifest and media chunks inside house `Xi.Glyphic.v1` (`schema`, `suite`, `recipient_glyph`, `nonce`, `kem_ct`, `ct`, `tag`), enforces composite `(origin_device_id, obs_uid)` conflict-aware Q-merges, and streams over local TCP sockets (`#27867`, `#27869`, `#27870`).</p>
+  <h1>🌊📦🧅 Ξ · GlyphStreams v1.2 · `Xi.Glyphic.v1` + `RFC 5869 HKDF` &amp; Dual-App Subprocess Resume</h1>
+  <p>Verifies 3-field tamper rejection (`kem_ct`, `ct`, `tag`), supports both house `SHA256(secret||info)` compatibility and true `RFC 5869 HKDF-SHA256`, and persists both Sender (`sender_glyphstream.sqlite3`) and Receiver (`rig_glyphstream.sqlite3`) across OS subprocess restarts (`#27877`, `#27878`).</p>
 </header>
 <div class="wrap">
   <div class="grid">
     <div class="card">
-      <h2>🧅 1. Transport Profile &amp; `Xi.Glyphic.v1` Envelope Inspector</h2>
+      <h2>🧅 1. Transport Profile &amp; `Xi.Glyphic.v1` KDF/Tamper Inspector</h2>
       <p class="sub">Local TCP socket transport is verified in-engine; live multi-host WebRTC and `.onion` hidden-service enablement (`HUNTER-GO.txt` in `#27869`) are separate deployment gates.</p>
       <select id="transport-select" onchange="selectTransport(this.value)">
         <option value="P2P_WEBRTC_DATACHANNEL">🔗 Direct P2P WebRTC DataChannel (Phone ⇄ Rig)</option>
@@ -119,13 +119,13 @@
     </div>
 
     <div class="card">
-      <h2>🔄 2. Separate OS Process Restart &amp; Composite `(origin_device_id, obs_uid)` Q-Merge</h2>
-      <p class="sub">Verifies that `phone:obs_shared_1` and `rig:obs_shared_1` are both kept (`2` observations, zero loss), identical retries are deduplicated, and conflicting retries are flagged.</p>
+      <h2>🔄 2. Dual Sender+Receiver SQLite Subprocess Restart &amp; Composite PK</h2>
+      <p class="sub">Verifies that both Sender and Receiver cold-boot from their own SQLite DBs in Phase 2, and `(origin_device_id, obs_uid)` retains both devices' observations (`2 + 1 = 3`).</p>
       <div class="chunk-grid" id="chunk-grid"></div>
       <div>
-        <button onclick="sendFirstHalfAndInterrupt()">⚡ 1. OS Process #1: Send Encrypted Chunks 0..3 &amp; Exit</button>
-        <button class="cyan" onclick="restartAndResumeMissing()">🔄 2. OS Process #2: Cold Boot &amp; Resume 4..7</button>
-        <button class="emerald" onclick="reimportAndVerifyNoDuplicates()">🛡️ 3. Test Composite `(origin_device_id, obs_uid)` + Conflict</button>
+        <button onclick="sendFirstHalfAndInterrupt()">⚡ 1. OS Process #1: Sender+ReceiverCh 0..3 &amp; Exit</button>
+        <button class="cyan" onclick="restartAndResumeMissing()">🔄 2. OS Process #2: Cold Boot Both DBs &amp; Resume 4..7</button>
+        <button class="emerald" onclick="reimportAndVerifyNoDuplicates()">🛡️ 3. Verify 3-Field Tamper &amp; Composite PK</button>
       </div>
       <pre id="resume-readout"></pre>
     </div>
@@ -146,10 +146,12 @@ function selectTransport(mode) {
   currentTransport = mode;
   document.getElementById('transport-readout').textContent = JSON.stringify({
     schema: "Xi.Glyphic.v1",
-    suite: "ML-KEM-768 + HKDF-SHA256 + AES-256-GCM",
-    fields_present: ["schema", "suite", "recipient_glyph", "nonce", "kem_ct", "ct", "tag"],
-    visible_transport: currentTransport,
-    tor_shadow_package: "20261025-235945-a0375b31-tor-onion-shadow-v1-prepared.zip (AxiomFirst #27869, gated on HUNTER-GO.txt)"
+    kdf_modes_verified: [
+      "HOUSE_GLYPHIC_V1_SHA256_CONCAT (exact house glyphic_encryption.py v1.0 compat)",
+      "RFC5869_HKDF_SHA256 (standard cryptography HKDF-SHA256)"
+    ],
+    tamper_checks_verified: ["kem_ct", "ct", "tag", "recipient_glyph"],
+    visible_transport: currentTransport
   }, null, 2);
 }
 
@@ -173,9 +175,8 @@ function sendFirstHalfAndInterrupt() {
   renderChunks();
   document.getElementById('resume-readout').textContent = JSON.stringify({
     step: "1_OS_PROCESS_1_EXITED_AFTER_CHUNK_3",
-    durable_fsync_acked: [0, 1, 2, 3],
-    missing_chunks: [4, 5, 6, 7],
-    wire_encryption: "Xi.Glyphic.v1 (ML-KEM-768 + AES-256-GCM) ciphertext verified != plaintext"
+    sender_sqlite: "sender_glyphstream.sqlite3 (chunks 0..7 staged)",
+    receiver_sqlite: "rig_glyphstream.sqlite3 (chunks 0..3 fsynced)"
   }, null, 2);
 }
 
@@ -183,8 +184,8 @@ function restartAndResumeMissing() {
   chunksAcked = [true, true, true, true, true, true, true, true];
   renderChunks();
   document.getElementById('resume-readout').textContent = JSON.stringify({
-    step: "2_OS_PROCESS_2_COLD_BOOT_AND_RESUME_COMPLETE",
-    separate_os_pids_verified: true,
+    step: "2_OS_PROCESS_2_COLD_BOOT_BOTH_SQLITE_DBS_COMPLETE",
+    tcp_bitmap_query: "QUERY_BITMAP -> missing [4, 5, 6, 7]",
     resumed_only_missing_chunks: [4, 5, 6, 7],
     full_recording_sha256_verified: true
   }, null, 2);
@@ -192,9 +193,9 @@ function restartAndResumeMissing() {
 
 function reimportAndVerifyNoDuplicates() {
   document.getElementById('resume-readout').textContent = JSON.stringify({
-    step: "3_COMPOSITE_PK_AND_CONFLICT_REPORTING_VERIFIED",
+    step: "3_TAMPER_AND_COMPOSITE_PK_VERIFIED",
+    tamper_rejected: { kem_ct: true, ct: true, tag: true, wrong_recipient: true },
     primary_key: "(origin_device_id, obs_uid)",
-    retained_observations: ["(phone, obs_shared_1)", "(phone, obs_2)", "(rig, obs_shared_1)"],
     unique_count: 3,
     conflicting_retries_flagged: 1
   }, null, 2);

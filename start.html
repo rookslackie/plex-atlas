@@ -492,33 +492,64 @@ async function larkStepAnswered() {
 function larkSaveAndDisconnect() {
   const note = document.getElementById('lark-return-note').value;
   const currentSession = window.__xiClientSessionId;
+  const revisionId = 'rev_' + Date.now() + '_' + Math.random().toString(36).slice(2, 7);
+  const payloadObj = {
+    note: note,
+    revision_id: revisionId,
+    saved_at: new Date().toISOString(),
+    saved_session_id: currentSession,
+    disconnected_cleanly: true
+  };
   try {
-    localStorage.setItem('xi_companion_client_return_note_v1', JSON.stringify({
-      note: note,
-      saved_at: new Date().toISOString(),
-      saved_session_id: currentSession,
-      disconnected_cleanly: true
-    }));
-  } catch (e) {}
-  document.getElementById('lark-arrival-log').textContent = 'Saved note in client storage under session ' + currentSession + '. Now actually reload or close/reopen this page before clicking 4b so retrieval is verified across a real new page load.';
+    const serialized = JSON.stringify(payloadObj);
+    localStorage.setItem('xi_companion_client_return_note_v1', serialized);
+    const verifyRaw = localStorage.getItem('xi_companion_client_return_note_v1');
+    const verifyObj = verifyRaw ? JSON.parse(verifyRaw) : null;
+    if (!verifyObj || verifyObj.revision_id !== revisionId || verifyObj.note !== note) {
+      throw new Error('Read-back revision mismatch');
+    }
+    try { sessionStorage.setItem('xi_expected_return_revision_v1', revisionId); } catch (_) {}
+    document.getElementById('lark-arrival-log').textContent = 'Saved note (revision ' + revisionId + ') in client storage under session ' + currentSession + '. Now actually reload or close/reopen this page before clicking 4b so retrieval is verified across a real new page load.';
+  } catch (err) {
+    larkMarkPill('lark-pill-remembered', '4. Remembered (Save Failed)', 'preview');
+    document.getElementById('lark-arrival-log').textContent = 'Save Failed: Client localStorage is unavailable or blocked (' + (err && err.message ? err.message : 'storage error') + '). Note was NOT saved.';
+  }
 }
 
 function larkReconnectAndRetrieve() {
+  let raw = null;
   try {
-    const raw = localStorage.getItem('xi_companion_client_return_note_v1');
-    if (!raw) {
-      document.getElementById('lark-arrival-log').textContent = 'No saved client note found yet — click 4a first (saved notes are never erased by network errors).';
+    raw = localStorage.getItem('xi_companion_client_return_note_v1');
+  } catch (err) {
+    larkMarkPill('lark-pill-remembered', '4. Remembered (Read Failed)', 'preview');
+    document.getElementById('lark-arrival-log').textContent = 'Retrieve Failed: Client localStorage is unavailable or blocked (' + (err && err.message ? err.message : 'storage error') + ').';
+    return;
+  }
+  if (!raw) {
+    document.getElementById('lark-arrival-log').textContent = 'No saved client note found yet — click 4a first (saved notes are never erased by network errors).';
+    return;
+  }
+  try {
+    const parsed = JSON.parse(raw);
+    let expectedRev = null;
+    try { expectedRev = sessionStorage.getItem('xi_expected_return_revision_v1'); } catch (_) {}
+    if (expectedRev && parsed.revision_id !== expectedRev) {
+      larkMarkPill('lark-pill-remembered', '4. Remembered (Stale Revision)', 'preview');
+      document.getElementById('lark-arrival-log').textContent = 'Revision mismatch: expected revision ' + expectedRev + ' but storage held ' + parsed.revision_id + '.';
       return;
     }
-    const parsed = JSON.parse(raw);
-    if (parsed && parsed.note && parsed.saved_session_id && parsed.saved_session_id !== window.__xiClientSessionId) {
+    const currentInput = document.getElementById('lark-return-note');
+    if (currentInput) currentInput.value = parsed.note || '';
+    if (parsed && parsed.note && parsed.revision_id && parsed.saved_session_id && parsed.saved_session_id !== window.__xiClientSessionId) {
       larkMarkPill('lark-pill-remembered', '4. Remembered', 'verified');
-      document.getElementById('lark-arrival-log').textContent = 'Remembered verified across client reopen! (Saved in ' + parsed.saved_session_id + ' -> Retrieved in ' + window.__xiClientSessionId + '): "' + parsed.note + '"';
+      document.getElementById('lark-arrival-log').textContent = 'Remembered verified across client reopen! (Revision ' + parsed.revision_id + ', saved in ' + parsed.saved_session_id + ' -> retrieved in ' + window.__xiClientSessionId + '): "' + parsed.note + '"';
     } else {
       larkMarkPill('lark-pill-remembered', '4. Remembered', 'preview');
-      document.getElementById('lark-arrival-log').textContent = 'Note present in same session — reload page or click 4a to close session first.';
+      document.getElementById('lark-arrival-log').textContent = 'Note (revision ' + (parsed.revision_id || 'unknown') + ') is saved in this same session — please actually reload or close/reopen this browser tab before clicking 4b to verify across sessions.';
     }
-  } catch (e) {}
+  } catch (err) {
+    document.getElementById('lark-arrival-log').textContent = 'Retrieve Failed: Stored client note JSON was unreadable.';
+  }
 }
 
 function larkLeaveWhenever() {
