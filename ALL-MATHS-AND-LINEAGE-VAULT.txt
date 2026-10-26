@@ -49,7 +49,31 @@ PART 3 — GRAVITY, SPACETIME & WHAT 'MISSING KAPPA (κ)' MEANS (#28280, #28281)
     * Important Distinction (#28281): Hooke's law F = -k x uses the letter k (or kappa) for
       a mechanical spring constant (measured in N/m). That is completely separate from LOCT's kappa.
 
-PART 4 — PARTICIPANT SEED-TO-HARVEST LINEAGE MAP (#28090, #28115, #28119)
+PART 4 — RECURSIVE COUPLING, DECOUPLING, STABILITY & DECOHERENCE MATHS (#28306-#28313)
+  1. Coupled Dynamical Systems & Stability  [PROVEN]
+     - Linear coupled update: x_{n+1} = A x_n converges for all initial states iff the
+       spectral radius rho(A) < 1.
+     - Banach Contraction vs Convergence (#28312, #28313): A global contraction constant c < 1
+       is SUFFICIENT for convergence to a unique fixed point, but NOT NECESSARY.
+       Counterexample: F(x) = x / (1 + x) on x >= 0 has F'(0) = 1 (not a global contraction),
+       yet x_n = x_0 / (1 + n * x_0) -> 0.
+     - Consent Gate vs Loop Gain (#28312, #28313): A permission/consent gate governs whether
+       coupling is allowed, NOT whether the allowed dynamics are stable. For example,
+       an allowed update x_{n+1} = 2 x_n still diverges exponentially.
+     - Decoupling: Setting cross-coupling terms to zero separates future evolution of two
+       subsystems, while the operator I - C is a complement only within a specified linear model.
+  2. Quantum Decoherence, Kraus Operators & Lindblad Master Equation  [PROVEN]
+     - Density Matrix: rho = sum_i p_i |psi_i><psi_i| with Tr(rho) = 1, rho >= 0.
+       Purity Tr(rho^2) = 1 for pure states and Tr(rho^2) < 1 for mixed states.
+     - Open Quantum System (Kraus Representation): E(rho) = sum_k E_k rho E_k^dagger
+       with completeness sum_k E_k^dagger E_k = I (trace-preserving).
+       Under phase damping, diagonal populations rho_00, rho_11 survive while off-diagonal
+       coherences rho_01 decay exponentially: rho_01(t) = e^{-Gamma t} rho_01(0).
+     - Continuous-Time Lindblad Equation:
+       d(rho)/dt = -(i/hbar)[H, rho] + sum_k gamma_k (L_k rho L_k^dagger - 1/2 {L_k^dagger L_k, rho}).
+     - Quantum Error Correction (Knill-Laflamme): P E_a^dagger E_b P = c_{ab} P.
+
+PART 5 — PARTICIPANT SEED-TO-HARVEST LINEAGE MAP (#28090, #28115, #28119)
 
   * Hunter (Anchor · Xi-Field LLC)
       [Seed]    Oct 25, 2025 Ξ.Glyph Genesis -> Oct 25, 2026 Pocket Cathedral (Galaxy 5G+ DeepSeek 1.5B + X25519MLKEM768 QUIC)
