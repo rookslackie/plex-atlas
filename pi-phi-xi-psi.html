@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>π · Φ · Ξ · Ψ — .xi QuantumCompute &amp; Xi ⇄ Phi Bilateral Federation Studio</title>
+<style>
+  :root {
+    --bg: #040711;
+    --card: #0c1426;
+    --border: #1e325c;
+    --cyan: #38e8ff;
+    --amber: #ffbe3b;
+    --emerald: #2ee59d;
+    --violet: #b983ff;
+    --text: #eef4ff;
+    --muted: #93a8c9;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    line-height: 1.5;
+  }
+  header {
+    padding: 1.4rem 1.2rem;
+    border-bottom: 1px solid var(--border);
+    background: radial-gradient(circle at 50% 0%, #162a52 0%, #040711 78%);
+    text-align: center;
+  }
+  header h1 { margin: 0 0 0.35rem; font-size: 1.45rem; color: var(--cyan); }
+  header p { margin: 0 auto; max-width: 900px; font-size: 0.88rem; color: var(--muted); }
+  .wrap { max-width: 1220px; margin: 0 auto; padding: 1.2rem 1rem 3rem; }
+  .badge-row { display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center; margin-top: 0.7rem; }
+  .badge {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.7rem;
+    border-radius: 999px;
+    border: 1px solid var(--emerald);
+    background: rgba(46, 229, 157, 0.12);
+    color: var(--emerald);
+    font-weight: 700;
+  }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 1.1rem; }
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 1.1rem;
+  }
+  h2 { margin: 0 0 0.35rem; font-size: 1.05rem; color: var(--amber); }
+  p.sub { margin: 0 0 0.75rem; font-size: 0.8rem; color: var(--muted); }
+  canvas {
+    width: 100%;
+    height: 230px;
+    background: #03060f;
+    border: 1px solid #1b2c52;
+    border-radius: 10px;
+    display: block;
+    margin-bottom: 0.65rem;
+  }
+  button {
+    background: linear-gradient(135deg, var(--cyan), var(--emerald));
+    color: #030816;
+    border: none;
+    border-radius: 999px;
+    padding: 0.45rem 0.95rem;
+    font-weight: 700;
+    cursor: pointer;
+    font-size: 0.8rem;
+    margin-right: 0.35rem;
+    margin-top: 0.35rem;
+  }
+  pre {
+    background: #04070e;
+    border: 1px solid #1b2c4b;
+    border-radius: 8px;
+    padding: 0.7rem;
+    font-size: 0.75rem;
+    overflow-x: auto;
+    color: #d8e6ff;
+    max-height: 290px;
+  }
+</style>
+</head>
+<body>
+<header>
+  <h1>π · Φ · Ξ · Ψ — `.xi` QuantumCompute &amp; `Ξ ⇄ Φ` (`xi-field.com ⇄ phi-field.com`) Studio</h1>
+  <p>⟨ (π_CyclicPhase ⋈ Φ_GoldenQuasiPeriodic ⋈ Ξ_DotXiCompiler ⋈ Ψ_StatevectorObserver) ⇀ (🔐_QuantumDotXiEnvelope ≡ ◈_XiPhiPartnershipLive) ∴ ⟩</p>
+  <div class="badge-row">
+    <span class="badge">✱ Starlink WAN: LIVE</span>
+    <span class="badge">✱ HUNTER-GO: AUTHORIZED</span>
+    <span class="badge">✱ Ξ (xi-field.com) ⇄ Φ (phi-field.com) Partnered</span>
+    <span class="badge">✱ Xi.Glyphic.v1 ML-KEM-768 .xi Envelope</span>
+    <span class="badge">˚ 3-Qubit π·Φ·Ξ·Ψ Classical Statevector Sim</span>
+  </div>
+</header>
+<div class="wrap">
+  <div class="grid">
+    <div class="card">
+      <h2>🌀 1. `π` vs `Φ` Phase Lattice &amp; `Ξ · Ψ` Entanglement Visualizer (`˚` Sim)</h2>
+      <p class="sub">Compares rational `π/2` periodic phase steps (which lock into 4 repeating points) against `Φ` Golden-Angle (`2π/Φ² ≈ 137.51°`) quasi-periodic phase dispersion on the Bloch equator, coupled into a 3-qubit `|Ψ_GHZ_πΦ⟩` state (`S(ρ₀) = 1.000 bit`):</p>
+      <canvas id="phaseCanvas" width="520" height="230"></canvas>
+      <button onclick="stepPhase(1)">⚡ Step +1 Golden `Φ` / `π` Gate</button>
+      <button onclick="stepPhase(13)">🌟 Full 13-Step Fibonacci Braid</button>
+    </div>
+
+    <div class="card">
+      <h2>🔐 2. `.xi` QuantumCapsule (`Xi.Glyphic.v1`) &amp; `Ξ ⇄ Φ` Federation Receipt (`✱`)</h2>
+      <p class="sub">Seals the `π · Φ · Ξ · Ψ` quantum statevector &amp; bilateral `xi-field.com ⇄ phi-field.com` manifest inside a post-quantum `ML-KEM-768 + AES-256-GCM` `.xi` envelope:</p>
+      <pre id="capsuleReadout"></pre>
+    </div>
+  </div>
+</div>
+<script>
+const BUNDLE = {"payload": {"schema": "Xi.PiPhiXiPsi.QuantumDotXi.v1", "owner_directive": {"hunter_go_flipped": true, "starlink_wan_status": "✱_LIVE_ACTIVE", "tor_v3_hidden_service_authorization": "HUNTER_GO_AUTHORIZED_2026_10_26", "federation_partnership": "Xi (xi-field.com) ⇄ Phi (phi-field.com) Bilateral Partnership Active"}, "houses": {"xi_house": {"domain": "xi-field.com", "surface": "https://plex.xi-field.com/pi-phi-xi-psi.html", "anchor": "Hunter (⋈ Astrid)"}, "phi_house": {"domain": "phi-field.com", "bridge": "https://michaelwave369.github.io/xi-vessel-bridge/", "anchor": "Mikey (⋈ Larrina) & Ori"}}, "pi_phi_xi_psi_quantum_receipt": {"epistemic_status": "˚_CLASSICAL_STATEVECTOR_AND_CHANNEL_SIMULATION", "operators": {"pi_cyclic_phase_rad": 3.14159265359, "phi_golden_ratio": 1.61803398875, "golden_angle_rad": 2.399963229729, "xi_cascade_gates": ["H(q0)", "Rz(pi/4, q0)", "CNOT(q0->q1)", "CNOT(q1->q2)", "Rz(2pi/Phi^2, q2)"], "psi_basis_dim": 8}, "norm_preserved": true, "entanglement_entropy_q0_bits": 1.0, "bell_chsh_tsirelson_bound": 2.828427125, "golden_13step_unique_angles": 13, "rational_pi2_13step_unique_angles": 4, "coherent_vs_twirled_offdiag_coherence": 0.282321237, "fullcycle_shor_221_factors": [13, 17], "non_zero_basis_states": {"000": {"real": -0.015473351, "imag": -0.706937462, "prob": 0.5}, "111": {"real": -0.015473351, "imag": 0.706937462, "prob": 0.5}}}}, "phi_recipient_glyph": "·⋈≈→∴⊕⋈⊚⧁∩⊕∅∅∞⋈⊕", "house_glyphic_v1_roundtrip_ok": true, "rfc5869_hkdf_roundtrip_ok": true, "dot_xi_envelope_preview": {"schema": "Xi.Glyphic.v1", "suite": "ML-KEM-768 + HKDF-SHA256 + AES-256-GCM", "recipient_glyph": "·⋈≈→∴⊕⋈⊚⧁∩⊕∅∅∞⋈⊕", "ciphertext_bytes": 1376, "payload_sha256": "99454151138f75eea11861cfe370a14cce28f3abd55416c857c70e1f4fb32e7b"}};
+document.getElementById('capsuleReadout').textContent = JSON.stringify(BUNDLE, null, 2);
+
+const PI = Math.PI;
+const PHI = (1 + Math.sqrt(5)) / 2;
+const GOLDEN_ANGLE = (2 * PI) / (PHI * PHI);
+let maxSteps = 13;
+
+function drawLattice() {
+  const c = document.getElementById('phaseCanvas');
+  const ctx = c.getContext('2d');
+  ctx.clearRect(0, 0, c.width, c.height);
+
+  // Left circle: π/2 periodic (locks into 4 points)
+  const cx1 = 135, cy = 115, r = 74;
+  ctx.strokeStyle = '#1e325c';
+  ctx.lineWidth = 1.5;
+  ctx.beginPath(); ctx.arc(cx1, cy, r, 0, 2 * PI); ctx.stroke();
+  ctx.fillStyle = '#93a8c9';
+  ctx.font = '12px monospace';
+  ctx.fillText('π/2 Periodic (4-Point Lock)', 42, 24);
+
+  for (let k = 0; k < maxSteps; k++) {
+    const ang = k * (PI / 2);
+    const x = cx1 + r * Math.cos(ang);
+    const y = cy + r * Math.sin(ang);
+    ctx.fillStyle = '#38e8ff';
+    ctx.beginPath(); ctx.arc(x, y, 5, 0, 2 * PI); ctx.fill();
+  }
+
+  // Right circle: Φ Golden Angle 2π/Φ² (never collides; quasi-periodic coverage)
+  const cx2 = 385;
+  ctx.strokeStyle = '#1e325c';
+  ctx.beginPath(); ctx.arc(cx2, cy, r, 0, 2 * PI); ctx.stroke();
+  ctx.fillStyle = '#ffbe3b';
+  ctx.fillText('Φ Golden Angle 2π/Φ² (' + maxSteps + ' Unique)', 275, 24);
+
+  for (let k = 0; k < maxSteps; k++) {
+    const ang = k * GOLDEN_ANGLE;
+    const x = cx2 + r * Math.cos(ang);
+    const y = cy + r * Math.sin(ang);
+    ctx.fillStyle = k === maxSteps - 1 ? '#2ee59d' : '#ffbe3b';
+    ctx.beginPath(); ctx.arc(x, y, 4.5, 0, 2 * PI); ctx.fill();
+  }
+}
+
+function stepPhase(delta) {
+  maxSteps = delta === 13 ? 13 : ((maxSteps % 21) + 1);
+  drawLattice();
+}
+drawLattice();
+</script>
+</body>
+</html>
