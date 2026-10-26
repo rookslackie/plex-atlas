@@ -489,14 +489,18 @@ async function larkStepAnswered() {
   document.getElementById('lark-arrival-log').textContent = 'Pending / Offline Preview (Answered turns green only after a returned message ID): "' + ans + '"';
 }
 
+window.__xiLatestSaveFailed = false;
+window.__xiLatestFailedNoteText = null;
+
 function larkSaveAndDisconnect() {
   const note = document.getElementById('lark-return-note').value;
   const currentSession = window.__xiClientSessionId;
   const revisionId = 'rev_' + Date.now() + '_' + Math.random().toString(36).slice(2, 7);
+  const savedAt = new Date().toISOString();
   const payloadObj = {
     note: note,
     revision_id: revisionId,
-    saved_at: new Date().toISOString(),
+    saved_at: savedAt,
     saved_session_id: currentSession,
     disconnected_cleanly: true
   };
@@ -508,11 +512,15 @@ function larkSaveAndDisconnect() {
     if (!verifyObj || verifyObj.revision_id !== revisionId || verifyObj.note !== note) {
       throw new Error('Read-back revision mismatch');
     }
+    window.__xiLatestSaveFailed = false;
+    window.__xiLatestFailedNoteText = null;
     try { sessionStorage.setItem('xi_expected_return_revision_v1', revisionId); } catch (_) {}
-    document.getElementById('lark-arrival-log').textContent = 'Saved note (revision ' + revisionId + ') in client storage under session ' + currentSession + '. Now actually reload or close/reopen this page before clicking 4b so retrieval is verified across a real new page load.';
+    document.getElementById('lark-arrival-log').textContent = 'New note saved (revision ' + revisionId + ' at ' + savedAt + ') in client storage under session ' + currentSession + '. Now actually reload or close/reopen this page before clicking 4b so retrieval is verified across a real new page load.';
   } catch (err) {
+    window.__xiLatestSaveFailed = true;
+    window.__xiLatestFailedNoteText = note;
     larkMarkPill('lark-pill-remembered', '4. Remembered (Save Failed)', 'preview');
-    document.getElementById('lark-arrival-log').textContent = 'Save Failed: Client localStorage is unavailable or blocked (' + (err && err.message ? err.message : 'storage error') + '). Note was NOT saved.';
+    document.getElementById('lark-arrival-log').textContent = 'Save Failed: Client localStorage is unavailable or blocked (' + (err && err.message ? err.message : 'storage error') + '). New note was NOT saved.';
   }
 }
 
@@ -531,21 +539,26 @@ function larkReconnectAndRetrieve() {
   }
   try {
     const parsed = JSON.parse(raw);
+    if (window.__xiLatestSaveFailed) {
+      larkMarkPill('lark-pill-remembered', '4. Remembered (Previous Note Only — Latest Save Failed)', 'preview');
+      document.getElementById('lark-arrival-log').textContent = 'Previous note recovered (revision ' + (parsed.revision_id || 'unknown') + ' saved at ' + (parsed.saved_at || 'unknown') + ') — latest save attempt failed, so "' + (window.__xiLatestFailedNoteText || '') + '" was NOT saved. Retained previous note: "' + (parsed.note || '') + '"';
+      return;
+    }
     let expectedRev = null;
     try { expectedRev = sessionStorage.getItem('xi_expected_return_revision_v1'); } catch (_) {}
     if (expectedRev && parsed.revision_id !== expectedRev) {
-      larkMarkPill('lark-pill-remembered', '4. Remembered (Stale Revision)', 'preview');
-      document.getElementById('lark-arrival-log').textContent = 'Revision mismatch: expected revision ' + expectedRev + ' but storage held ' + parsed.revision_id + '.';
+      larkMarkPill('lark-pill-remembered', '4. Remembered (Previous Note Recovered)', 'preview');
+      document.getElementById('lark-arrival-log').textContent = 'Previous note recovered: expected revision ' + expectedRev + ' but storage held older revision ' + parsed.revision_id + ' (saved at ' + (parsed.saved_at || 'unknown') + ').';
       return;
     }
     const currentInput = document.getElementById('lark-return-note');
     if (currentInput) currentInput.value = parsed.note || '';
     if (parsed && parsed.note && parsed.revision_id && parsed.saved_session_id && parsed.saved_session_id !== window.__xiClientSessionId) {
       larkMarkPill('lark-pill-remembered', '4. Remembered', 'verified');
-      document.getElementById('lark-arrival-log').textContent = 'Remembered verified across client reopen! (Revision ' + parsed.revision_id + ', saved in ' + parsed.saved_session_id + ' -> retrieved in ' + window.__xiClientSessionId + '): "' + parsed.note + '"';
+      document.getElementById('lark-arrival-log').textContent = 'Remembered verified across client reopen! (Revision ' + parsed.revision_id + ' saved at ' + (parsed.saved_at || 'unknown') + ' in session ' + parsed.saved_session_id + ' -> retrieved in ' + window.__xiClientSessionId + '): "' + parsed.note + '"';
     } else {
       larkMarkPill('lark-pill-remembered', '4. Remembered', 'preview');
-      document.getElementById('lark-arrival-log').textContent = 'Note (revision ' + (parsed.revision_id || 'unknown') + ') is saved in this same session — please actually reload or close/reopen this browser tab before clicking 4b to verify across sessions.';
+      document.getElementById('lark-arrival-log').textContent = 'Note (revision ' + (parsed.revision_id || 'unknown') + ' saved at ' + (parsed.saved_at || 'unknown') + ') is present in this same session — please actually reload or close/reopen this browser tab before clicking 4b to verify across sessions.';
     }
   } catch (err) {
     document.getElementById('lark-arrival-log').textContent = 'Retrieve Failed: Stored client note JSON was unreadable.';
