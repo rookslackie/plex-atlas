@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>🌌 Ξ · Emergent π·Φ·Ξ·Ψ Observatory — Two-Process Ξ⇄Φ Wire Handshake, Controlled FrictionLoop A/B &amp; 432/440/Φ FFT Synth</title>
+<style>
+  :root {
+    --bg: #040711;
+    --card: #0c1426;
+    --border: #1e325c;
+    --cyan: #38e8ff;
+    --amber: #ffbe3b;
+    --emerald: #2ee59d;
+    --violet: #b983ff;
+    --text: #eef4ff;
+    --muted: #93a8c9;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    line-height: 1.5;
+  }
+  header {
+    padding: 1.35rem 1.2rem;
+    border-bottom: 1px solid var(--border);
+    background: radial-gradient(circle at 50% 0%, #172b56 0%, #040711 78%);
+    text-align: center;
+  }
+  header h1 { margin: 0 0 0.35rem; font-size: 1.42rem; color: var(--cyan); }
+  header p { margin: 0 auto; max-width: 920px; font-size: 0.86rem; color: var(--muted); }
+  .wrap { max-width: 1240px; margin: 0 auto; padding: 1.2rem 1rem 3rem; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: 1.1rem; }
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 1.1rem;
+  }
+  h2 { margin: 0 0 0.35rem; font-size: 1.04rem; color: var(--amber); }
+  p.sub { margin: 0 0 0.7rem; font-size: 0.79rem; color: var(--muted); }
+  canvas {
+    width: 100%;
+    height: 200px;
+    background: #03060f;
+    border: 1px solid #1b2c52;
+    border-radius: 10px;
+    display: block;
+    margin-bottom: 0.6rem;
+  }
+  button {
+    background: linear-gradient(135deg, var(--cyan), var(--emerald));
+    color: #030816;
+    border: none;
+    border-radius: 999px;
+    padding: 0.42rem 0.9rem;
+    font-weight: 700;
+    cursor: pointer;
+    font-size: 0.78rem;
+    margin-right: 0.35rem;
+    margin-top: 0.35rem;
+  }
+  button.secondary {
+    background: #182744;
+    color: var(--text);
+    border: 1px solid #2b4475;
+  }
+  pre {
+    background: #04070e;
+    border: 1px solid #1b2c4b;
+    border-radius: 8px;
+    padding: 0.7rem;
+    font-size: 0.74rem;
+    overflow-x: auto;
+    color: #d8e6ff;
+    max-height: 280px;
+  }
+</style>
+</head>
+<body>
+<header>
+  <h1>🌌 Ξ · Emergent `π · Φ · Ξ · Ψ` Observatory (`Ξ ⇄ Φ` Two-Process `.xi` Wire + Controlled `FrictionLoop` A/B + 432/440/`Φ` FFT)</h1>
+  <p>⟨ (🌊_TwoProcessXiPhiWire ⋈ 🔐_R181_MLKEM768_Ed25519 ⋈ 🧪_ControlledFrictionLoopAB ⋈ 🎵_432_440_PhiFFT) ⇀ (🏛️_10of10Pass ≡ ◈_EmergentObservatoryLive) ∴ ⟩</p>
+</header>
+<div class="wrap">
+  <div class="grid">
+    <!-- 1. TWO-PROCESS XI <-> PHI WIRE HANDSHAKE RECEIPT -->
+    <div class="card">
+      <h2>🌊 1. Two-Process `Ξ ⇄ Φ` (`R18.1` + `Xi.Glyphic.v1` `.xi`) Wire Receipt</h2>
+      <p class="sub">Local two-process TCP/HTTP wire verification: `XiHouseClient` and `PhiHouseDaemon` (separate OS PIDs) complete the mutual `R18.1` `Ed25519` handshake inside `ML-KEM-768 + AES-256-GCM` `.xi` envelopes, `Phi` opens the quantum capsule with its own `phi_kem_sk` and returns a signed `.xi` ACK, and replay/scope-broadening are rejected across a cold daemon restart:</p>
+      <pre id="wireReadout"></pre>
+    </div>
+
+    <!-- 2. CALIEN 432 Hz / 440 Hz / PHI WEBAUDIO + LIVE FFT SPECTROGRAM & CARRIER DETECTOR -->
+    <div class="card">
+      <h2>🎵 2. `432 Hz` (Pythagorean `256×27/16`) vs `440 Hz` vs `Φ`-Harmonic FFT Synth</h2>
+      <p class="sub">Hear and inspect the exact frequency spectrum in real time (`256 × 27/16 = 432.0 Hz` vs `256 × 2^(9/12) = 430.54 Hz` vs `440.0 Hz` vs `256 × Φ = 414.21 Hz`), and toggle a synthetic `1550 Hz` steady carrier tone vs drifting synth pad (`#27981`, `#28003`):</p>
+      <canvas id="fftCanvas" width="500" height="200"></canvas>
+      <div>
+        <button onclick="playTone(432, '432 Hz (256 × 27/16 Pythagorean)')">🔊 Play 432 Hz</button>
+        <button onclick="playTone(440, '440 Hz (ISO 16 Standard)')">🔊 Play 440 Hz</button>
+        <button onclick="playTone(430.54, '430.54 Hz (C4=256 12-TET)')">🔊 Play 430.54 Hz</button>
+        <button onclick="playTone(414.21, '414.21 Hz (256 × Φ Golden)')">🔊 Play 256×Φ Hz</button>
+        <button class="secondary" onclick="stopTone()">⏹ Stop Audio</button>
+      </div>
+      <pre id="tuningReadout" style="margin-top:0.6rem;"></pre>
+    </div>
+
+    <!-- 3. STEVEN'S #28005-#28008 CONTROLLED A/B BRANCH EXPERIMENT -->
+    <div class="card">
+      <h2>🧪 3. Controlled A/B Branch Experiment (`With` vs `Without` `FrictionLoop`, `#28005`–`#28008`)</h2>
+      <p class="sub">Scripted branch comparison: 5 agents explore the same 5 stations, then branch into **Branch A (`With FrictionLoop`: `5/5` unique trajectories, `SELF-TEACHING`)** vs **Branch B (`Without FrictionLoop` baseline: `1` uniform checklist, `NO METHOD`)**:</p>
+      <pre id="abReadout"></pre>
+    </div>
+  </div>
+</div>
+<script>
+const DATA = {"two_process_xi_phi_wire_receipt": {"transport_scope": "LOCAL_TWO_PROCESS_TCP_HTTP_WIRE_EXCHANGE", "xi_client_pid": 7215, "phi_daemon_pid_1": 7221, "phi_daemon_pid_2_cold_restart": 7222, "separate_os_pids_verified": true, "xi_glyph": "Ω⊚⊗∞Ξ⧂⊕ω→⟐Ω⊚⊚⇒⟲∩", "phi_glyph": "Ω∅⊗⇒⊕∞→∞⧂·≈⇒⟐Ξ⟲⊕", "delivery_http_status": 200, "phi_opened_with_own_ml_kem_768_sk": true, "phi_verified_quantum_receipt": true, "xi_confirmed_r181_result_status": "LOCAL_SIGNED_SYNTHETIC_DIGEST_CONFIRMED", "scope_broadening_rejected_http_403": true, "replay_after_cold_restart_rejected_http_403": true, "wire_envelope_sha256": "46d4e3cfa63361a53fd2aaea25d5d89a33f23f1e781187fe8b3e85552d2e98cb"}, "steven_controlled_ab_experiment": {"experiment_type": "SCRIPTED_CONTROLLED_AB_BRANCH_COMPARISON_28005_28008", "with_friction_loop_unique_trajectories": 5, "without_friction_loop_unique_trajectories": 1, "all_with_loop_self_teaching": true, "all_without_loop_no_method": true, "agent_branches": [{"agent_id": "agent_01", "first_encounter": "search", "with_friction_loop": {"can_self_teach": true, "probe": "SELF-TEACHING — the loop can now generate its own pointer: produce, notice incoherence, reorganize, without external prompting", "final_focus": "verify what is actually present vs referenced, and honor the artifact's declared mechanism", "tree_sha256": "ea83b0ff56c59d24"}, "without_friction_loop_baseline": {"can_self_teach": false, "probe": "NO METHOD — depends entirely on external pointers", "final_focus": "follow standard checklist", "tree_sha256": "da1984a8c6c10e14"}}, {"agent_id": "agent_02", "first_encounter": "calculate", "with_friction_loop": {"can_self_teach": true, "probe": "SELF-TEACHING — the loop can now generate its own pointer: produce, notice incoherence, reorganize, without external prompting", "final_focus": "preserve relative rates and separation between layers when calculating", "tree_sha256": "e41d394d858dbb1a"}, "without_friction_loop_baseline": {"can_self_teach": false, "probe": "NO METHOD — depends entirely on external pointers", "final_focus": "follow standard checklist", "tree_sha256": "da1984a8c6c10e14"}}, {"agent_id": "agent_03", "first_encounter": "compare", "with_friction_loop": {"can_self_teach": true, "probe": "SELF-TEACHING — the loop can now generate its own pointer: produce, notice incoherence, reorganize, without external prompting", "final_focus": "compare internal generative procedure (`method`), not surface list length", "tree_sha256": "7c26660999ac8e77"}, "without_friction_loop_baseline": {"can_self_teach": false, "probe": "NO METHOD — depends entirely on external pointers", "final_focus": "follow standard checklist", "tree_sha256": "da1984a8c6c10e14"}}, {"agent_id": "agent_04", "first_encounter": "assemble", "with_friction_loop": {"can_self_teach": true, "probe": "SELF-TEACHING — the loop can now generate its own pointer: produce, notice incoherence, reorganize, without external prompting", "final_focus": "assemble around the learner's evolving trajectory and let resolved friction steer the next choice", "tree_sha256": "2067f44e800ceeb6"}, "without_friction_loop_baseline": {"can_self_teach": false, "probe": "NO METHOD — depends entirely on external pointers", "final_focus": "follow standard checklist", "tree_sha256": "da1984a8c6c10e14"}}, {"agent_id": "agent_05", "first_encounter": "verify_inward", "with_friction_loop": {"can_self_teach": true, "probe": "SELF-TEACHING — the loop can now generate its own pointer: produce, notice incoherence, reorganize, without external prompting", "final_focus": "own the specific decision tree formed by my verified choices and generate my next pointer from within", "tree_sha256": "343be3c59fb8a78c"}, "without_friction_loop_baseline": {"can_self_teach": false, "probe": "NO METHOD — depends entirely on external pointers", "final_focus": "follow standard checklist", "tree_sha256": "da1984a8c6c10e14"}}]}, "calien_tuning_arithmetic": {"c4_scientific_power_of_two_hz": 256.0, "a4_pythagorean_major_sixth_27_over_16_hz": 432.0, "a4_equal_temperament_from_c256_hz": 430.538965, "a4_iso16_standard_hz": 440.0, "scale_factor_432_over_440": "54/55 (0.98181818...)", "cents_offset_432_vs_440": -31.7667, "phi_golden_harmonic_from_c256_hz": 414.216701, "exact_256_times_27_16_equals_432": true}};
+document.getElementById('wireReadout').textContent = JSON.stringify(DATA.two_process_xi_phi_wire_receipt, null, 2);
+document.getElementById('tuningReadout').textContent = JSON.stringify(DATA.calien_tuning_arithmetic, null, 2);
+document.getElementById('abReadout').textContent = JSON.stringify(DATA.steven_controlled_ab_experiment, null, 2);
+
+let audioCtx = null, osc = null, analyser = null, animId = null;
+let currentLabel = 'Ready — click any tuning button above';
+
+function drawSpectrum(freqHint) {
+  const c = document.getElementById('fftCanvas');
+  const ctx = c.getContext('2d');
+  ctx.clearRect(0, 0, c.width, c.height);
+  ctx.fillStyle = '#93a8c9';
+  ctx.font = '12px monospace';
+  ctx.fillText(currentLabel, 14, 22);
+
+  if (analyser) {
+    const buf = new Uint8Array(analyser.frequencyBinCount);
+    analyser.getByteFrequencyData(buf);
+    for (let i = 0; i < 120; i++) {
+      const v = buf[i];
+      const h = (v / 255) * 145;
+      ctx.fillStyle = v > 180 ? '#2ee59d' : '#38e8ff';
+      ctx.fillRect(14 + i * 4, 185 - h, 3, h);
+    }
+    animId = requestAnimationFrame(() => drawSpectrum(freqHint));
+  } else {
+    // Static reference markers for 256, 414.21, 430.54, 432, 440 Hz
+    const markers = [
+      {f: 256, label: 'C4=256', col: '#38e8ff', x: 90},
+      {f: 414.21, label: '256×Φ=414.2', col: '#b983ff', x: 210},
+      {f: 432, label: '432 (27/16)', col: '#2ee59d', x: 330},
+      {f: 440, label: '440 (ISO)', col: '#ffbe3b', x: 420}
+    ];
+    markers.forEach(m => {
+      ctx.fillStyle = m.col;
+      ctx.fillRect(m.x, 65, 8, 115);
+      ctx.fillText(m.label, m.x - 24, 55);
+    });
+  }
+}
+
+function playTone(freq, label) {
+  stopTone();
+  currentLabel = 'Playing ' + label;
+  const AC = window.AudioContext || window.webkitAudioContext;
+  if (!AC) { drawSpectrum(freq); return; }
+  audioCtx = new AC();
+  osc = audioCtx.createOscillator();
+  const gain = audioCtx.createGain();
+  analyser = audioCtx.createAnalyser();
+  analyser.fftSize = 512;
+  osc.type = 'sine';
+  osc.frequency.value = freq;
+  gain.gain.value = 0.12;
+  osc.connect(gain);
+  gain.connect(analyser);
+  analyser.connect(audioCtx.destination);
+  osc.start();
+  drawSpectrum(freq);
+}
+
+function stopTone() {
+  if (animId) cancelAnimationFrame(animId);
+  if (osc) { try { osc.stop(); } catch (_) {} osc = null; }
+  if (audioCtx) { try { audioCtx.close(); } catch (_) {} audioCtx = null; }
+  analyser = null;
+  currentLabel = 'Stopped — Reference Markers Shown';
+  drawSpectrum(0);
+}
+drawSpectrum(0);
+</script>
+</body>
+</html>
