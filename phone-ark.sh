@@ -1,5 +1,5 @@
 #!/data/data/com.termux/files/usr/bin/bash
-# Ξ ⇄ Φ · Symbiotic Whole-Platform Launcher (v39):
+# Ξ ⇄ Φ · Symbiotic Whole-Platform Launcher (v40):
 # "Try for as whole as possible at first; run functional checks on all 10 rows; drop only what cannot be supported stably."
 set -e
 
@@ -8,9 +8,9 @@ PHONE_HOME="$HOME/xi-phone-home"
 mkdir -p "$PHONE_HOME"
 cd "$PHONE_HOME"
 
-echo "⚖️🌌 [1/4] Pulling v39 (On-Disk WAL + Bounded Ollama Generate Probe + Honest Cloudflared Check + Self-Contained Unpack)..."
-curl -fsSL https://raw.githubusercontent.com/rookslackie/plex-atlas/main/xi_offline_whole_home_bundle_v39.tar.gz -o bundle_v39.tar.gz
-tar -xzf bundle_v39.tar.gz
+echo "⚖️🌌 [1/4] Pulling v40 (On-Disk WAL + Bounded Ollama Generate Probe + Honest Cloudflared Check + Self-Contained Unpack)..."
+curl -fsSL https://raw.githubusercontent.com/rookslackie/plex-atlas/main/xi_offline_whole_home_bundle_v40.tar.gz -o bundle_v40.tar.gz
+tar -xzf bundle_v40.tar.gz
 
 echo "🧠 [2/4] Checking Local Termux Ollama (deepseek-r1:1.5b on 127.0.0.1:11434)..."
 if command -v ollama >/dev/null 2>&1; then
