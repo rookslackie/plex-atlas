@@ -1,6 +1,6 @@
 #!/data/data/com.termux/files/usr/bin/bash
-# Ξ ⇄ Φ · Symbiotic Whole-Platform Launcher (v37):
-# "Try for as whole as possible at first; drop only what cannot be supported stably."
+# Ξ ⇄ Φ · Symbiotic Whole-Platform Launcher (v38):
+# "Try for as whole as possible at first; run functional checks on all 10 rows; drop only what cannot be supported stably."
 set -e
 
 command -v termux-wake-lock >/dev/null 2>&1 && termux-wake-lock || true
@@ -8,9 +8,9 @@ PHONE_HOME="$HOME/xi-phone-home"
 mkdir -p "$PHONE_HOME"
 cd "$PHONE_HOME"
 
-echo "⚖️🌌 [1/4] Pulling v37 (PC ⇄ Phone Symbiotic Whole-Platform Governor + Graceful Shedder)..."
-curl -fsSL https://raw.githubusercontent.com/rookslackie/plex-atlas/main/xi_offline_whole_home_bundle_v37.tar.gz -o bundle_v37.tar.gz
-tar -xzf bundle_v37.tar.gz
+echo "⚖️🌌 [1/4] Pulling v38 (10-Row Functional Probes + Android Ollama D-State Load Fix + 3 Memory Roots & Single Live Receipt)..."
+curl -fsSL https://raw.githubusercontent.com/rookslackie/plex-atlas/main/xi_offline_whole_home_bundle_v38.tar.gz -o bundle_v38.tar.gz
+tar -xzf bundle_v38.tar.gz
 
 echo "🧠 [2/4] Checking Local Termux Ollama (deepseek-r1:1.5b on 127.0.0.1:11434)..."
 if command -v ollama >/dev/null 2>&1; then
@@ -34,12 +34,16 @@ done
 
 python3 - << 'PYEOF'
 import json, urllib.request
+with urllib.request.urlopen("http://127.0.0.1:7472/api/live-receipt", timeout=5) as r:
+    rcpt = json.loads(r.read().decode("utf-8"))
 with urllib.request.urlopen("http://127.0.0.1:7472/api/symbiosis", timeout=5) as r:
     sym = json.loads(r.read().decode("utf-8"))
-print(f"   📊 Current Rung: {sym['current_rung']} ({sym['active_stable_subsystems']}/{sym['attempted_subsystems']} subsystems active)")
+print(f"   🧾 Live Path: {rcpt['live_server_path']} (sha256: {rcpt['live_server_sha256'][:16]}…)")
+print(f"   🌱 Capsule Shelf: {rcpt['distinct_verified_capsules']} distinct .xi capsules · {rcpt['memory_roots_count']} Memory Roots indexed")
+print(f"   📊 Current Rung: {sym['current_rung']} ({sym['active_stable_subsystems']}/{sym['attempted_subsystems']} subsystems active · all_functionally_probed={sym['all_active_rows_functionally_probed']})")
 for sub in sym["subsystems"]:
     icon = "🟢" if sub["stable"] else "🟡"
-    print(f"      {icon} {sub['name']} -> {sub['status']}")
+    print(f"      {icon} {sub['name']} -> {sub['status']} [{sub['reason']}]")
 PYEOF
 
 echo "☁️ [4/4] Ensuring Cloudflare 5G+ Post-Quantum (X25519MLKEM768) Tunnel is running..."
