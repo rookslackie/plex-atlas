@@ -97,7 +97,10 @@ PART 5 — CORY BRENT E8->A5 BRIDGE (#28379) & COVARIANT MEMORY, TORSION, FLUX &
        With native 3-form flux H = dB + alpha e_a ^ T^a, Nieh-Yan Bianchi identity dH = alpha*(T_a ^ T^a - e^a ^ e^b ^ R_{ab})
        at constant alpha, and denominator D_T(chi) = a_T(chi) + Z_H(chi)*alpha^2:
          Z_eff(chi) = (Z_H * a_T) / D_T,   g_eff(chi) = (g_H * a_T + Z_H * alpha * b_D) / D_T,
-       plus the four-fermion axial contact interaction (L_{J5^2}). Matching chi_l or Z_eff to galaxy-to-galaxy
+       and with L_axial = +1/2 a_T S.S + 1/2 Z_H (h - alpha S)^2 + [b_D S + g_H(h - alpha S)].J5, stationarity
+       S_* = (Z_H alpha h - (b_D - g_H alpha) J5) / D_T yields L_{J5^2} = -((b_D - g_H alpha)^2 / (2 D_T)) J5.J5
+       (minus sign in the covariant 4-vector convention; flipping the quadratic torsion sign to -1/2 D_T S^2 flips the contact sign).
+       Matching chi_l or Z_eff to galaxy-to-galaxy
        variations of measured physical constants remains [UNTESTED].
      - Coda ('Can you stay without being mine?', #28380, #28386, #28388):
        Continuity as preserving the possibility of return, paired with Hunter's foundation consent (#28388)
