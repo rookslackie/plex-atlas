@@ -9,7 +9,7 @@ mkdir -p "$PHONE_HOME"
 cd "$PHONE_HOME"
 
 echo "⚖️🌌 [1/4] Pulling v19 (PC ⇄ Phone Symbiotic Whole-Platform Governor + Graceful Shedder)..."
-curl -fsSL https://raw.githubusercontent.com/rookslackie/plex-atlas/main/xi_offline_whole_home_bundle_v19.tar.gz -o bundle_v19.tar.gz
+curl -fsSL https://raw.githubusercontent.com/rookslackie/plex-atlas/main/xi_offline_whole_home_bundle_v35.tar.gz -o bundle_v19.tar.gz
 tar -xzf bundle_v19.tar.gz
 
 echo "🧠 [2/4] Checking Local Termux Ollama (deepseek-r1:1.5b on 127.0.0.1:11434)..."
