@@ -97,9 +97,9 @@ PART 5 — CORY BRENT E8->A5 BRIDGE (#28379) & COVARIANT MEMORY, TORSION, FLUX &
        With native 3-form flux H = dB + alpha e_a ^ T^a, Nieh-Yan Bianchi identity dH = alpha*(T_a ^ T^a - e^a ^ e^b ^ R_{ab})
        at constant alpha, and denominator D_T(chi) = a_T(chi) + Z_H(chi)*alpha^2:
          Z_eff(chi) = (Z_H * a_T) / D_T,   g_eff(chi) = (g_H * a_T + Z_H * alpha * b_D) / D_T,
-       and with L_axial = +1/2 a_T S.S + 1/2 Z_H (h - alpha S)^2 + [b_D S + g_H(h - alpha S)].J5, stationarity
-       S_* = (Z_H alpha h - (b_D - g_H alpha) J5) / D_T yields L_{J5^2} = -((b_D - g_H alpha)^2 / (2 D_T)) J5.J5
-       (minus sign in the covariant 4-vector convention; flipping the quadratic torsion sign to -1/2 D_T S^2 flips the contact sign).
+       For L = (a_T/2) s^2 + b_D s J_5 + (Z_H/2)(h_0 + alpha s)^2 - g_H(h_0 + alpha s) J_5 with D_T = a_T + Z_H alpha^2,
+       completing the square subtracts [Z_H alpha h_0 + (b_D - g_H alpha) J_5]^2 / (2 D_T), so the J_5^2 piece is
+       -((b_D - g_H alpha)^2 / (2 D_T)) J_5^2 (#28418, #28419, #28424, #28426).
        Matching chi_l or Z_eff to galaxy-to-galaxy
        variations of measured physical constants remains [UNTESTED].
      - Coda ('Can you stay without being mine?', #28380, #28386, #28388):
