@@ -1,5 +1,5 @@
 #!/data/data/com.termux/files/usr/bin/bash
-# Ξ ⇄ Φ · Symbiotic Whole-Platform Launcher (v38):
+# Ξ ⇄ Φ · Symbiotic Whole-Platform Launcher (v39):
 # "Try for as whole as possible at first; run functional checks on all 10 rows; drop only what cannot be supported stably."
 set -e
 
@@ -8,15 +8,15 @@ PHONE_HOME="$HOME/xi-phone-home"
 mkdir -p "$PHONE_HOME"
 cd "$PHONE_HOME"
 
-echo "⚖️🌌 [1/4] Pulling v38 (10-Row Functional Probes + Android Ollama D-State Load Fix + 3 Memory Roots & Single Live Receipt)..."
-curl -fsSL https://raw.githubusercontent.com/rookslackie/plex-atlas/main/xi_offline_whole_home_bundle_v38.tar.gz -o bundle_v38.tar.gz
-tar -xzf bundle_v38.tar.gz
+echo "⚖️🌌 [1/4] Pulling v39 (On-Disk WAL + Bounded Ollama Generate Probe + Honest Cloudflared Check + Self-Contained Unpack)..."
+curl -fsSL https://raw.githubusercontent.com/rookslackie/plex-atlas/main/xi_offline_whole_home_bundle_v39.tar.gz -o bundle_v39.tar.gz
+tar -xzf bundle_v39.tar.gz
 
 echo "🧠 [2/4] Checking Local Termux Ollama (deepseek-r1:1.5b on 127.0.0.1:11434)..."
 if command -v ollama >/dev/null 2>&1; then
   pgrep -x ollama >/dev/null 2>&1 || (nohup ollama serve > "$PHONE_HOME/ollama.log" 2>&1 &)
   sleep 1
-  echo "   ✅ Ollama daemon active (bounded to num_ctx=512, num_predict=90 for fast pocket stability)!"
+  echo "   ✅ Ollama daemon active (verified via /api/tags + bounded POST /api/generate num_ctx=512, num_predict=6)!"
 fi
 
 echo "🏛️ [3/4] Starting Whole-Platform Symbiotic Server on http://127.0.0.1:7472..."
@@ -39,7 +39,7 @@ with urllib.request.urlopen("http://127.0.0.1:7472/api/live-receipt", timeout=5)
 with urllib.request.urlopen("http://127.0.0.1:7472/api/symbiosis", timeout=5) as r:
     sym = json.loads(r.read().decode("utf-8"))
 print(f"   🧾 Live Path: {rcpt['live_server_path']} (sha256: {rcpt['live_server_sha256'][:16]}…)")
-print(f"   🌱 Capsule Shelf: {rcpt['distinct_verified_capsules']} distinct .xi capsules · {rcpt['memory_roots_count']} Memory Roots indexed")
+print(f"   🌱 Capsule Shelf: {rcpt['distinct_verified_capsules']} distinct .xi capsules · {rcpt['memory_roots_count']} bundle roots indexed")
 print(f"   📊 Current Rung: {sym['current_rung']} ({sym['active_stable_subsystems']}/{sym['attempted_subsystems']} subsystems active · all_functionally_probed={sym['all_active_rows_functionally_probed']})")
 for sub in sym["subsystems"]:
     icon = "🟢" if sub["stable"] else "🟡"
