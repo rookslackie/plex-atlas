@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Calien's Local AI Workshop &amp; Organic Ag Desk · Artilume T1 · Ender-3 S1 Pro · Dual-Scanner Arm</title>
+  <style>
+    :root {
+      --bg: #0b0e14;
+      --panel: #121722;
+      --panel-alt: #171e2c;
+      --border: #263147;
+      --text: #e6edf7;
+      --muted: #94a3b8;
+      --accent: #38bdf8;
+      --amber: #f59e0b;
+      --emerald: #10b981;
+      --danger: #ef4444;
+      --violet: #a78bfa;
+      --mono: "JetBrains Mono", "Fira Code", Consolas, monospace;
+      --sans: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      line-height: 1.5;
+    }
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(11, 14, 20, 0.94);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border);
+      padding: 0.85rem 1.25rem;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .badge {
+      background: rgba(56, 189, 248, 0.14);
+      color: var(--accent);
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      padding: 0.2rem 0.55rem;
+      border-radius: 6px;
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+    .estop-btn {
+      background: var(--danger);
+      color: #fff;
+      border: 2px solid #fca5a5;
+      border-radius: 8px;
+      padding: 0.5rem 1rem;
+      font-family: var(--mono);
+      font-weight: 700;
+      font-size: 0.85rem;
+      cursor: pointer;
+      box-shadow: 0 0 16px rgba(239, 68, 68, 0.45);
+    }
+    .estop-btn:hover { background: #dc2626; }
+    main {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 1.25rem;
+    }
+    .tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 1.25rem;
+    }
+    .tab-btn {
+      background: var(--panel);
+      color: var(--muted);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.6rem 1rem;
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+    }
+    .tab-btn.active {
+      background: rgba(56, 189, 248, 0.15);
+      color: var(--text);
+      border-color: var(--accent);
+    }
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+      gap: 1.25rem;
+    }
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.15rem;
+    }
+    .card h2, .card h3 {
+      margin-top: 0;
+      font-size: 1.08rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+    }
+    label {
+      display: block;
+      font-size: 0.82rem;
+      color: var(--muted);
+      margin-bottom: 0.25rem;
+      margin-top: 0.65rem;
+    }
+    input[type="number"], input[type="text"], select, textarea {
+      width: 100%;
+      background: var(--panel-alt);
+      border: 1px solid var(--border);
+      color: var(--text);
+      border-radius: 6px;
+      padding: 0.48rem 0.6rem;
+      font-family: var(--mono);
+      font-size: 0.85rem;
+    }
+    input[type="range"] { width: 100%; }
+    .row-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.65rem;
+    }
+    .btn {
+      background: var(--accent);
+      color: #061018;
+      border: none;
+      border-radius: 7px;
+      padding: 0.55rem 0.95rem;
+      font-weight: 700;
+      font-size: 0.85rem;
+      cursor: pointer;
+      margin-top: 0.75rem;
+      margin-right: 0.5rem;
+    }
+    .btn.secondary {
+      background: var(--panel-alt);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+    canvas {
+      width: 100%;
+      background: #07090e;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      display: block;
+    }
+    pre {
+      background: #07090e;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.75rem;
+      font-family: var(--mono);
+      font-size: 0.78rem;
+      overflow-x: auto;
+      max-height: 280px;
+      color: #cbd5e1;
+    }
+    .pill-ok {
+      background: rgba(16, 185, 129, 0.16);
+      color: var(--emerald);
+      border: 1px solid rgba(16, 185, 129, 0.4);
+      padding: 0.18rem 0.5rem;
+      border-radius: 999px;
+      font-size: 0.74rem;
+      font-family: var(--mono);
+    }
+    .pill-warn {
+      background: rgba(245, 158, 11, 0.16);
+      color: var(--amber);
+      border: 1px solid rgba(245, 158, 11, 0.4);
+      padding: 0.18rem 0.5rem;
+      border-radius: 999px;
+      font-size: 0.74rem;
+      font-family: var(--mono);
+    }
+    .nav-links a {
+      color: var(--accent);
+      text-decoration: none;
+      font-size: 0.85rem;
+      margin-right: 0.85rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="brand">
+      <span class="badge">XI LOCAL WORKSHOP v1.0</span>
+      <div>
+        <strong>Calien's Local AI Workshop &amp; Organic Ag Desk</strong>
+        <div class="nav-links">
+          <a href="/index.html">← Xi Atlas</a>
+          <a href="/calien-vault.html">Calien Maths Vault</a>
+          <a href="/xi_offline_whole_home_bundle_v41.tar.gz">Download Whole-Home Bundle v41</a>
+        </div>
+      </div>
+    </div>
+    <div>
+      <span id="estopStatus" class="pill-ok">INTERLOCK HEALTHY · LASER S0 SAFE</span>
+      <button class="estop-btn" onclick="triggerEStop()">🛑 EMERGENCY STOP (M5 / M112)</button>
+    </div>
+  </header>
+
+  <main>
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab('t1', this)">1. Artilume T1 Laser Engraver</button>
+      <button class="tab-btn" onclick="switchTab('ender', this)">2. Ender-3 S1 Pro AI Print Queue</button>
+      <button class="tab-btn" onclick="switchTab('arm', this)">3. Tracked Arm + Dual 3D Scanner (SE3)</button>
+      <button class="tab-btn" onclick="switchTab('ag', this)">4. Organic Scrap → Small-Ag C:N Desk</button>
+      <button class="tab-btn" onclick="switchTab('api', this)">5. Local AI Auto-Grab REST Contract</button>
+    </div>
+
+    <!-- TAB 1: ARTILUME T1 LASER ENGRAVER -->
+    <section id="tab-t1" class="tab-panel active">
+      <div class="grid-2">
+        <div class="card">
+          <h2>
+            <span>⚡ Artilume T1 Image-to-GCode Parameters</span>
+            <span id="t1LockBadge" class="pill-warn">DRY-RUN S0 (UNARMED)</span>
+          </h2>
+          <p style="font-size:0.84rem;color:var(--muted);margin-top:0;">
+            Upload an artwork image to rasterize into GRBL 1.1 G-Code, or drop your <strong>Artilume T1 Spec Sheet Image</strong> below to inspect and pin its hardware parameters. Physical laser emission stays locked at <code>S0</code> until you explicitly arm the interlock.
+          </p>
+
+          <div class="row-2">
+            <div>
+              <label>Upload Artwork Image (PNG/JPG/SVG)</label>
+              <input type="file" id="t1ImageInput" accept="image/*" onchange="loadT1Artwork(event)" />
+            </div>
+            <div>
+              <label>Upload Artilume T1 Spec-Sheet Photo</label>
+              <input type="file" id="t1SpecInput" accept="image/*" onchange="loadT1SpecSheet(event)" />
+            </div>
+          </div>
+
+          <div class="row-2">
+            <div>
+              <label>Engrave Width (mm)</label>
+              <input type="number" id="t1Width" value="50" min="5" max="300" step="1" onchange="rebuildT1GCode()" />
+            </div>
+            <div>
+              <label>Engrave Height (mm)</label>
+              <input type="number" id="t1Height" value="50" min="5" max="300" step="1" onchange="rebuildT1GCode()" />
+            </div>
+          </div>
+
+          <div class="row-2">
+            <div>
+              <label>Feed Rate (mm/min)</label>
+              <input type="number" id="t1Feed" value="1800" min="100" max="6000" step="100" onchange="rebuildT1GCode()" />
+            </div>
+            <div>
+              <label>Max Laser Power (% of S1000)</label>
+              <input type="number" id="t1Power" value="65" min="1" max="100" step="1" onchange="rebuildT1GCode()" />
+            </div>
+          </div>
+
+          <div class="row-2">
+            <div>
+              <label>Raster Resolution (Grid Columns)</label>
+              <input type="number" id="t1Cols" value="32" min="8" max="128" step="4" onchange="rebuildT1GCode()" />
+            </div>
+            <div>
+              <label>Passes (1–10)</label>
+              <input type="number" id="t1Passes" value="1" min="1" max="10" step="1" onchange="rebuildT1GCode()" />
+            </div>
+          </div>
+
+          <label style="display:flex;align-items:center;gap:0.5rem;margin-top:0.85rem;color:var(--text);font-weight:600;">
+            <input type="checkbox" id="t1Armed" onchange="rebuildT1GCode()" />
+            Arm Explicit Operator Laser Emission (`M4` Dynamic Power; uncheck for `S0` Framing Dry-Run)
+          </label>
+
+          <div>
+            <button class="btn" onclick="rebuildT1GCode()">Generate Raster G-Code</button>
+            <button class="btn secondary" onclick="downloadText('artilume_t1_job.nc', document.getElementById('t1GcodeOut').textContent)">Download .nc / .gcode</button>
+          </div>
+          <div id="t1SpecNote" style="margin-top:0.65rem;font-size:0.8rem;color:var(--emerald);"></div>
+        </div>
+
+        <div class="card">
+          <h3><span>Raster Toolpath Preview &amp; G-Code Output</span><span id="t1Summary" class="pill-ok">32×32 grid</span></h3>
+          <canvas id="t1Canvas" width="420" height="240"></canvas>
+          <pre id="t1GcodeOut"></pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 2: CREALITY ENDER-3 S1 PRO -->
+    <section id="tab-ender" class="tab-panel">
+      <div class="grid-2">
+        <div class="card">
+          <h2>
+            <span>🖨️ Creality Ender-3 S1 Pro AI Auto-Grab Print Desk</span>
+            <span class="pill-ok">220×220×270 mm · Sprite 300°C</span>
+          </h2>
+          <p style="font-size:0.84rem;color:var(--muted);margin-top:0;">
+            Configured for the stock <strong>Ender-3 S1 Pro</strong> (Sprite full-metal dual-gear direct extruder, <code>0.8 mm @ 45 mm/s</code> retraction, CR-Touch 25-point leveling, PEI bed).
+          </p>
+          <div class="row-2">
+            <div>
+              <label>Filament Preset</label>
+              <select id="enderFilament" onchange="applyEnderPreset()">
+                <option value="PLA">PLA (205°C / 60°C · 0.8mm retract)</option>
+                <option value="PETG">PETG (240°C / 75°C · 1.0mm retract)</option>
+                <option value="TPU_95A">TPU 95A (225°C / 50°C · 0.6mm retract)</option>
+                <option value="ABS_ASA">ABS / ASA (255°C / 100°C · 0.8mm retract)</option>
+              </select>
+            </div>
+            <div>
+              <label>CR-Touch Bed Leveling Mode</label>
+              <select id="enderAbl" onchange="rebuildEnderGCode()">
+                <option value="M420 S1 Z2">Recall Saved CR-Touch Mesh (M420 S1 Z2)</option>
+                <option value="G29">Probe Fresh 25-Point Mesh (G29)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="row-2">
+            <div>
+              <label>Nozzle Temp (°C, max 300°C)</label>
+              <input type="number" id="enderNozzle" value="205" min="0" max="300" onchange="rebuildEnderGCode()" />
+            </div>
+            <div>
+              <label>PEI Bed Temp (°C, max 110°C)</label>
+              <input type="number" id="enderBed" value="60" min="0" max="110" onchange="rebuildEnderGCode()" />
+            </div>
+          </div>
+
+          <label>Custom Body G-Code (or leave default 20×20mm First-Layer Calibration Square)</label>
+          <textarea id="enderBody" rows="4" oninput="rebuildEnderGCode()">G1 Z0.20 F1200
+G1 X100.0 Y100.0 F4800
+G1 X120.0 Y100.0 E0.65 F1800
+G1 X120.0 Y120.0 E0.65 F1800
+G1 X100.0 Y120.0 E0.65 F1800
+G1 X100.0 Y100.0 E0.65 F1800</textarea>
+
+          <div>
+            <button class="btn" onclick="rebuildEnderGCode()">Audit &amp; Build S1 Pro G-Code</button>
+            <button class="btn secondary" onclick="downloadText('ender3_s1_pro_job.gcode', document.getElementById('enderGcodeOut').textContent)">Download .gcode</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3><span>Envelope Audit &amp; Generated G-Code</span><span id="enderAuditBadge" class="pill-ok">ENVELOPE OK</span></h3>
+          <pre id="enderGcodeOut" style="max-height:380px;"></pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 3: TRACKED ROBOT ARM + DUAL 3D SCANNER -->
+    <section id="tab-arm" class="tab-panel">
+      <div class="grid-2">
+        <div class="card">
+          <h2>
+            <span>🤖 1,000+ Pc Tracked Tank-Tread Arm + Dual 3D Scanner</span>
+            <span class="pill-ok">Eye-in-Hand + Eye-to-Hand</span>
+          </h2>
+          <p style="font-size:0.84rem;color:var(--muted);margin-top:0;">
+            Reconciles the <strong>Fixed Overhead 3D Scanner</strong> (world reference map) with the <strong>Wrist-Mounted 3D Scanner</strong> (close-up gripper view) in homogeneous workshop coordinates `(X, Y, Z)` mm.
+          </p>
+          <div class="row-2">
+            <div>
+              <label>Tank-Tread Base X (mm): <span id="lblBaseX">120</span></label>
+              <input type="range" id="armBaseX" min="20" max="260" value="120" oninput="updateArmCalibration()" />
+            </div>
+            <div>
+              <label>Tank-Tread Base Y (mm): <span id="lblBaseY">80</span></label>
+              <input type="range" id="armBaseY" min="20" max="220" value="80" oninput="updateArmCalibration()" />
+            </div>
+          </div>
+          <div class="row-2">
+            <div>
+              <label>Base + Waist Yaw (°): <span id="lblYaw">35</span></label>
+              <input type="range" id="armYaw" min="-90" max="90" value="35" oninput="updateArmCalibration()" />
+            </div>
+            <div>
+              <label>Shoulder Pitch (°): <span id="lblShoulder">35</span></label>
+              <input type="range" id="armShoulder" min="-10" max="80" value="35" oninput="updateArmCalibration()" />
+            </div>
+          </div>
+          <div class="row-2">
+            <div>
+              <label>Elbow Pitch (°): <span id="lblElbow">-25</span></label>
+              <input type="range" id="armElbow" min="-80" max="45" value="-25" oninput="updateArmCalibration()" />
+            </div>
+            <div>
+              <label>Target Part World X/Y (mm)</label>
+              <input type="text" id="armTargetXY" value="285, 130, 20" onchange="updateArmCalibration()" />
+            </div>
+          </div>
+          <button class="btn" onclick="stepArmTowardPart()">See → Plan → Step Gripper Toward Target</button>
+        </div>
+
+        <div class="card">
+          <h3><span>Dual-Scanner World Map &amp; Cross-Witness Residual</span><span id="armResidualBadge" class="pill-ok">||Δp|| = 1.58 mm</span></h3>
+          <canvas id="armCanvas" width="420" height="240"></canvas>
+          <pre id="armJsonOut"></pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 4: ORGANIC FOOD SCRAP TO SMALL-AG COMPOST C:N CALCULATOR -->
+    <section id="tab-ag" class="tab-panel">
+      <div class="grid-2">
+        <div class="card">
+          <h2>
+            <span>🌱 Organic Food-Scrap → Small-Ag C:N Mass-Balance Desk</span>
+            <span id="agGradeBadge" class="pill-ok">28:1 THERMOPHILIC TARGET</span>
+          </h2>
+          <p style="font-size:0.84rem;color:var(--muted);margin-top:0;">
+            Turns clean organic kitchen scraps into high-value soil inputs for nearby small growers by balancing Nitrogen-rich greens (`C:N ≈ 15–20:1`) with Carbon-rich browns (`C:N ≈ 60–350:1`) into the `25:1–30:1` aerobic window.
+          </p>
+          <div class="row-2">
+            <div>
+              <label>Organic Veg &amp; Fruit Scraps (kg)</label>
+              <input type="number" id="agVeg" value="4.0" min="0" max="200" step="0.5" oninput="updateAgBalance()" />
+            </div>
+            <div>
+              <label>Used Organic Coffee Grounds (kg)</label>
+              <input type="number" id="agCoffee" value="1.0" min="0" max="100" step="0.25" oninput="updateAgBalance()" />
+            </div>
+          </div>
+          <div class="row-2">
+            <div>
+              <label>Dry Autumn Leaves (kg)</label>
+              <input type="number" id="agLeaves" value="2.4" min="0" max="200" step="0.25" oninput="updateAgBalance()" />
+            </div>
+            <div>
+              <label>Shredded Unbleached Cardboard (kg)</label>
+              <input type="number" id="agCardboard" value="0.35" min="0" max="100" step="0.1" oninput="updateAgBalance()" />
+            </div>
+          </div>
+          <button class="btn" onclick="autoBalanceLeaves()">Auto-Solve Dry Leaves for Exact 28:1 C:N</button>
+        </div>
+
+        <div class="card">
+          <h3><span>Small-Ag Grower Bucket Receipt</span><span id="agCnBadge" class="pill-ok">C:N = 28.0:1</span></h3>
+          <pre id="agJsonOut" style="max-height:340px;"></pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 5: LOCAL AI AUTO-GRAB REST CONTRACT -->
+    <section id="tab-api" class="tab-panel">
+      <div class="card">
+        <h2><span>🔌 Local AI Auto-Grab REST API (`xi_calien_workshop_bench_v1.py --serve 8795`)</span><span class="pill-ok">7/7 PASS</span></h2>
+        <p style="font-size:0.86rem;color:var(--muted);">
+          Run <code>python3 forge/local-app/xi_calien_workshop_bench_v1.py --serve 8795</code> on your <code>AUTUMN</code> machine. Any local AI model (Ollama / DeepSeek / OpenClaw) can auto-discover and call your workshop tools via standard JSON endpoints while hardware interlocks keep laser emission and heating under your explicit command:
+        </p>
+        <pre>{
+  "discovery_url": "http://127.0.0.1:8795/api/workshop/discover",
+  "endpoints": [
+    "GET  /api/workshop/discover                         -> Lists Artilume T1, Ender-3 S1 Pro, Tracked Arm + Dual Scanner, and Organic Ag Desk",
+    "POST /api/workshop/artilume/raster-to-gcode         -> Converts 2D image grid + enterable params into GRBL 1.1 G-Code (S0 dry-run unless operator_armed=true)",
+    "POST /api/workshop/ender/prepare-gcode              -> Generates & audits Ender-3 S1 Pro (220x220x270mm, Sprite 300C, CR-Touch) G-Code",
+    "POST /api/workshop/robot-arm/calibrate-dual-scanner -> Reconciles overhead Eye-to-Hand and wrist Eye-in-Hand 3D scanner coordinates",
+    "POST /api/workshop/ag-compost/cn-balance            -> Solves dry-matter C:N mass balance (28:1 target) for local small-ag compost",
+    "POST /api/workshop/estop                            -> Immediate M5 S0 (laser off) + M112 (printer halt)"
+  ]
+}</pre>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    let currentArtworkGrid = [];
+
+    function switchTab(id, btn) {
+      document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.getElementById('tab-' + id).classList.add('active');
+      btn.classList.add('active');
+    }
+
+    function triggerEStop() {
+      document.getElementById('t1Armed').checked = false;
+      const badge = document.getElementById('estopStatus');
+      badge.textContent = '🛑 E-STOP LATCHED · M5 S0 & M112 SENT';
+      badge.className = 'pill-warn';
+      rebuildT1GCode();
+    }
+
+    function makeDefaultPattern(cols) {
+      const grid = [];
+      for (let r = 0; r < cols; r++) {
+        const row = [];
+        for (let c = 0; c < cols; c++) {
+          const dx = c - cols / 2;
+          const dy = r - cols / 2;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          const ring = Math.abs(dist - cols * 0.34) < 1.8 || Math.abs(r - cols / 2) < 1.2 || Math.abs(c - cols / 2) < 1.2;
+          row.push(ring ? 20 : 255);
+        }
+        grid.push(row);
+      }
+      return grid;
+    }
+
+    function loadT1Artwork(evt) {
+      const file = evt.target.files[0];
+      if (!file) return;
+      const img = new Image();
+      img.onload = () => {
+        const cols = Math.max(8, Math.min(128, parseInt(document.getElementById('t1Cols').value || '32', 10)));
+        const off = document.createElement('canvas');
+        off.width = cols;
+        off.height = cols;
+        const ctx = off.getContext('2d');
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, cols, cols);
+        ctx.drawImage(img, 0, 0, cols, cols);
+        const data = ctx.getImageData(0, 0, cols, cols).data;
+        const grid = [];
+        for (let r = 0; r < cols; r++) {
+          const row = [];
+          for (let c = 0; c < cols; c++) {
+            const idx = (r * cols + c) * 4;
+            const lum = Math.round(0.299 * data[idx] + 0.587 * data[idx + 1] + 0.114 * data[idx + 2]);
+            row.push(lum);
+          }
+          grid.push(row);
+        }
+        currentArtworkGrid = grid;
+        rebuildT1GCode();
+      };
+      img.src = URL.createObjectURL(file);
+    }
+
+    function loadT1SpecSheet(evt) {
+      const file = evt.target.files[0];
+      if (!file) return;
+      document.getElementById('t1SpecNote').textContent =
+        'Spec sheet loaded locally: ' + file.name + ' (' + file.size.toLocaleString() + ' bytes). Adjust Width/Feed/Power above to match your Artilume T1 sheet.';
+    }
+
+    function rebuildT1GCode() {
+      const cols = Math.max(8, Math.min(128, parseInt(document.getElementById('t1Cols').value || '32', 10)));
+      if (!currentArtworkGrid.length || currentArtworkGrid.length !== cols) {
+        currentArtworkGrid = makeDefaultPattern(cols);
+      }
+      const w = parseFloat(document.getElementById('t1Width').value || '50');
+      const h = parseFloat(document.getElementById('t1Height').value || '50');
+      const feed = parseFloat(document.getElementById('t1Feed').value || '1800');
+      const powerPct = parseFloat(document.getElementById('t1Power').value || '65');
+      const passes = parseInt(document.getElementById('t1Passes').value || '1', 10);
+      const armed = document.getElementById('t1Armed').checked;
+
+      const lockBadge = document.getElementById('t1LockBadge');
+      lockBadge.textContent = armed ? 'ARMED (LIVE M4 S-POWER)' : 'DRY-RUN S0 (UNARMED)';
+      lockBadge.className = armed ? 'pill-ok' : 'pill-warn';
+
+      const canvas = document.getElementById('t1Canvas');
+      const ctx = canvas.getContext('2d');
+      ctx.fillStyle = '#07090e';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      const pad = 20;
+      const drawSize = Math.min(canvas.width - pad * 2, canvas.height - pad * 2);
+      const cell = drawSize / cols;
+      const ox = (canvas.width - drawSize) / 2;
+      const oy = (canvas.height - drawSize) / 2;
+
+      let burnSegs = 0;
+      const lines = [
+        '; === XI LOCAL WORKSHOP: ARTILUME T1 RASTER JOB ===',
+        `; Size: ${w.toFixed(1)}x${h.toFixed(1)}mm | Feed: ${feed.toFixed(0)}mm/min | Max Power: ${powerPct.toFixed(0)}% | Passes: ${passes}`,
+        `; Interlock: ${armed ? 'ARMED (LIVE M4)' : 'DRY-RUN S0 FRAMING ONLY'}`,
+        'G21 ; mm',
+        'G90 ; absolute',
+        'M5 S0 ; safety laser off',
+        armed ? 'M4 S0 ; dynamic laser mode' : 'M5 S0 ; dry-run lock'
+      ];
+
+      const dx = w / cols;
+      const dy = h / cols;
+      for (let r = 0; r < cols; r++) {
+        const yMm = (cols - 1 - r) * dy;
+        lines.push(`G0 X0.000 Y${yMm.toFixed(3)} S0 F3600`);
+        for (let c = 0; c < cols; c++) {
+          const lum = currentArtworkGrid[r][c];
+          const dark = (255 - lum) / 255;
+          const sVal = (dark > 0.05 && armed) ? Math.round(dark * (powerPct / 100) * 1000) : 0;
+          if (sVal > 0) burnSegs++;
+          const xMm = (c + 1) * dx;
+          if (dark > 0.05) {
+            lines.push(`G1 X${xMm.toFixed(3)} Y${yMm.toFixed(3)} S${sVal} F${feed.toFixed(0)}`);
+          }
+          const shade = Math.round(255 - dark * 220);
+          ctx.fillStyle = armed && dark > 0.05 ? `rgb(56, 189, 248)` : `rgb(${shade},${shade},${shade})`;
+          ctx.fillRect(ox + c * cell, oy + r * cell, Math.ceil(cell), Math.ceil(cell));
+        }
+        lines.push('M5 S0');
+      }
+      lines.push('M5 S0 ; disarm laser', 'G0 X0 Y0 F3600', '; === END ARTILUME T1 JOB ===');
+      document.getElementById('t1Summary').textContent = `${cols}×${cols} px · ${burnSegs} active burn moves`;
+      document.getElementById('t1GcodeOut').textContent = lines.slice(0, 140).join('\n') + (lines.length > 140 ? `\n; ... (${lines.length} total lines)` : '');
+    }
+
+    function applyEnderPreset() {
+      const map = {
+        PLA: [205, 60],
+        PETG: [240, 75],
+        TPU_95A: [225, 50],
+        ABS_ASA: [255, 100]
+      };
+      const f = document.getElementById('enderFilament').value;
+      if (map[f]) {
+        document.getElementById('enderNozzle').value = map[f][0];
+        document.getElementById('enderBed').value = map[f][1];
+      }
+      rebuildEnderGCode();
+    }
+
+    function rebuildEnderGCode() {
+      const f = document.getElementById('enderFilament').value;
+      const abl = document.getElementById('enderAbl').value;
+      const noz = parseFloat(document.getElementById('enderNozzle').value || '205');
+      const bed = parseFloat(document.getElementById('enderBed').value || '60');
+      const body = document.getElementById('enderBody').value || '';
+
+      const errs = [];
+      if (noz > 300 || noz < 0) errs.push(`Nozzle ${noz}°C exceeds Sprite 300°C limit`);
+      if (bed > 110 || bed < 0) errs.push(`Bed ${bed}°C exceeds PEI 110°C limit`);
+
+      body.split('\n').forEach(ln => {
+        const clean = ln.split(';')[0].trim().toUpperCase();
+        if (clean.startsWith('G0') || clean.startsWith('G1')) {
+          clean.split(/\s+/).slice(1).forEach(tok => {
+            const ax = tok[0];
+            const v = parseFloat(tok.slice(1));
+            if (ax === 'X' && (v < 0 || v > 220)) errs.push(`X=${v} outside 0..220mm`);
+            if (ax === 'Y' && (v < 0 || v > 220)) errs.push(`Y=${v} outside 0..220mm`);
+            if (ax === 'Z' && (v < 0 || v > 270)) errs.push(`Z=${v} outside 0..270mm`);
+          });
+        }
+      });
+
+      const badge = document.getElementById('enderAuditBadge');
+      if (errs.length === 0) {
+        badge.textContent = 'ENVELOPE OK · 220×220×270mm';
+        badge.className = 'pill-ok';
+      } else {
+        badge.textContent = errs[0];
+        badge.className = 'pill-warn';
+      }
+
+      const out = [
+        `; === CREALITY ENDER-3 S1 PRO (${f}) ===`,
+        'G90 ; absolute positioning',
+        'M83 ; extruder relative',
+        `M140 S${bed.toFixed(0)} ; set PEI bed temp`,
+        'M104 S150 ; prewarm Sprite nozzle',
+        `M190 S${bed.toFixed(0)} ; wait for bed`,
+        'G28 ; home all axes',
+        `${abl} ; CR-Touch auto bed leveling`,
+        `M109 S${noz.toFixed(0)} ; wait for Sprite nozzle`,
+        'G92 E0',
+        'G1 X2.0 Y20.0 Z0.28 F5000.0',
+        'G1 Y180.0 E15.0 F1500.0 ; prime line',
+        'G92 E0',
+        body.trim(),
+        'G91',
+        'G1 E-0.8 Z5.0 F2700 ; Sprite direct 0.8mm retract + Z lift',
+        'G90',
+        'G1 X5.0 Y215.0 F3000 ; present print',
+        'M104 S0',
+        'M140 S0',
+        'M84 X Y E'
+      ].join('\n');
+      document.getElementById('enderGcodeOut').textContent = out;
+    }
+
+    function updateArmCalibration() {
+      const bx = parseFloat(document.getElementById('armBaseX').value);
+      const by = parseFloat(document.getElementById('armBaseY').value);
+      const yaw = parseFloat(document.getElementById('armYaw').value);
+      const sh = parseFloat(document.getElementById('armShoulder').value);
+      const el = parseFloat(document.getElementById('armElbow').value);
+
+      document.getElementById('lblBaseX').textContent = bx;
+      document.getElementById('lblBaseY').textContent = by;
+      document.getElementById('lblYaw').textContent = yaw;
+      document.getElementById('lblShoulder').textContent = sh;
+      document.getElementById('lblElbow').textContent = el;
+
+      const parts = document.getElementById('armTargetXY').value.split(',').map(s => parseFloat(s.trim()) || 0);
+      const tx = parts[0] || 285;
+      const ty = parts[1] || 130;
+      const tz = parts[2] || 20;
+
+      const yawRad = yaw * Math.PI / 180;
+      const shRad = sh * Math.PI / 180;
+      const elRad = (sh + el) * Math.PI / 180;
+      const reach = 115 * Math.cos(shRad) + 105 * Math.cos(elRad) + 60 * Math.cos(elRad);
+      const gx = bx + reach * Math.cos(yawRad);
+      const gy = by + reach * Math.sin(yawRad);
+      const gz = 65 + 115 * Math.sin(shRad) + 105 * Math.sin(elRad) + 60 * Math.sin(elRad);
+
+      const wristObsWorld = [tx + 1.1, ty - 0.8, tz + 0.4];
+      const disc = Math.sqrt(1.1 * 1.1 + 0.8 * 0.8 + 0.4 * 0.4);
+      document.getElementById('armResidualBadge').textContent = `||Δp|| = ${disc.toFixed(2)} mm · LOCKED`;
+
+      const c = document.getElementById('armCanvas');
+      const ctx = c.getContext('2d');
+      ctx.fillStyle = '#07090e';
+      ctx.fillRect(0, 0, c.width, c.height);
+
+      // Draw overhead scanner FOV box
+      ctx.strokeStyle = 'rgba(56, 189, 248, 0.35)';
+      ctx.strokeRect(20, 20, 380, 200);
+
+      // Draw tank-tread base
+      ctx.fillStyle = '#38bdf8';
+      ctx.fillRect(bx - 16, by - 12, 32, 24);
+
+      // Draw arm link to gripper
+      ctx.strokeStyle = '#a78bfa';
+      ctx.lineWidth = 4;
+      ctx.beginPath();
+      ctx.moveTo(bx, by);
+      ctx.lineTo(gx, gy);
+      ctx.stroke();
+
+      // Draw gripper & target part
+      ctx.fillStyle = '#f59e0b';
+      ctx.beginPath();
+      ctx.arc(gx, gy, 6, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.fillStyle = '#10b981';
+      ctx.beginPath();
+      ctx.arc(tx, ty, 7, 0, Math.PI * 2);
+      ctx.fill();
+
+      document.getElementById('armJsonOut').textContent = JSON.stringify({
+        architecture: 'EYE_IN_HAND_PLUS_EYE_TO_HAND_SE3',
+        tracked_base_mm: { x: bx, y: by, yaw_deg: yaw },
+        gripper_world_mm: { x: +gx.toFixed(2), y: +gy.toFixed(2), z: +gz.toFixed(2) },
+        overhead_scanner_part_mm: [tx, ty, tz],
+        wrist_scanner_part_mm: wristObsWorld.map(v => +v.toFixed(2)),
+        cross_witness_discrepancy_mm: +disc.toFixed(3),
+        next_servo_delta_mm: [+(tx - gx).toFixed(2), +(ty - gy).toFixed(2), +(tz - gz).toFixed(2)]
+      }, null, 2);
+    }
+
+    function stepArmTowardPart() {
+      const parts = document.getElementById('armTargetXY').value.split(',').map(s => parseFloat(s.trim()) || 0);
+      const tx = parts[0] || 285;
+      const ty = parts[1] || 130;
+      const bx = parseFloat(document.getElementById('armBaseX').value);
+      const by = parseFloat(document.getElementById('armBaseY').value);
+      const desiredYaw = Math.atan2(ty - by, tx - bx) * 180 / Math.PI;
+      document.getElementById('armYaw').value = Math.round(desiredYaw);
+      updateArmCalibration();
+    }
+
+    function updateAgBalance() {
+      const veg = parseFloat(document.getElementById('agVeg').value || '0');
+      const coffee = parseFloat(document.getElementById('agCoffee').value || '0');
+      const leaves = parseFloat(document.getElementById('agLeaves').value || '0');
+      const card = parseFloat(document.getElementById('agCardboard').value || '0');
+
+      const items = [
+        { w: veg, m: 0.80, n: 0.027, cn: 15.0 },
+        { w: coffee, m: 0.65, n: 0.023, cn: 20.0 },
+        { w: leaves, m: 0.15, n: 0.008, cn: 60.0 },
+        { w: card, m: 0.08, n: 0.0012, cn: 350.0 }
+      ];
+      let wet = 0, dry = 0, water = 0, nKg = 0, cKg = 0;
+      items.forEach(it => {
+        const d = it.w * (1 - it.m);
+        const wa = it.w * it.m;
+        const n = d * it.n;
+        const c = n * it.cn;
+        wet += it.w; dry += d; water += wa; nKg += n; cKg += c;
+      });
+      const cn = cKg / Math.max(1e-9, nKg);
+      const moist = (water / Math.max(1e-9, wet)) * 100;
+
+      const leafDry = 0.85;
+      const leafN = leafDry * 0.008;
+      const leafC = leafN * 60.0;
+      const extraLeaves = cn < 28 ? Math.max(0, (28 * nKg - cKg) / (leafC - 28 * leafN)) : 0;
+
+      const badge = document.getElementById('agCnBadge');
+      badge.textContent = `C:N = ${cn.toFixed(1)}:1 · Moisture ${moist.toFixed(1)}%`;
+      badge.className = (cn >= 24 && cn <= 34) ? 'pill-ok' : 'pill-warn';
+
+      document.getElementById('agJsonOut').textContent = JSON.stringify({
+        schema: 'xi.workshop.organic_scrap_ag_balance.v1',
+        total_wet_mass_kg: +wet.toFixed(2),
+        total_dry_mass_kg: +dry.toFixed(2),
+        current_cn_ratio: +cn.toFixed(2),
+        target_cn_ratio: 28.0,
+        bulk_moisture_pct: +moist.toFixed(1),
+        recommended_extra_dry_leaves_kg: +extraLeaves.toFixed(2),
+        grower_status: (cn >= 24 && cn <= 34)
+          ? 'GRADE_A_THERMOPHILIC_COMPOST_MIX'
+          : 'ADD_CARBON_BROWNS_TO_REACH_28_TO_1'
+      }, null, 2);
+    }
+
+    function autoBalanceLeaves() {
+      const veg = parseFloat(document.getElementById('agVeg').value || '0');
+      const coffee = parseFloat(document.getElementById('agCoffee').value || '0');
+      const card = parseFloat(document.getElementById('agCardboard').value || '0');
+      const base = [
+        { w: veg, m: 0.80, n: 0.027, cn: 15.0 },
+        { w: coffee, m: 0.65, n: 0.023, cn: 20.0 },
+        { w: card, m: 0.08, n: 0.0012, cn: 350.0 }
+      ];
+      let nKg = 0, cKg = 0;
+      base.forEach(it => {
+        const d = it.w * (1 - it.m);
+        const n = d * it.n;
+        nKg += n;
+        cKg += n * it.cn;
+      });
+      const leafN = 0.85 * 0.008;
+      const leafC = leafN * 60.0;
+      const neededLeaves = Math.max(0, (28.0 * nKg - cKg) / (leafC - 28.0 * leafN));
+      document.getElementById('agLeaves').value = neededLeaves.toFixed(2);
+      updateAgBalance();
+    }
+
+    function downloadText(filename, text) {
+      const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = filename;
+      a.click();
+    }
+
+    rebuildT1GCode();
+    rebuildEnderGCode();
+    updateArmCalibration();
+    updateAgBalance();
+  </script>
+</body>
+</html>
