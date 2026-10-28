@@ -247,12 +247,13 @@
       <div class="brand">
         <span>📱🧠 Ξ Pocket Model Switchboard &amp; RAM Steward</span>
         <span class="badge teal" id="live-mode-badge">Single-Active-LLM RAM Cap · num_ctx=1024</span>
-        <span class="badge">v45 · 10/10 PASS</span>
+        <span class="badge">v46 · 38/38 PASS</span>
       </div>
       <nav class="nav-links">
         <a href="/index.html">Atlas Home</a>
         <a href="/local-install.html">Local Install Unifier</a>
         <a href="/calien-workshop.html">Calien Workshop</a>
+        <a href="/xi-discover.sh">xi-discover.sh</a>
         <a href="/phone-ark.sh">phone-ark.sh</a>
         <a href="/phone-models.sh">phone-models.sh</a>
       </nav>
@@ -268,18 +269,21 @@
     <!-- One-Line Termux Installer Card -->
     <div class="card amber">
       <h2>
-        <span>⚡ One-Line Termux Pocket Model Installer &amp; Switchboard (`phone-models.sh`)</span>
-        <button onclick="copyText('curl -fsSL https://plex.xi-field.com/phone-models.sh | bash', this)">Copy Termux One-Liner</button>
+        <span>⚡ One-Line `xi` CLI &amp; Local Model Discovery (`xi-discover.sh` + `phone-models.sh`)</span>
+        <div style="display:flex;gap:0.45rem;flex-wrap:wrap;">
+          <button class="teal" onclick="copyText('curl -fsSL https://plex.xi-field.com/xi-discover.sh | bash', this)">Copy `xi-discover.sh` One-Liner</button>
+          <button onclick="copyText('curl -fsSL https://plex.xi-field.com/phone-models.sh | bash', this)">Copy `phone-models.sh` One-Liner</button>
+        </div>
       </h2>
       <p style="margin:0.2rem 0 0.5rem;color:var(--text-secondary);font-size:0.86rem;">
-        Paste in Termux on your Galaxy to install the Pocket Model Steward (<code>~/xi-phone-home/xi_phone_pocket_model_steward_v1.py</code>) and optionally pull any of the specialist models below:
+        Installs the executable <code>xi</code> CLI (<code>$PREFIX/bin/xi</code> -> <code>xi state</code>, <code>xi doctor</code>, <code>xi discover</code>, <code>xi models</code>, <code>xi route</code>, <code>xi chat</code>), resolves Ollama's content-addressed <code>blobs/sha256-*</code> weights alongside <code>.gguf</code>/<code>.safetensors</code>/<code>.onnx</code>/<code>.tflite</code>/<code>.pte</code>, and probes Termux loopback services even when Android blocks <code>ss -ltn</code>:
       </p>
-      <pre>curl -fsSL https://plex.xi-field.com/phone-models.sh | bash
-# Or pull individual pocket specialists on demand:
-ollama pull qwen3:1.7b          # Fast daily companion (~1.1 GB)
-ollama pull qwen2.5-coder:1.5b  # Pocket code, Termux bash &amp; SQLite helper (~986 MB)
-ollama pull llama3.2:1b         # Low-battery ultra-light sentinel (~820 MB)
-ollama pull all-minilm          # 45 MB offline .xi capsule &amp; Room semantic search</pre>
+      <pre>curl -fsSL https://plex.xi-field.com/xi-discover.sh | bash
+# Once installed, run directly anywhere in Termux:
+xi state
+xi doctor
+xi discover
+xi route "Write a Termux bash one-liner to check sqlite tables"</pre>
     </div>
 
     <!-- 5-Slot Pocket Model Roster -->

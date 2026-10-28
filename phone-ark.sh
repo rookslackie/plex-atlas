@@ -1,5 +1,5 @@
 #!/data/data/com.termux/files/usr/bin/bash
-# Ξ ⇄ Φ · Symbiotic Whole-Platform Launcher (v45):
+# Ξ ⇄ Φ · Symbiotic Whole-Platform Launcher (v46):
 # "Try for as whole as possible at first; run functional checks on all 10 rows; drop only what cannot be supported stably."
 set -e
 
@@ -8,9 +8,17 @@ PHONE_HOME="$HOME/xi-phone-home"
 mkdir -p "$PHONE_HOME"
 cd "$PHONE_HOME"
 
-echo "⚖️🌌 [1/4] Pulling v45 (5-Slot Pocket Model Switchboard + One-At-A-Time RAM Steward + 37/37 Gates)..."
-curl -fsSL https://raw.githubusercontent.com/rookslackie/plex-atlas/main/xi_offline_whole_home_bundle_v45.tar.gz -o bundle_v45.tar.gz
-tar -xzf bundle_v45.tar.gz
+echo "⚖️🌌 [1/4] Pulling v46 (`xi` CLI + 5-Slot Pocket Model Switchboard + One-At-A-Time RAM Steward + 38/38 Gates)..."
+curl -fsSL https://raw.githubusercontent.com/rookslackie/plex-atlas/main/xi_offline_whole_home_bundle_v46.tar.gz -o bundle_v46.tar.gz
+tar -xzf bundle_v46.tar.gz
+
+if [ -n "${PREFIX:-}" ] && [ -d "$PREFIX/bin" ]; then
+  cat > "$PREFIX/bin/xi" <<EOF
+#!/usr/bin/env bash
+exec python3 "$PHONE_HOME/forge/local-app/xi_cli_runtime_and_model_discovery_v1.py" "\$@"
+EOF
+  chmod +x "$PREFIX/bin/xi"
+fi
 
 echo "🧠 [2/4] Checking Local Termux Ollama (deepseek-r1:1.5b on 127.0.0.1:11434)..."
 if command -v ollama >/dev/null 2>&1; then

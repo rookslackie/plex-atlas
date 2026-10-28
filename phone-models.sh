@@ -14,14 +14,23 @@ echo "📱🧠 [1/3] Checking Termux Pocket Home (~/xi-phone-home)..."
 mkdir -p "$HOME/xi-phone-home"
 cd "$HOME/xi-phone-home"
 
-if [ ! -f "xi_phone_pocket_model_steward_v1.py" ]; then
-  echo "📦 Fetching latest Xi Whole-Home Bundle (v45)..."
-  curl -fsSL https://plex.xi-field.com/xi_offline_whole_home_bundle_v45.tar.gz -o bundle_v45.tar.gz
-  tar -xzf bundle_v45.tar.gz --strip-components=2
+if [ ! -f "xi_phone_pocket_model_steward_v1.py" ] || [ ! -f "xi_cli_runtime_and_model_discovery_v1.py" ]; then
+  echo "📦 Fetching latest Xi Whole-Home Bundle (v46)..."
+  curl -fsSL https://plex.xi-field.com/xi_offline_whole_home_bundle_v46.tar.gz -o bundle_v46.tar.gz
+  tar -xzf bundle_v46.tar.gz --strip-components=2
 fi
 
-echo "🔍 [2/3] Running 10-Gate Pocket Model Steward & RAM Guard Verification..."
+if [ -n "${PREFIX:-}" ] && [ -d "$PREFIX/bin" ]; then
+  cat > "$PREFIX/bin/xi" <<EOF
+#!/usr/bin/env bash
+exec python3 "$HOME/xi-phone-home/xi_cli_runtime_and_model_discovery_v1.py" "\$@"
+EOF
+  chmod +x "$PREFIX/bin/xi"
+fi
+
+echo "🔍 [2/3] Running 10-Gate Pocket Model Steward & `xi` CLI Discovery Verification..."
 python3 xi_phone_pocket_model_steward_v1.py
+python3 xi_cli_runtime_and_model_discovery_v1.py discover
 
 echo "📡 [3/3] Probing live Termux Ollama (127.0.0.1:11434)..."
 python3 xi_phone_pocket_model_steward_v1.py --status || true
