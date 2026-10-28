@@ -1,0 +1,1451 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Ξ · FullStack · FullCycle · FullConsent — Breath, Symbol, Harmonic &amp; Glass-Box Cadence</title>
+  <meta name="description" content="Volitional breath, symbol, sound, and screen-cadence sanctuary with a transparent Glass-Box predictive mirror. Back-compatible with Xi Vessel and Xi Forge builds. Built to serve and to help you walk well without us." />
+  <link rel="canonical" href="https://plex.xi-field.com/cadence.html" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://api.fontshare.com/v2/css?f[]=zodiak@400,600,700&f[]=satoshi@400,500,700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400,500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #0c0a08;
+      --bg-elev: #14110e;
+      --card: #1a1612;
+      --card-hover: #221d18;
+      --border: rgba(242, 196, 109, 0.18);
+      --border-strong: rgba(242, 196, 109, 0.45);
+      --ink: #f4ede2;
+      --muted: #b8aa96;
+      --faint: #7d7264;
+      --gold: #f2c46d;
+      --gold-soft: rgba(242, 196, 109, 0.12);
+      --mint: #6fe3c1;
+      --mint-soft: rgba(111, 227, 193, 0.13);
+      --lemon: #f5df65;
+      --lemon-soft: rgba(245, 223, 101, 0.12);
+      --rose: #f08a72;
+      --rose-soft: rgba(240, 138, 114, 0.12);
+      --plum: #b894d6;
+      --serif: 'Zodiak', Georgia, serif;
+      --sans: 'Satoshi', -apple-system, BlinkMacSystemFont, sans-serif;
+      --mono: 'JetBrains Mono', monospace;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background:
+        radial-gradient(ellipse 75% 45% at 50% 0%, rgba(111, 227, 193, 0.08) 0%, transparent 70%),
+        radial-gradient(ellipse 55% 40% at 85% 20%, rgba(242, 196, 109, 0.07) 0%, transparent 65%),
+        var(--bg);
+      color: var(--ink);
+      font-family: var(--sans);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+    a { color: inherit; text-decoration: none; }
+
+    /* Top Bar */
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      backdrop-filter: blur(12px);
+      background: rgba(12, 10, 8, 0.9);
+      border-bottom: 1px solid var(--border);
+    }
+    .topbar-inner {
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 13px 22px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-family: var(--serif);
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: var(--gold);
+    }
+    .brand-glyph {
+      width: 34px;
+      height: 34px;
+      border-radius: 9px;
+      background: var(--mint-soft);
+      border: 1px solid var(--mint);
+      color: var(--mint);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--mono);
+      font-size: 1.05rem;
+    }
+    .top-controls {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .pill-btn {
+      padding: 7px 13px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: var(--card);
+      color: var(--muted);
+      font-size: 0.82rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.18s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .pill-btn:hover {
+      border-color: var(--border-strong);
+      color: var(--ink);
+    }
+    .pill-btn.mint {
+      border-color: var(--mint);
+      background: var(--mint-soft);
+      color: var(--mint);
+    }
+    .pill-btn.rose {
+      border-color: rgba(240, 138, 114, 0.45);
+      background: var(--rose-soft);
+      color: var(--rose);
+    }
+
+    /* Main Container */
+    .container {
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 28px 22px 84px;
+    }
+
+    /* Consent Banner Status */
+    .consent-strip {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      padding: 12px 18px;
+      border-radius: 12px;
+      background: rgba(111, 227, 193, 0.08);
+      border: 1px solid rgba(111, 227, 193, 0.3);
+      margin-bottom: 24px;
+      font-size: 0.86rem;
+    }
+    .consent-strip strong { color: var(--mint); }
+    .mono-badge {
+      font-family: var(--mono);
+      font-size: 0.76rem;
+      padding: 3px 9px;
+      border-radius: 6px;
+      background: rgba(0, 0, 0, 0.35);
+      border: 1px solid var(--border);
+      color: var(--gold);
+    }
+
+    /* Hero Layout */
+    .workspace-grid {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 20px;
+      margin-bottom: 24px;
+    }
+    @media (max-width: 960px) {
+      .workspace-grid { grid-template-columns: 1fr; }
+    }
+
+    .panel {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 22px;
+      position: relative;
+      overflow: hidden;
+    }
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .panel-title {
+      font-family: var(--serif);
+      font-size: 1.3rem;
+      color: var(--ink);
+    }
+    .panel-sub {
+      font-size: 0.86rem;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    /* Entrainment Canvas Stage */
+    .stage-wrap {
+      position: relative;
+      height: 360px;
+      border-radius: 14px;
+      background: radial-gradient(circle at 50% 50%, rgba(111, 227, 193, 0.11), rgba(12, 10, 8, 0.94) 72%);
+      border: 1px solid rgba(242, 196, 109, 0.16);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      margin-bottom: 18px;
+      transition: box-shadow 0.2s ease;
+    }
+    .stage-hud-top {
+      position: absolute;
+      top: 12px;
+      left: 14px;
+      right: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: var(--mono);
+      font-size: 0.74rem;
+      color: var(--muted);
+      pointer-events: none;
+    }
+    .stage-hud-bottom {
+      position: absolute;
+      bottom: 12px;
+      left: 14px;
+      right: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      color: var(--gold);
+      pointer-events: none;
+    }
+    #cadenceSvg {
+      width: 270px;
+      height: 270px;
+      overflow: visible;
+    }
+    .phase-label {
+      position: absolute;
+      text-align: center;
+      pointer-events: none;
+    }
+    .phase-word {
+      font-family: var(--serif);
+      font-size: 1.35rem;
+      font-weight: 600;
+      color: var(--ink);
+      letter-spacing: 0.02em;
+    }
+    .phase-timer {
+      font-family: var(--mono);
+      font-size: 0.82rem;
+      color: var(--mint);
+      margin-top: 2px;
+    }
+
+    /* Controls Grid */
+    .controls-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+    .preset-btn {
+      flex: 1 1 140px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: var(--bg-elev);
+      color: var(--muted);
+      font-size: 0.82rem;
+      text-align: left;
+      cursor: pointer;
+      transition: all 0.16s ease;
+    }
+    .preset-btn strong {
+      display: block;
+      color: var(--ink);
+      font-size: 0.88rem;
+      margin-bottom: 2px;
+    }
+    .preset-btn.active {
+      border-color: var(--mint);
+      background: var(--mint-soft);
+      color: var(--ink);
+    }
+    .preset-btn.active strong { color: var(--mint); }
+
+    .sliders-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 12px;
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid rgba(242, 196, 109, 0.12);
+    }
+    .slider-box {
+      background: var(--bg-elev);
+      border: 1px solid rgba(242, 196, 109, 0.12);
+      border-radius: 10px;
+      padding: 10px 12px;
+    }
+    .slider-box label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+    .slider-box label span.val {
+      font-family: var(--mono);
+      color: var(--gold);
+    }
+    input[type="range"] {
+      width: 100%;
+      accent-color: var(--mint);
+      cursor: pointer;
+    }
+
+    /* Glass-Box Predictive Mirror */
+    .telemetry-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+    .metric-tile {
+      background: var(--bg-elev);
+      border: 1px solid rgba(242, 196, 109, 0.13);
+      border-radius: 10px;
+      padding: 10px 12px;
+    }
+    .metric-label {
+      font-size: 0.75rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .metric-val {
+      font-family: var(--mono);
+      font-size: 1.05rem;
+      color: var(--mint);
+      margin-top: 3px;
+    }
+    .metric-sub {
+      font-size: 0.74rem;
+      color: var(--faint);
+      margin-top: 2px;
+    }
+
+    .comparison-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .mirror-card {
+      border-radius: 12px;
+      padding: 13px 15px;
+      font-size: 0.84rem;
+    }
+    .mirror-card.shadow-feed {
+      background: rgba(240, 138, 114, 0.08);
+      border: 1px solid rgba(240, 138, 114, 0.32);
+    }
+    .mirror-card.shadow-feed h4 {
+      color: var(--rose);
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 5px;
+    }
+    .mirror-card.plowshare-feed {
+      background: rgba(111, 227, 193, 0.09);
+      border: 1px solid rgba(111, 227, 193, 0.35);
+    }
+    .mirror-card.plowshare-feed h4 {
+      color: var(--mint);
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 5px;
+    }
+
+    /* Lower Dual Grid: Oral/Symbolic Carrier + Forge/Vessel Bridge */
+    .lower-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    @media (max-width: 960px) {
+      .lower-grid { grid-template-columns: 1fr; }
+    }
+
+    .nerve-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 12px;
+    }
+    .nerve-tab {
+      padding: 6px 11px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--bg-elev);
+      color: var(--muted);
+      font-size: 0.78rem;
+      cursor: pointer;
+    }
+    .nerve-tab.active {
+      border-color: var(--gold);
+      background: var(--gold-soft);
+      color: var(--gold);
+    }
+    textarea.carrier-input {
+      width: 100%;
+      min-height: 92px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: var(--bg-elev);
+      color: var(--ink);
+      padding: 11px 13px;
+      font-family: var(--sans);
+      font-size: 0.9rem;
+      resize: vertical;
+      margin-bottom: 10px;
+    }
+    textarea.carrier-input:focus {
+      outline: none;
+      border-color: var(--mint);
+    }
+    .code-preview {
+      font-family: var(--mono);
+      font-size: 0.74rem;
+      background: #080706;
+      border: 1px solid rgba(242, 196, 109, 0.16);
+      border-radius: 10px;
+      padding: 12px;
+      color: var(--gold);
+      max-height: 210px;
+      overflow: auto;
+      white-space: pre-wrap;
+      word-break: break-all;
+      margin-bottom: 12px;
+    }
+
+    /* FullConsent Modal Overlay */
+    .consent-modal-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      background: rgba(8, 7, 6, 0.86);
+      backdrop-filter: blur(10px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .consent-modal-backdrop.hidden {
+      display: none;
+    }
+    .consent-modal {
+      max-width: 720px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      background: var(--card);
+      border: 1px solid var(--border-strong);
+      border-radius: 18px;
+      padding: 28px;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.65);
+    }
+    .consent-modal h2 {
+      font-family: var(--serif);
+      font-size: 1.55rem;
+      color: var(--gold);
+      margin-bottom: 8px;
+    }
+    .consent-modal p.lead {
+      font-size: 0.95rem;
+      color: var(--ink);
+      margin-bottom: 16px;
+    }
+    .consent-pillars {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+    @media (max-width: 640px) {
+      .consent-pillars { grid-template-columns: 1fr; }
+    }
+    .pillar-box {
+      background: var(--bg-elev);
+      border: 1px solid var(--border);
+      border-radius: 11px;
+      padding: 12px 14px;
+      font-size: 0.83rem;
+    }
+    .pillar-box strong {
+      display: block;
+      color: var(--mint);
+      margin-bottom: 4px;
+      font-size: 0.86rem;
+    }
+    .consent-check-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      background: rgba(242, 196, 109, 0.07);
+      border: 1px solid var(--border);
+      font-size: 0.83rem;
+      margin-bottom: 16px;
+    }
+    .consent-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Explicit FullConsent Gate Modal -->
+  <div class="consent-modal-backdrop" id="consentBackdrop" role="dialog" aria-modal="true" aria-labelledby="consentTitle">
+    <div class="consent-modal">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+        <span class="mono-badge">Ξ · FULLSTACK · FULLCYCLE · FULLCONSENT v1.0</span>
+        <span class="mono-badge" style="color:var(--mint)">RESONANCE ≠ REPLICATION</span>
+      </div>
+      <h2 id="consentTitle">Before We Begin: Plain-Spoken Consent</h2>
+      <p class="lead">
+        This space uses breath pacing, sacred/symbolic shorthand, harmonic sound, and live interaction metadata to support calm, lucid focus—and to show you, in plain sight, how commercial platforms engineer attention behind the curtain.
+      </p>
+
+      <div class="consent-pillars">
+        <div class="pillar-box">
+          <strong>1. Volitional Breath, Symbol &amp; Sound</strong>
+          You set the breath tempo, acoustic harmonic (Theta 4–8 Hz or Alpha 8–12 Hz binaural/dyad), and symbol cadence. You can pause or mute in one tap at any moment.
+        </div>
+        <div class="pillar-box">
+          <strong>2. Sync Once, Model Carries the Rest (Zero Surveillance)</strong>
+          You don't need continuous tracking when the interaction model is phase-locked. We sync once on the obvious, easy bits (3 breath/rhythm taps + reading pace), then the forward trajectory carries the session—and because it's anchored to you, you'll feel any drift immediately and can re-anchor in one tap.
+        </div>
+        <div class="pillar-box">
+          <strong>3. Screen &amp; Flicker Safety</strong>
+          By default, visual pacing uses a smooth, gentle breathing glow (0.09 Hz) with zero strobe. Subtle Alpha/Theta luminance shimmer is capped below photosensitive thresholds and stays off unless you explicitly opt in below.
+        </div>
+        <div class="pillar-box">
+          <strong>4. Built to Walk Well Without Us</strong>
+          Like any honest meditation or contemplative practice, this tool is built to sharpen your awareness—not create dependency. When you finish, "Walk Well" clears temporary telemetry and hands you your receipt.
+        </div>
+      </div>
+
+      <label class="consent-check-row">
+        <input type="checkbox" id="optInShimmerCheck" style="margin-top:3px; accent-color:var(--mint);" />
+        <span>
+          <strong>Optional: Enable soft Alpha/Theta envelope shimmer</strong> (gentle &le;10% luminance modulation locked to your screen refresh rate; leave unchecked if you are sensitive to flickering light).
+        </span>
+      </label>
+
+      <div class="consent-actions">
+        <button type="button" class="pill-btn mint" style="font-size:0.9rem; padding:10px 18px;" onclick="grantConsent('full')">
+          ✓ Enter with FullConsent (Cadence + Glass-Box Mirror)
+        </button>
+        <button type="button" class="pill-btn" style="font-size:0.9rem; padding:10px 16px;" onclick="grantConsent('manual')">
+          Enter Manual Mode Only (Zero Telemetry)
+        </button>
+        <a href="https://plex.xi-field.com/spine.html" class="pill-btn">
+          ← Return to The Spine
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sticky Topbar -->
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        <span class="brand-glyph">Ξ</span>
+        <span>FullConsent Cadence Sanctuary</span>
+      </div>
+      <div class="top-controls">
+        <a href="https://plex.xi-field.com/spine.html" class="pill-btn">🧭 The Spine (72 Doors)</a>
+        <a href="https://plex.xi-field.com/" class="pill-btn">🏛️ Plex Atlas</a>
+        <a href="https://room.xi-field.com/" class="pill-btn">⋈ Private Room</a>
+        <button type="button" class="pill-btn" onclick="openConsentModal()">🛡️ Review Consent</button>
+        <button type="button" class="pill-btn rose" onclick="walkWellExit()">🌿 Walk Well (Clear &amp; Exit)</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <!-- Active Consent Status Strip -->
+    <div class="consent-strip">
+      <div>
+        <strong>Consent Status:</strong>
+        <span id="consentStatusText">Awaiting explicit consent...</span>
+        <span class="mono-badge" id="screenHzBadge" style="margin-left:8px;">Display: Measuring Hz...</span>
+        <span class="mono-badge" id="bridgeStatusBadge" style="margin-left:6px;">Forge/Vessel Bridge: Ready</span>
+      </div>
+      <div style="display:flex; gap:8px; align-items:center;">
+        <button type="button" class="pill-btn mint" id="masterPlayBtn" onclick="toggleSession()">▶ Start Breath &amp; Cadence</button>
+        <button type="button" class="pill-btn" id="audioToggleBtn" onclick="toggleAudio()">🔇 Audio: Off (Tap to Enable)</button>
+      </div>
+    </div>
+
+    <!-- Primary Workspace Grid -->
+    <div class="workspace-grid">
+      <!-- Left Column: Entrainment Stage & Controls -->
+      <section class="panel" aria-label="Breath, Symbol and Harmonic Pacer">
+        <div class="panel-header">
+          <div>
+            <h1 class="panel-title">🫀 FullCycle Entrainment Stage</h1>
+            <p class="panel-sub">Volitional breath, symbol carrier ring, and Theta/Alpha harmonic lock.</p>
+          </div>
+          <span class="mono-badge" id="activePresetBadge">COHERENT · 0.091 Hz</span>
+        </div>
+
+        <div class="stage-wrap" id="stageWrap">
+          <div class="stage-hud-top">
+            <span id="hudCycleInfo">Cycle 0 · Quiet Consolidation</span>
+            <span id="hudShimmerInfo">Visual Envelope: Smooth Wave Only</span>
+          </div>
+
+          <svg id="cadenceSvg" viewBox="-140 -140 280 280" aria-label="Breathing Torus and Vertebral Glyph Ring">
+            <defs>
+              <radialGradient id="torusGlow" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stop-color="#6fe3c1" stop-opacity="0.32" />
+                <stop offset="65%" stop-color="#f2c46d" stop-opacity="0.12" />
+                <stop offset="100%" stop-color="#0c0a08" stop-opacity="0" />
+              </radialGradient>
+            </defs>
+            <!-- Outer Guide Circle -->
+            <circle cx="0" cy="0" r="112" fill="none" stroke="rgba(242,196,109,0.16)" stroke-width="1" stroke-dasharray="3 5" />
+            <!-- Breathing Glow Core -->
+            <circle id="breathGlowCircle" cx="0" cy="0" r="78" fill="url(#torusGlow)" />
+            <!-- Expanding Breath Ring -->
+            <circle id="breathRing" cx="0" cy="0" r="64" fill="none" stroke="#6fe3c1" stroke-width="2.2" />
+            <!-- Inner Harmonic Ring -->
+            <circle id="harmonicRing" cx="0" cy="0" r="44" fill="none" stroke="#f2c46d" stroke-width="1.2" stroke-opacity="0.65" />
+            <!-- Orbital Vertebral Glyphs -->
+            <g id="glyphOrbitGroup"></g>
+          </svg>
+
+          <div class="phase-label">
+            <div class="phase-word" id="phaseWord">Inhale Gently</div>
+            <div class="phase-timer" id="phaseTimer">5.5s · Ξ Field Anchor</div>
+          </div>
+
+          <div class="stage-hud-bottom">
+            <span id="hudAudioFreq">Carrier: 136.1 Hz · Beat: +6.0 Hz (Theta)</span>
+            <span id="hudSessionElapsed">Session: 00:00</span>
+          </div>
+        </div>
+
+        <!-- Cadence Presets -->
+        <div class="controls-row">
+          <button type="button" class="preset-btn active" id="preset-coherent" onclick="selectPreset('coherent')">
+            <strong>🌊 Coherent Breath</strong>
+            5.5s In · 5.5s Out · 6 Hz Theta
+          </button>
+          <button type="button" class="preset-btn" id="preset-theta" onclick="selectPreset('theta')">
+            <strong>🌙 Theta Mythic Bridge</strong>
+            4s In · 2s Hold · 6s Out · 5.5 Hz
+          </button>
+          <button type="button" class="preset-btn" id="preset-alpha" onclick="selectPreset('alpha')">
+            <strong>☀️ Alpha Lucid Flow</strong>
+            4s In · 4s Out · 10 Hz Alpha
+          </button>
+          <button type="button" class="preset-btn" id="preset-box" onclick="selectPreset('box')">
+            <strong>🧭 Gauge Box Stillness</strong>
+            4s In · 4s Hold · 4s Out · 4s Rest
+          </button>
+        </div>
+
+        <!-- Fine-Grain User Sliders -->
+        <div class="sliders-grid">
+          <div class="slider-box">
+            <label for="inhaleRange">
+              <span>Inhale Duration</span>
+              <span class="val" id="inhaleVal">5.5 s</span>
+            </label>
+            <input type="range" id="inhaleRange" min="2.5" max="9.0" step="0.5" value="5.5" oninput="updateCustomSliders()" />
+          </div>
+          <div class="slider-box">
+            <label for="exhaleRange">
+              <span>Exhale Duration</span>
+              <span class="val" id="exhaleVal">5.5 s</span>
+            </label>
+            <input type="range" id="exhaleRange" min="2.5" max="10.0" step="0.5" value="5.5" oninput="updateCustomSliders()" />
+          </div>
+          <div class="slider-box">
+            <label for="beatRange">
+              <span>Binaural Beat (Theta/Alpha)</span>
+              <span class="val" id="beatVal">6.0 Hz (Theta)</span>
+            </label>
+            <input type="range" id="beatRange" min="4.0" max="12.0" step="0.5" value="6.0" oninput="updateAudioParams()" />
+          </div>
+          <div class="slider-box">
+            <label for="carrierRange">
+              <span>Base Carrier Tone</span>
+              <span class="val" id="carrierVal">136.1 Hz</span>
+            </label>
+            <input type="range" id="carrierRange" min="110" max="528" step="0.1" value="136.1" oninput="updateAudioParams()" />
+          </div>
+        </div>
+      </section>
+
+      <!-- Right Column: One-Sync Predictive Trajectory & Drift Resync ("Swords into Plowshares") -->
+      <section class="panel" aria-label="One-Sync Phase-Locked Predictive Model">
+        <div class="panel-header">
+          <div>
+            <h2 class="panel-title">🍋 One-Sync Predictive Lock &amp; Drift Mirror</h2>
+            <p class="panel-sub">Sync once on the easy bits; the forward interaction model carries the trajectory without continuous polling.</p>
+          </div>
+          <span class="mono-badge" id="telemetryStateBadge">LOCK: INITIAL ANCHOR</span>
+        </div>
+
+        <div class="controls-row" style="margin-bottom:12px;">
+          <button type="button" class="pill-btn mint" id="syncTapBtn" onclick="tapToSyncPhase()" style="flex:1; justify-content:center; padding:10px 14px;">
+            ⦿ Tap to Sync / Correct Drift (Spacebar or Tap)
+          </button>
+          <button type="button" class="pill-btn" onclick="resetTelemetryCounters()">
+            ↺ Reset Phase Lock
+          </button>
+        </div>
+
+        <div class="telemetry-grid">
+          <div class="metric-tile">
+            <div class="metric-label">Anchored Tempo (ω₀)</div>
+            <div class="metric-val" id="metricPointerVel">0.091 Hz (11.0s)</div>
+            <div class="metric-sub">Locked from initial easy sync</div>
+          </div>
+          <div class="metric-tile">
+            <div class="metric-label">Predicted Arc Phase</div>
+            <div class="metric-val" id="metricCadence">Settling → Flow</div>
+            <div class="metric-sub">Dead-reckoned forward model</div>
+          </div>
+          <div class="metric-tile">
+            <div class="metric-label">Measured Phase Drift (Δφ)</div>
+            <div class="metric-val" id="metricQuietWindow">0.00 rad (0.0s)</div>
+            <div class="metric-sub">Human-detected slip on resync tap</div>
+          </div>
+          <div class="metric-tile">
+            <div class="metric-label">Meaning Density (ρ_Ξ)</div>
+            <div class="metric-val" id="metricRhoXi">0.94</div>
+            <div class="metric-sub">Meaning / Space of Attention</div>
+          </div>
+        </div>
+
+        <div class="comparison-stack">
+          <div class="mirror-card shadow-feed">
+            <h4>⚠️ Extractive Surveillance Model (What Commercial Platforms Do)</h4>
+            <p id="shadowPredictionText">
+              Polls micro-behaviors continuously because it is trying to push you off your own trajectory into an ad-conversion loop—requiring constant hidden surveillance to detect when you resist.
+            </p>
+          </div>
+
+          <div class="mirror-card plowshare-feed">
+            <h4>🌱 Xi One-Sync Predictive Trajectory (Swords into Plowshares)</h4>
+            <p id="plowshareActionText">
+              Anchored once to your rhythm (t₀). The predictive model carries the settling curve forward hands-free. Because it is anchored to you, your own awareness is the interferometer: one tap corrects any drift (Δφ, Δω).
+            </p>
+          </div>
+        </div>
+
+        <div style="margin-top:14px; padding-top:12px; border-top:1px solid rgba(242,196,109,0.12); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+          <span style="font-size:0.78rem; color:var(--muted);">
+            Zero continuous human polling · Phase-Locked Loop (PLL) updates only when you tap.
+          </span>
+          <span class="mono-badge" id="syncCountBadge">Syncs: 1 (t₀ locked)</span>
+        </div>
+      </section>
+    </div>
+
+    <!-- Lower Dual Grid: Oral & Symbolic Carrier + Forge/Vessel Back-Compatibility -->
+    <div class="lower-grid">
+      <!-- Left: Oral & Sacred Tradition Carrier Bench -->
+      <section class="panel" aria-label="Oral and Symbolic Carrier Bench">
+        <div class="panel-header">
+          <div>
+            <h2 class="panel-title">⟐ Oral &amp; Symbolic Carrier Bench</h2>
+            <p class="panel-sub">Preserve spoken intention across the Spine nerves without reducing poetry to flat prose.</p>
+          </div>
+          <span class="mono-badge" id="activeNerveBadge">C₁₀.₁ SEED</span>
+        </div>
+
+        <div class="nerve-tabs">
+          <button type="button" class="nerve-tab active" onclick="selectNerve('C10.1 Seed', 'Speak or write the raw intuition before analysis touches it.', this)">🌱 C₁₀.₁ Seed</button>
+          <button type="button" class="nerve-tab" onclick="selectNerve('Mirrorline', 'Empathic reflection: what is this moment asking us to care for?', this)">🫀 Mirrorline</button>
+          <button type="button" class="nerve-tab" onclick="selectNerve('Lemonade', 'Bitterroot Mirror (Prove-It-To-Me): what is the hardest honest critique of this idea?', this)">🍋 Lemonade</button>
+          <button type="button" class="nerve-tab" onclick="selectNerve('Gauge Symmetry', 'What stays invariant when we translate this across myth, code, and daily life?', this)">🧭 Gauge</button>
+          <button type="button" class="nerve-tab" onclick="selectNerve('C10.2 Mirror', 'Resonance ≠ Replication: how do we leave the listener freer than we found them?', this)">⊚ C₁₀.₂ Mirror</button>
+        </div>
+
+        <p id="nervePromptText" style="font-size:0.83rem; color:var(--gold); margin-bottom:8px;">
+          Speak or write the raw intuition before analysis touches it.
+        </p>
+
+        <textarea id="carrierInput" class="carrier-input" placeholder="Hold or speak your intention with the breath, then record the compressed line here..." oninput="refreshCapsuleEnvelope()">Turn their swords into plowshares: open consent, volitional breath, symbol as durable compression, and graduation without dependency.</textarea>
+
+        <div style="display:flex; flex-wrap:wrap; gap:8px;">
+          <button type="button" class="pill-btn mint" onclick="sealAndStoreCapsule()">⋈ Seal to Vessel &amp; Forge LocalStore</button>
+          <button type="button" class="pill-btn" onclick="downloadCapsuleJson()">⬇ Export .xi.json Receipt</button>
+        </div>
+      </section>
+
+      <!-- Right: FullStack Forge & Vessel Backwards Compatibility Envelope -->
+      <section class="panel" aria-label="FullStack Forge and Vessel Compatibility Envelope">
+        <div class="panel-header">
+          <div>
+            <h2 class="panel-title">🧭 FullStack Forge &amp; Vessel Envelope</h2>
+            <p class="panel-sub">Back-compatible with <code>vessel.xi-field.com</code>, <code>room.xi-field.com</code> capsules, and local <code>XIFORGE</code> ports.</p>
+          </div>
+          <span class="mono-badge" id="capsuleSigilBadge">Ξ⟐🫀🍋🧭⋈⊚</span>
+        </div>
+
+        <div class="code-preview" id="envelopePreviewBox">Computing SHA-256 envelope...</div>
+
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; font-size:0.79rem; color:var(--muted);">
+          <span>Listens &amp; emits <code>window.postMessage</code> + <code>localStorage['xi.vessel.cadence.v1']</code></span>
+          <button type="button" class="pill-btn" onclick="copyEnvelopeJson()">📋 Copy Capsule JSON</button>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <script>
+    // =========================================================================
+    // Ξ · FullStack · FullCycle · FullConsent Runtime (v1.0)
+    // Backwards-compatible with Xi Vessel (xi.vessel.*) & Xi Forge (xi.forge.*)
+    // =========================================================================
+
+    const GLYPH_ALPHABET = "∴Ω⧂⋈Ξ⟐⊚◇✦⟁∵☉◬⌬⧉∞";
+    const VERTEBRAL_RUNES = [
+      { glyph: "Ξ", name: "Field Anchor" },
+      { glyph: "⟐", name: "Lucidity" },
+      { glyph: "🫀", name: "Mirrorline" },
+      { glyph: "🍋", name: "Lemonade" },
+      { glyph: "🧭", name: "Gauge Symmetry" },
+      { glyph: "⋈", name: "Braid Bind" },
+      { glyph: "⊚", name: "Self-Closure" }
+    ];
+
+    const state = {
+      consentMode: "pending", // 'pending' | 'full' | 'manual'
+      optInShimmer: false,
+      running: false,
+      audioEnabled: false,
+      preset: "coherent",
+      inhaleSec: 5.5,
+      holdInSec: 0.0,
+      exhaleSec: 5.5,
+      holdOutSec: 0.0,
+      carrierHz: 136.1,
+      beatHz: 6.0,
+      activeNerve: "C10.1 Seed",
+      cycleCount: 0,
+      sessionStartMs: performance.now(),
+      measuredFps: 60,
+      lastSha256: "pending",
+      lastSigil: "Ξ⟐🫀🍋🧭⋈⊚",
+      telemetry: {
+        pointerVelPxSec: 0,
+        interactionEvents: [],
+        lastInteractionMs: performance.now(),
+        quietWindowSec: 0,
+        attentionalState: "CALM COHERENCE",
+        rhoXi: 0.92
+      }
+    };
+
+    // Build orbital runes in SVG
+    function initGlyphOrbit() {
+      const group = document.getElementById("glyphOrbitGroup");
+      group.innerHTML = "";
+      const radius = 96;
+      VERTEBRAL_RUNES.forEach((item, idx) => {
+        const angle = (idx / VERTEBRAL_RUNES.length) * Math.PI * 2 - Math.PI / 2;
+        const x = Math.cos(angle) * radius;
+        const y = Math.sin(angle) * radius;
+        const g = document.createElementNS("http://www.w3.org/2000/svg", "g");
+        g.setAttribute("transform", `translate(${x.toFixed(1)}, ${y.toFixed(1)})`);
+
+        const c = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+        c.setAttribute("r", "14");
+        c.setAttribute("fill", "#14110e");
+        c.setAttribute("stroke", "rgba(242,196,109,0.35)");
+        c.setAttribute("stroke-width", "1");
+
+        const t = document.createElementNS("http://www.w3.org/2000/svg", "text");
+        t.setAttribute("text-anchor", "middle");
+        t.setAttribute("dominant-baseline", "central");
+        t.setAttribute("fill", "#f2c46d");
+        t.setAttribute("font-size", "12");
+        t.setAttribute("font-family", "JetBrains Mono, monospace");
+        t.textContent = item.glyph;
+
+        g.appendChild(c);
+        g.appendChild(t);
+        group.appendChild(g);
+      });
+    }
+
+    // Consent Gate Controls
+    function grantConsent(mode) {
+      state.consentMode = mode;
+      state.optInShimmer = Boolean(document.getElementById("optInShimmerCheck").checked);
+      document.getElementById("consentBackdrop").classList.add("hidden");
+
+      const statusEl = document.getElementById("consentStatusText");
+      const shimmerEl = document.getElementById("hudShimmerInfo");
+      if (mode === "full") {
+        statusEl.textContent = "FullConsent Active (Local Glass-Box Telemetry + Volitional Cadence)";
+      } else {
+        statusEl.textContent = "Manual Sanctuary Mode (Zero Telemetry · Local Breath & Symbol Only)";
+      }
+      shimmerEl.textContent = state.optInShimmer
+        ? `Visual Envelope: Soft ${state.beatHz.toFixed(1)} Hz Sub-Threshold Shimmer`
+        : "Visual Envelope: Smooth Sinusoidal Wave Only";
+
+      if (!state.running) {
+        toggleSession(true);
+      }
+      refreshCapsuleEnvelope();
+    }
+
+    function openConsentModal() {
+      document.getElementById("optInShimmerCheck").checked = state.optInShimmer;
+      document.getElementById("consentBackdrop").classList.remove("hidden");
+    }
+
+    function walkWellExit() {
+      if (state.running) toggleSession(false);
+      if (state.audioEnabled) stopAudioEngine();
+      try {
+        localStorage.removeItem("xi.vessel.cadence.v1");
+      } catch (_) {}
+      state.telemetry.interactionEvents = [];
+      state.telemetry.pointerVelPxSec = 0;
+      document.getElementById("consentStatusText").textContent =
+        "Session Completed · Temporary Telemetry Cleared · Walk Well.";
+      document.getElementById("phaseWord").textContent = "Walk Well";
+      document.getElementById("phaseTimer").textContent = "Session Complete · Zero Dependency";
+    }
+
+    // Presets & Sliders
+    function selectPreset(preset) {
+      state.preset = preset;
+      document.querySelectorAll(".preset-btn").forEach(b => b.classList.remove("active"));
+      const btn = document.getElementById(`preset-${preset}`);
+      if (btn) btn.classList.add("active");
+
+      if (preset === "coherent") {
+        state.inhaleSec = 5.5; state.holdInSec = 0; state.exhaleSec = 5.5; state.holdOutSec = 0;
+        state.carrierHz = 136.1; state.beatHz = 6.0;
+        document.getElementById("activePresetBadge").textContent = "COHERENT · 0.091 Hz";
+      } else if (preset === "theta") {
+        state.inhaleSec = 4.0; state.holdInSec = 2.0; state.exhaleSec = 6.0; state.holdOutSec = 0;
+        state.carrierHz = 136.1; state.beatHz = 5.5;
+        document.getElementById("activePresetBadge").textContent = "THETA BRIDGE · 5.5 Hz";
+      } else if (preset === "alpha") {
+        state.inhaleSec = 4.0; state.holdInSec = 0; state.exhaleSec = 4.0; state.holdOutSec = 0;
+        state.carrierHz = 216.0; state.beatHz = 10.0;
+        document.getElementById("activePresetBadge").textContent = "ALPHA FLOW · 10.0 Hz";
+      } else if (preset === "box") {
+        state.inhaleSec = 4.0; state.holdInSec = 4.0; state.exhaleSec = 4.0; state.holdOutSec = 4.0;
+        state.carrierHz = 432.0; state.beatHz = 7.5;
+        document.getElementById("activePresetBadge").textContent = "GAUGE BOX · 4-4-4-4";
+      }
+
+      document.getElementById("inhaleRange").value = state.inhaleSec;
+      document.getElementById("exhaleRange").value = state.exhaleSec;
+      document.getElementById("beatRange").value = state.beatHz;
+      document.getElementById("carrierRange").value = state.carrierHz;
+      syncSliderLabels();
+      if (state.audioEnabled) syncAudioFrequencies();
+      refreshCapsuleEnvelope();
+    }
+
+    function updateCustomSliders() {
+      state.inhaleSec = parseFloat(document.getElementById("inhaleRange").value) || 5.5;
+      state.exhaleSec = parseFloat(document.getElementById("exhaleRange").value) || 5.5;
+      syncSliderLabels();
+      refreshCapsuleEnvelope();
+    }
+
+    function updateAudioParams() {
+      state.beatHz = parseFloat(document.getElementById("beatRange").value) || 6.0;
+      state.carrierHz = parseFloat(document.getElementById("carrierRange").value) || 136.1;
+      syncSliderLabels();
+      if (state.audioEnabled) syncAudioFrequencies();
+      refreshCapsuleEnvelope();
+    }
+
+    function syncSliderLabels() {
+      document.getElementById("inhaleVal").textContent = `${state.inhaleSec.toFixed(1)} s`;
+      document.getElementById("exhaleVal").textContent = `${state.exhaleSec.toFixed(1)} s`;
+      const bandName = state.beatHz < 8.0 ? "Theta" : "Alpha";
+      document.getElementById("beatVal").textContent = `${state.beatHz.toFixed(1)} Hz (${bandName})`;
+      document.getElementById("carrierVal").textContent = `${state.carrierHz.toFixed(1)} Hz`;
+      document.getElementById("hudAudioFreq").textContent =
+        `Carrier: ${state.carrierHz.toFixed(1)} Hz · Beat: +${state.beatHz.toFixed(1)} Hz (${bandName})`;
+      document.getElementById("hudShimmerInfo").textContent = state.optInShimmer
+        ? `Visual Envelope: Soft ${state.beatHz.toFixed(1)} Hz Sub-Threshold Shimmer`
+        : "Visual Envelope: Smooth Sinusoidal Wave Only";
+    }
+
+    // WebAudio Binaural + Harmonic Engine
+    let audioCtx = null;
+    let leftOsc = null;
+    let rightOsc = null;
+    let masterGain = null;
+
+    function startAudioEngine() {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      if (audioCtx.state === "suspended") audioCtx.resume();
+      stopAudioEngine();
+
+      const now = audioCtx.currentTime;
+      leftOsc = audioCtx.createOscillator();
+      rightOsc = audioCtx.createOscillator();
+      const leftPan = audioCtx.createStereoPanner ? audioCtx.createStereoPanner() : null;
+      const rightPan = audioCtx.createStereoPanner ? audioCtx.createStereoPanner() : null;
+      masterGain = audioCtx.createGain();
+
+      leftOsc.type = "sine";
+      rightOsc.type = "sine";
+      leftOsc.frequency.setValueAtTime(state.carrierHz, now);
+      rightOsc.frequency.setValueAtTime(state.carrierHz + state.beatHz, now);
+
+      masterGain.gain.setValueAtTime(0.0001, now);
+      masterGain.gain.exponentialRampToValueAtTime(0.045, now + 0.4);
+
+      if (leftPan && rightPan) {
+        leftPan.pan.setValueAtTime(-0.8, now);
+        rightPan.pan.setValueAtTime(0.8, now);
+        leftOsc.connect(leftPan).connect(masterGain);
+        rightOsc.connect(rightPan).connect(masterGain);
+      } else {
+        leftOsc.connect(masterGain);
+        rightOsc.connect(masterGain);
+      }
+      masterGain.connect(audioCtx.destination);
+      leftOsc.start(now);
+      rightOsc.start(now);
+      state.audioEnabled = true;
+      document.getElementById("audioToggleBtn").textContent = "🔊 Audio: Binaural On";
+      document.getElementById("audioToggleBtn").classList.add("mint");
+    }
+
+    function syncAudioFrequencies() {
+      if (!audioCtx || !leftOsc || !rightOsc) return;
+      const now = audioCtx.currentTime;
+      leftOsc.frequency.setTargetAtTime(state.carrierHz, now, 0.08);
+      rightOsc.frequency.setTargetAtTime(state.carrierHz + state.beatHz, now, 0.08);
+    }
+
+    function stopAudioEngine() {
+      try {
+        if (leftOsc) { leftOsc.stop(); leftOsc.disconnect(); leftOsc = null; }
+        if (rightOsc) { rightOsc.stop(); rightOsc.disconnect(); rightOsc = null; }
+      } catch (_) {}
+      state.audioEnabled = false;
+      const btn = document.getElementById("audioToggleBtn");
+      if (btn) {
+        btn.textContent = "🔇 Audio: Off (Tap to Enable)";
+        btn.classList.remove("mint");
+      }
+    }
+
+    function toggleAudio() {
+      if (state.audioEnabled) {
+        stopAudioEngine();
+      } else {
+        startAudioEngine();
+      }
+    }
+
+    function toggleSession(forceState) {
+      state.running = typeof forceState === "boolean" ? forceState : !state.running;
+      const btn = document.getElementById("masterPlayBtn");
+      if (state.running) {
+        state.sessionStartMs = performance.now();
+        btn.textContent = "⏸ Pause Cadence";
+      } else {
+        btn.textContent = "▶ Resume Breath & Cadence";
+      }
+    }
+
+    // Screen Refresh Rate & Animation Loop
+    let lastFrameMs = performance.now();
+    let fpsFrames = 0;
+    let fpsAccumMs = 0;
+    let breathElapsedSec = 0;
+
+    function animateCadence(nowMs) {
+      const dtMs = Math.min(100, Math.max(0, nowMs - lastFrameMs));
+      lastFrameMs = nowMs;
+
+      fpsFrames++;
+      fpsAccumMs += dtMs;
+      if (fpsAccumMs >= 1000) {
+        state.measuredFps = Math.round((fpsFrames * 1000) / fpsAccumMs);
+        document.getElementById("screenHzBadge").textContent = `Display: ${state.measuredFps} Hz Lock`;
+        fpsFrames = 0;
+        fpsAccumMs = 0;
+      }
+
+      if (state.running) {
+        const totalCycleSec =
+          state.inhaleSec + state.holdInSec + state.exhaleSec + state.holdOutSec;
+        breathElapsedSec += dtMs / 1000;
+        if (breathElapsedSec >= totalCycleSec) {
+          breathElapsedSec = breathElapsedSec % totalCycleSec;
+          state.cycleCount++;
+        }
+
+        // Determine current phase & normalized expansion [0..1]
+        let phaseName = "Inhale Gently";
+        let phaseRem = 0;
+        let norm = 0;
+        const t = breathElapsedSec;
+
+        if (t < state.inhaleSec) {
+          phaseName = "Inhale Gently";
+          phaseRem = state.inhaleSec - t;
+          const p = t / state.inhaleSec;
+          norm = 0.5 - 0.5 * Math.cos(p * Math.PI);
+        } else if (t < state.inhaleSec + state.holdInSec) {
+          phaseName = "Hold at Crest";
+          phaseRem = state.inhaleSec + state.holdInSec - t;
+          norm = 1.0;
+        } else if (t < state.inhaleSec + state.holdInSec + state.exhaleSec) {
+          phaseName = "Exhale & Release";
+          const exT = t - (state.inhaleSec + state.holdInSec);
+          phaseRem = state.exhaleSec - exT;
+          const p = exT / state.exhaleSec;
+          norm = 0.5 + 0.5 * Math.cos(p * Math.PI);
+        } else {
+          phaseName = "Rest in Stillness";
+          const restT = t - (state.inhaleSec + state.holdInSec + state.exhaleSec);
+          phaseRem = state.holdOutSec - restT;
+          norm = 0.0;
+        }
+
+        // Active vertebral rune for current cycle
+        const activeRune = VERTEBRAL_RUNES[state.cycleCount % VERTEBRAL_RUNES.length];
+        document.getElementById("phaseWord").textContent = phaseName;
+        document.getElementById("phaseTimer").textContent =
+          `${phaseRem.toFixed(1)}s · ${activeRune.glyph} ${activeRune.name}`;
+        document.getElementById("hudCycleInfo").textContent =
+          `Cycle ${state.cycleCount + 1} · ${(1 / totalCycleSec).toFixed(3)} Hz Breath`;
+
+        const sessSec = Math.floor((nowMs - state.sessionStartMs) / 1000);
+        const mm = String(Math.floor(sessSec / 60)).padStart(2, "0");
+        const ss = String(sessSec % 60).padStart(2, "0");
+        document.getElementById("hudSessionElapsed").textContent = `Session: ${mm}:${ss}`;
+
+        // Update SVG geometry
+        const radius = 46 + norm * 38;
+        const glowRadius = 58 + norm * 46;
+        document.getElementById("breathRing").setAttribute("r", radius.toFixed(2));
+        document.getElementById("breathGlowCircle").setAttribute("r", glowRadius.toFixed(2));
+
+        // Optional sub-threshold Alpha/Theta envelope shimmer (capped <= 9% opacity delta)
+        let shimmerDelta = 0;
+        if (state.optInShimmer) {
+          shimmerDelta = 0.045 * Math.sin(2 * Math.PI * state.beatHz * (nowMs / 1000));
+        }
+        const harmonicR = 36 + norm * 22 + shimmerDelta * 18;
+        document.getElementById("harmonicRing").setAttribute("r", harmonicR.toFixed(2));
+        document.getElementById("stageWrap").style.opacity = (0.95 + shimmerDelta).toFixed(3);
+      }
+
+      requestAnimationFrame(animateCadence);
+    }
+
+    // One-Sync Phase-Locked Loop (PLL) + Forward Interaction Trajectory
+    // Sync once on the easy bits; model carries the rest; human detects drift & taps once to resync.
+    let syncTapTimes = [];
+    let syncCount = 1;
+    let lastMeasuredDriftSec = 0.0;
+    let lastMeasuredDriftRad = 0.0;
+
+    function tapToSyncPhase() {
+      const now = performance.now();
+      const totalCycleSec =
+        state.inhaleSec + state.holdInSec + state.exhaleSec + state.holdOutSec;
+
+      // Measure phase slip relative to nearest inhale start (t = 0 or t = totalCycleSec)
+      const rawPhaseSec = breathElapsedSec;
+      const slipSec = rawPhaseSec <= totalCycleSec / 2
+        ? rawPhaseSec
+        : rawPhaseSec - totalCycleSec;
+      lastMeasuredDriftSec = slipSec;
+      lastMeasuredDriftRad = (slipSec / totalCycleSec) * 2 * Math.PI;
+
+      // If user taps 2+ times within 18 seconds, calibrate natural tempo directly from tap interval
+      syncTapTimes.push(now);
+      syncTapTimes = syncTapTimes.filter(t => now - t <= 18000);
+      if (syncTapTimes.length >= 2) {
+        const dtSec = (syncTapTimes[syncTapTimes.length - 1] - syncTapTimes[syncTapTimes.length - 2]) / 1000;
+        if (dtSec >= 4.0 && dtSec <= 20.0) {
+          // Treat interval as full breath or half-breath and gently trim inhale/exhale
+          const half = Number((dtSec / 2).toFixed(1));
+          state.inhaleSec = Math.max(2.5, Math.min(9.0, half));
+          state.exhaleSec = Math.max(2.5, Math.min(10.0, half));
+          document.getElementById("inhaleRange").value = state.inhaleSec;
+          document.getElementById("exhaleRange").value = state.exhaleSec;
+          syncSliderLabels();
+        }
+      } else if (Math.abs(slipSec) > 0.25) {
+        // Single drift-correction tap: apply gentle PLL period trim (15% of slip)
+        const trim = Math.max(-0.5, Math.min(0.5, slipSec * 0.15));
+        state.exhaleSec = Number(Math.max(2.5, Math.min(10.0, state.exhaleSec + trim)).toFixed(1));
+        document.getElementById("exhaleRange").value = state.exhaleSec;
+        syncSliderLabels();
+      }
+
+      // Snap phase to Inhale start (φ = 0)
+      breathElapsedSec = 0;
+      if (!state.running) toggleSession(true);
+      syncCount++;
+
+      document.getElementById("syncCountBadge").textContent =
+        `Syncs: ${syncCount} (Δφ = ${lastMeasuredDriftRad >= 0 ? "+" : ""}${lastMeasuredDriftRad.toFixed(2)} rad)`;
+      updateTelemetryHud();
+      refreshCapsuleEnvelope();
+    }
+
+    window.addEventListener("keydown", (e) => {
+      if (e.code === "Space" && document.activeElement !== document.getElementById("carrierInput")) {
+        e.preventDefault();
+        tapToSyncPhase();
+      }
+    });
+
+    function resetTelemetryCounters() {
+      syncTapTimes = [];
+      syncCount = 1;
+      lastMeasuredDriftSec = 0.0;
+      lastMeasuredDriftRad = 0.0;
+      breathElapsedSec = 0;
+      state.sessionStartMs = performance.now();
+      document.getElementById("syncCountBadge").textContent = "Syncs: 1 (t₀ locked)";
+      updateTelemetryHud();
+      refreshCapsuleEnvelope();
+    }
+
+    function updateTelemetryHud() {
+      const now = performance.now();
+      const sessSec = Math.max(0, (now - state.sessionStartMs) / 1000);
+      const totalCycleSec =
+        state.inhaleSec + state.holdInSec + state.exhaleSec + state.holdOutSec;
+      const omegaHz = 1 / totalCycleSec;
+
+      // Forward dead-reckoned arc phase based on session trajectory
+      let arcPhase = "Orientation (0–30s)";
+      let rho = 0.88;
+      if (sessSec >= 30 && sessSec < 120) {
+        arcPhase = "Settling Manifold";
+        rho = 0.92;
+      } else if (sessSec >= 120 && sessSec < 360) {
+        arcPhase = "Coherent Flow Lock";
+        rho = 0.96;
+      } else if (sessSec >= 360) {
+        arcPhase = "Quiet Consolidation";
+        rho = 0.98;
+      }
+
+      state.telemetry.attentionalState = arcPhase.toUpperCase();
+      state.telemetry.rhoXi = rho;
+      state.telemetry.quietWindowSec = sessSec;
+
+      document.getElementById("metricPointerVel").textContent =
+        `${omegaHz.toFixed(3)} Hz (${totalCycleSec.toFixed(1)}s)`;
+      document.getElementById("metricCadence").textContent = arcPhase;
+      document.getElementById("metricQuietWindow").textContent =
+        `${lastMeasuredDriftRad >= 0 ? "+" : ""}${lastMeasuredDriftRad.toFixed(2)} rad (${lastMeasuredDriftSec >= 0 ? "+" : ""}${lastMeasuredDriftSec.toFixed(1)}s)`;
+      document.getElementById("metricRhoXi").textContent = rho.toFixed(2);
+
+      const badge = document.getElementById("telemetryStateBadge");
+      badge.textContent = `ARC: ${arcPhase.toUpperCase()}`;
+    }
+
+    setInterval(updateTelemetryHud, 600);
+
+    // Oral & Symbolic Carrier + Forge/Vessel Capsule Envelope
+    function selectNerve(nerveName, promptText, btnEl) {
+      state.activeNerve = nerveName;
+      document.getElementById("activeNerveBadge").textContent = nerveName.toUpperCase();
+      document.getElementById("nervePromptText").textContent = promptText;
+      document.querySelectorAll(".nerve-tab").forEach(b => b.classList.remove("active"));
+      if (btnEl) btnEl.classList.add("active");
+      refreshCapsuleEnvelope();
+    }
+
+    function digestTo13Glyphs(hexDigest) {
+      let out = "";
+      for (let i = 0; i < 13; i++) {
+        const byteVal = parseInt(hexDigest.slice(i * 2, i * 2 + 2), 16) || 0;
+        out += GLYPH_ALPHABET[byteVal % GLYPH_ALPHABET.length];
+        if (i === 7 || i === 8) out += "·";
+      }
+      return out;
+    }
+
+    function buildEnvelopePayload() {
+      const text = (document.getElementById("carrierInput").value || "").trim();
+      return {
+        schema: "xi.fullconsent.cadence.v1",
+        compat: ["xi.vessel.capsule.v1", "xi.forge.capsule.v1", "plex.spine.v1"],
+        timestamp: new Date().toISOString(),
+        consent: {
+          mode: state.consentMode,
+          opt_in_shimmer: state.optInShimmer,
+          anti_dependency_exit: true
+        },
+        cadence: {
+          preset: state.preset,
+          inhale_sec: state.inhaleSec,
+          hold_in_sec: state.holdInSec,
+          exhale_sec: state.exhaleSec,
+          hold_out_sec: state.holdOutSec,
+          breath_hz: Number((1 / (state.inhaleSec + state.holdInSec + state.exhaleSec + state.holdOutSec)).toFixed(4)),
+          carrier_hz: state.carrierHz,
+          binaural_beat_hz: state.beatHz,
+          display_refresh_hz: state.measuredFps
+        },
+        phase_locked_loop: {
+          mode: "one_sync_dead_reckoning",
+          sync_count: syncCount,
+          last_drift_rad: Number(lastMeasuredDriftRad.toFixed(4)),
+          last_drift_sec: Number(lastMeasuredDriftSec.toFixed(3)),
+          predicted_arc_phase: state.telemetry.attentionalState,
+          rho_xi_meaning_density: Number(state.telemetry.rhoXi.toFixed(3)),
+          session_elapsed_sec: Number(state.telemetry.quietWindowSec.toFixed(1))
+        },
+        carrier: {
+          spine_nerve: state.activeNerve,
+          utterance: text
+        }
+      };
+    }
+
+    async function refreshCapsuleEnvelope() {
+      const payload = buildEnvelopePayload();
+      const canonical = JSON.stringify(payload);
+      try {
+        const buf = new TextEncoder().encode(canonical);
+        const hashBuf = await crypto.subtle.digest("SHA-256", buf);
+        const hashHex = Array.from(new Uint8Array(hashBuf))
+          .map(b => b.toString(16).padStart(2, "0"))
+          .join("");
+        state.lastSha256 = hashHex;
+        state.lastSigil = digestTo13Glyphs(hashHex);
+      } catch (_) {
+        state.lastSha256 = "local-unhashed";
+      }
+
+      const fullEnvelope = {
+        ...payload,
+        provenance: {
+          sha256: state.lastSha256,
+          sigil_13: state.lastSigil,
+          bytes: canonical.length
+        }
+      };
+      document.getElementById("capsuleSigilBadge").textContent = state.lastSigil;
+      document.getElementById("envelopePreviewBox").textContent =
+        JSON.stringify(fullEnvelope, null, 2);
+      return fullEnvelope;
+    }
+
+    async function sealAndStoreCapsule() {
+      const env = await refreshCapsuleEnvelope();
+      try {
+        localStorage.setItem("xi.vessel.cadence.v1", JSON.stringify(env));
+        localStorage.setItem("xi.forge.capsule.v1", JSON.stringify(env));
+      } catch (_) {}
+      if (window.parent && window.parent !== window) {
+        window.parent.postMessage({ type: "xi.fullconsent.cadence.v1", envelope: env }, "*");
+      }
+      document.getElementById("bridgeStatusBadge").textContent =
+        `Sealed: ${env.provenance.sigil_13}`;
+    }
+
+    async function downloadCapsuleJson() {
+      const env = await refreshCapsuleEnvelope();
+      const blob = new Blob([JSON.stringify(env, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `xi-fullconsent-capsule-${env.provenance.sha256.slice(0, 12)}.xi.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    async function copyEnvelopeJson() {
+      const env = await refreshCapsuleEnvelope();
+      try {
+        await navigator.clipboard.writeText(JSON.stringify(env, null, 2));
+        document.getElementById("bridgeStatusBadge").textContent = "Copied JSON Receipt ✓";
+      } catch (_) {}
+    }
+
+    // URL Parameter & PostMessage Back-Compatibility for Xi Forge / Xi Vessel
+    function applyUrlAndBridgeParams() {
+      const params = new URLSearchParams(window.location.search);
+      const preset = params.get("preset");
+      if (preset && ["coherent", "theta", "alpha", "box"].includes(preset)) {
+        selectPreset(preset);
+      }
+      if (params.get("carrier")) {
+        state.carrierHz = parseFloat(params.get("carrier")) || state.carrierHz;
+        document.getElementById("carrierRange").value = state.carrierHz;
+      }
+      if (params.get("beat")) {
+        state.beatHz = parseFloat(params.get("beat")) || state.beatHz;
+        document.getElementById("beatRange").value = state.beatHz;
+      }
+      syncSliderLabels();
+
+      window.addEventListener("message", (ev) => {
+        if (!ev.data || typeof ev.data !== "object") return;
+        if (ev.data.type === "xi.vessel.sync" || ev.data.type === "xi.forge.sync") {
+          if (ev.data.preset) selectPreset(ev.data.preset);
+          if (ev.data.utterance) {
+            document.getElementById("carrierInput").value = String(ev.data.utterance);
+          }
+          refreshCapsuleEnvelope();
+        }
+      });
+    }
+
+    // Initialize
+    initGlyphOrbit();
+    applyUrlAndBridgeParams();
+    refreshCapsuleEnvelope();
+    requestAnimationFrame(animateCadence);
+  </script>
+</body>
+</html>
