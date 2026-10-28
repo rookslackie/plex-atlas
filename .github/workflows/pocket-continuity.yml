@@ -1,0 +1,27 @@
+name: Pocket continuity contracts
+on:
+  push:
+    paths: ['pocket/**', '.github/workflows/pocket-continuity.yml']
+  pull_request:
+    paths: ['pocket/**', '.github/workflows/pocket-continuity.yml']
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - name: Durable storage, HTTP authorization, merge and replay
+        run: python3 -m unittest discover -s pocket -p 'test_pocket.py' -v
+      - name: Static syntax
+        run: |
+          node --check pocket/app.js
+          node --check pocket/sw.js
+          bash -n pocket/install.sh
+      - name: Browser offline reload, queued delivery and ambiguous POST replay
+        run: |
+          npm install --prefix /tmp/xi-pocket-browser --no-package-lock playwright@1.62.1
+          export NODE_PATH=/tmp/xi-pocket-browser/node_modules
+          export CHROME_PATH="$(command -v google-chrome)"
+          for trial in 1 2 3; do node pocket/test_browser.cjs; done
