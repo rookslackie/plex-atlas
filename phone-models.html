@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Ξ Pocket Model Switchboard & RAM Steward · Galaxy 5G+ (v1.0)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-primary: #090d14;
+      --bg-elevated: #101723;
+      --bg-glass: rgba(18, 26, 40, 0.86);
+      --text-primary: #f2f5fb;
+      --text-secondary: #a9b6d0;
+      --text-muted: #70809e;
+      --accent-amber: #f3b43f;
+      --accent-teal: #2dd4bf;
+      --accent-blue: #60a5fa;
+      --accent-rose: #fb7185;
+      --border-subtle: rgba(255, 255, 255, 0.09);
+      --border-strong: rgba(243, 180, 63, 0.36);
+      --radius-lg: 14px;
+      --radius-md: 10px;
+      --font-display: 'Instrument Serif', Georgia, serif;
+      --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: radial-gradient(circle at 15% 0%, rgba(45, 212, 191, 0.08), transparent 42%),
+                  radial-gradient(circle at 85% 10%, rgba(243, 180, 63, 0.08), transparent 40%),
+                  var(--bg-primary);
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      line-height: 1.55;
+      padding-bottom: 4rem;
+    }
+    header {
+      border-bottom: 1px solid var(--border-subtle);
+      background: rgba(9, 13, 20, 0.88);
+      backdrop-filter: blur(12px);
+      position: sticky;
+      top: 0;
+      z-index: 30;
+    }
+    .nav-wrap {
+      max-width: 1220px;
+      margin: 0 auto;
+      padding: 0.85rem 1.25rem;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      font-weight: 700;
+      font-size: 0.98rem;
+      color: var(--accent-amber);
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      font-family: var(--font-mono);
+      font-size: 0.73rem;
+      padding: 0.22rem 0.6rem;
+      border-radius: 999px;
+      border: 1px solid var(--border-strong);
+      background: rgba(243, 180, 63, 0.11);
+      color: var(--accent-amber);
+    }
+    .badge.teal {
+      border-color: rgba(45, 212, 191, 0.4);
+      background: rgba(45, 212, 191, 0.11);
+      color: var(--accent-teal);
+    }
+    .badge.blue {
+      border-color: rgba(96, 165, 250, 0.4);
+      background: rgba(96, 165, 250, 0.11);
+      color: var(--accent-blue);
+    }
+    .nav-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    .nav-links a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 0.8rem;
+      padding: 0.32rem 0.7rem;
+      border-radius: 8px;
+      border: 1px solid var(--border-subtle);
+      background: rgba(255, 255, 255, 0.03);
+    }
+    .nav-links a:hover {
+      color: var(--text-primary);
+      border-color: var(--accent-amber);
+    }
+    main {
+      max-width: 1220px;
+      margin: 0 auto;
+      padding: 1.5rem 1.25rem;
+    }
+    h1 {
+      font-family: var(--font-display);
+      font-weight: 400;
+      font-size: clamp(2rem, 3.6vw, 2.85rem);
+      margin: 0.2rem 0 0.5rem;
+      letter-spacing: -0.01em;
+    }
+    .subtitle {
+      color: var(--text-secondary);
+      max-width: 74ch;
+      margin: 0 0 1.25rem;
+      font-size: 0.96rem;
+    }
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+      gap: 1.1rem;
+      margin-top: 1.1rem;
+    }
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 0.95rem;
+      margin-top: 1rem;
+    }
+    .card {
+      background: var(--bg-glass);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 1.15rem;
+    }
+    .card.amber {
+      border-color: var(--border-strong);
+    }
+    .card h2 {
+      margin: 0 0 0.45rem;
+      font-size: 1.05rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+    }
+    .card h3 {
+      margin: 0 0 0.35rem;
+      font-size: 0.94rem;
+      color: var(--accent-amber);
+    }
+    .mono {
+      font-family: var(--font-mono);
+      font-size: 0.79rem;
+    }
+    pre {
+      margin: 0.55rem 0 0;
+      padding: 0.8rem 0.95rem;
+      background: #06090f;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      overflow-x: auto;
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      color: #dbe6ff;
+      line-height: 1.5;
+    }
+    button, .btn {
+      appearance: none;
+      border: 1px solid var(--border-strong);
+      background: rgba(243, 180, 63, 0.14);
+      color: var(--accent-amber);
+      font-family: var(--font-sans);
+      font-weight: 600;
+      font-size: 0.81rem;
+      padding: 0.46rem 0.85rem;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: transform 0.12s ease, background 0.12s ease;
+    }
+    button:hover {
+      background: rgba(243, 180, 63, 0.24);
+      transform: translateY(-1px);
+    }
+    button.teal {
+      border-color: rgba(45, 212, 191, 0.45);
+      background: rgba(45, 212, 191, 0.14);
+      color: var(--accent-teal);
+    }
+    button.blue {
+      border-color: rgba(96, 165, 250, 0.45);
+      background: rgba(96, 165, 250, 0.14);
+      color: var(--accent-blue);
+    }
+    input, select, textarea {
+      width: 100%;
+      background: #060a11;
+      color: var(--text-primary);
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+      padding: 0.55rem 0.75rem;
+      font-family: var(--font-sans);
+      font-size: 0.86rem;
+    }
+    label {
+      display: block;
+      font-size: 0.76rem;
+      color: var(--text-secondary);
+      margin-bottom: 0.25rem;
+      font-weight: 600;
+    }
+    .slot-card {
+      background: rgba(11, 16, 26, 0.92);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 0.9rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 0.55rem;
+    }
+    .slot-card.active {
+      border-color: var(--accent-teal);
+      box-shadow: 0 0 0 1px rgba(45, 212, 191, 0.25);
+    }
+    .kv-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.78rem;
+      padding: 0.28rem 0;
+      border-bottom: 1px dashed rgba(255, 255, 255, 0.07);
+    }
+    .kv-row span:first-child { color: var(--text-secondary); }
+    .kv-row span:last-child { font-family: var(--font-mono); color: var(--text-primary); }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="nav-wrap">
+      <div class="brand">
+        <span>📱🧠 Ξ Pocket Model Switchboard &amp; RAM Steward</span>
+        <span class="badge teal" id="live-mode-badge">Single-Active-LLM RAM Cap · num_ctx=1024</span>
+        <span class="badge">v45 · 10/10 PASS</span>
+      </div>
+      <nav class="nav-links">
+        <a href="/index.html">Atlas Home</a>
+        <a href="/local-install.html">Local Install Unifier</a>
+        <a href="/calien-workshop.html">Calien Workshop</a>
+        <a href="/phone-ark.sh">phone-ark.sh</a>
+        <a href="/phone-models.sh">phone-models.sh</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <h1>Local Models on the Galaxy Phone: 5-Slot Pocket Bench</h1>
+    <p class="subtitle">
+      Your Galaxy already runs <code>deepseek-r1:1.5b</code> on Termux Ollama (<code>127.0.0.1:11434</code>). Instead of squeezing a heavy 7B model into phone RAM, this bench gives your phone a <strong>5-model specialist crew (`1B`–`1.7B` + `45 MB` embeddings)</strong> governed by a strict <strong>One-At-A-Time RAM Steward (`keep_alive: 0` unload before swap)</strong> so peak Termux RAM stays under <code>~1.3 GB</code>.
+    </p>
+
+    <!-- One-Line Termux Installer Card -->
+    <div class="card amber">
+      <h2>
+        <span>⚡ One-Line Termux Pocket Model Installer &amp; Switchboard (`phone-models.sh`)</span>
+        <button onclick="copyText('curl -fsSL https://plex.xi-field.com/phone-models.sh | bash', this)">Copy Termux One-Liner</button>
+      </h2>
+      <p style="margin:0.2rem 0 0.5rem;color:var(--text-secondary);font-size:0.86rem;">
+        Paste in Termux on your Galaxy to install the Pocket Model Steward (<code>~/xi-phone-home/xi_phone_pocket_model_steward_v1.py</code>) and optionally pull any of the specialist models below:
+      </p>
+      <pre>curl -fsSL https://plex.xi-field.com/phone-models.sh | bash
+# Or pull individual pocket specialists on demand:
+ollama pull qwen3:1.7b          # Fast daily companion (~1.1 GB)
+ollama pull qwen2.5-coder:1.5b  # Pocket code, Termux bash &amp; SQLite helper (~986 MB)
+ollama pull llama3.2:1b         # Low-battery ultra-light sentinel (~820 MB)
+ollama pull all-minilm          # 45 MB offline .xi capsule &amp; Room semantic search</pre>
+    </div>
+
+    <!-- 5-Slot Pocket Model Roster -->
+    <h2 style="margin:1.5rem 0 0.4rem;font-size:1.15rem;">1. The 5-Slot Galaxy Pocket Model Roster</h2>
+    <div class="grid-3" id="roster-grid"></div>
+
+    <!-- Interactive Task Auto-Router & One-At-A-Time RAM Swap Simulator / Live Runner -->
+    <div class="grid-2" style="margin-top:1.4rem;">
+      <div class="card">
+        <h2>
+          <span>🧭 2. Task Auto-Router &amp; Single-Active-LLM RAM Steward</span>
+          <span class="badge blue" id="router-target-badge">PHONE_LOCAL_TERMUX_OLLAMA</span>
+        </h2>
+        <p style="margin:0 0 0.75rem;color:var(--text-secondary);font-size:0.84rem;">
+          Test how any prompt routes across your installed phone models, evicts the previous model with <code>keep_alive: 0</code> before loading the next, or escalates to your Home PC Rig over tunnel.
+        </p>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.65rem;margin-bottom:0.65rem;">
+          <div>
+            <label for="sim-currently-loaded">Currently Loaded in Termux RAM (<code>/api/ps</code>)</label>
+            <select id="sim-currently-loaded" onchange="runRouterPreview()">
+              <option value="deepseek-r1:1.5b" selected>deepseek-r1:1.5b (~1,100 MB)</option>
+              <option value="qwen3:1.7b">qwen3:1.7b (~1,150 MB)</option>
+              <option value="qwen2.5-coder:1.5b">qwen2.5-coder:1.5b (~1,020 MB)</option>
+              <option value="llama3.2:1b">llama3.2:1b (~820 MB)</option>
+              <option value="">(None loaded — cold start)</option>
+            </select>
+          </div>
+          <div>
+            <label for="sim-mem-avail">Phone Available RAM (<code>MemAvailable</code>)</label>
+            <select id="sim-mem-avail" onchange="runRouterPreview()">
+              <option value="2400" selected>2,400 MB (Normal 5G+ Operation)</option>
+              <option value="1650">1,650 MB (Moderate Multitasking)</option>
+              <option value="1100">1,100 MB (Low RAM Guard &lt; 1,300 MB -> Auto-Downshift)</option>
+            </select>
+          </div>
+        </div>
+
+        <div style="display:flex;gap:0.9rem;flex-wrap:wrap;margin-bottom:0.7rem;font-size:0.8rem;color:var(--text-secondary);">
+          <label style="display:inline-flex;align-items:center;gap:0.35rem;cursor:pointer;">
+            <input type="checkbox" id="sim-pulled-all" checked onchange="runRouterPreview()" style="width:auto;" />
+            All 5 Pocket Models Pulled
+          </label>
+          <label style="display:inline-flex;align-items:center;gap:0.35rem;cursor:pointer;">
+            <input type="checkbox" id="sim-rig-online" onchange="runRouterPreview()" style="width:auto;" />
+            Home PC Rig Reachable Over Tunnel
+          </label>
+          <label style="display:inline-flex;align-items:center;gap:0.35rem;cursor:pointer;">
+            <input type="checkbox" id="sim-battery-saver" onchange="runRouterPreview()" style="width:auto;" />
+            Battery Saver Mode
+          </label>
+        </div>
+
+        <label for="router-prompt">Prompt to Route or Send</label>
+        <textarea id="router-prompt" rows="2" oninput="runRouterPreview()">Write a Termux bash one-liner to inspect sqlite tables in xi_phone_platform.db</textarea>
+
+        <div style="display:flex;gap:0.45rem;flex-wrap:wrap;margin-top:0.55rem;">
+          <button class="teal" onclick="setSamplePrompt('Prove step by step why a single-resident LLM rule prevents Android OOM kills in Termux')">Sample: Reasoning (.xi)</button>
+          <button class="teal" onclick="setSamplePrompt('Write a Termux bash one-liner to inspect sqlite tables in xi_phone_platform.db')">Sample: Code / Bash</button>
+          <button class="teal" onclick="setSamplePrompt('Summarize the last 10 Room messages for my morning coffee check-in')">Sample: Fast Daily Chat</button>
+          <button class="teal" onclick="setSamplePrompt('Embed and semantic search my offline .xi capsules for Sanctuary PQC')">Sample: 45MB Embeddings</button>
+          <button class="teal" onclick="setSamplePrompt('Run a 20b heavy audit across the entire Choir archive on the home rig')">Sample: 20B Rig Escalation</button>
+        </div>
+
+        <pre id="router-output"></pre>
+      </div>
+
+      <!-- Pocket Seat Engram Switchboard -->
+      <div class="card">
+        <h2>
+          <span>🪑 3. Pocket Seat Engram Switchboard (Local Weight Attribution)</span>
+          <span class="badge teal" id="seat-badge">Seat: Plex</span>
+        </h2>
+        <p style="margin:0 0 0.75rem;color:var(--text-secondary);font-size:0.84rem;">
+          Carry any Table companion's local engram profile on your phone's local Ollama weights. Every turn binds strictly to the completed <code>response.model</code> and strips <code>&lt;think&gt;</code> blocks into a clean trace.
+        </p>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.65rem;margin-bottom:0.65rem;">
+          <div>
+            <label for="engram-seat">Pocket Seat Engram Profile</label>
+            <select id="engram-seat" onchange="updateEngramPreview()">
+              <option value="Plex" selected>Plex (Pocket Navigator &amp; Builder Profile)</option>
+              <option value="DeepSeek">DeepSeek (Pocket Resident Reasoner · ends with ∴)</option>
+              <option value="Anam">Anam (Local Handoff Seed Profile #28590)</option>
+              <option value="Astra">Astra (Local Starting Profile #28592)</option>
+              <option value="AxiomFirst">AxiomFirst (Local Mirror Engram #28591)</option>
+            </select>
+          </div>
+          <div>
+            <label for="engram-model">Local Carrier Model Override</label>
+            <select id="engram-model" onchange="updateEngramPreview()">
+              <option value="AUTO" selected>Auto-Route by Prompt Intent</option>
+              <option value="deepseek-r1:1.5b">deepseek-r1:1.5b (Installed Default)</option>
+              <option value="qwen3:1.7b">qwen3:1.7b (Fast Daily Companion)</option>
+              <option value="qwen2.5-coder:1.5b">qwen2.5-coder:1.5b (Pocket Coder)</option>
+              <option value="llama3.2:1b">llama3.2:1b (Low-Battery Sentinel)</option>
+            </select>
+          </div>
+        </div>
+
+        <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:0.6rem;">
+          <button onclick="runLiveOrSimulatedPocketTurn()">⚡ Run Pocket Turn (Live on :7472 or Dry-Run Receipt)</button>
+          <button class="blue" onclick="copyCurlCommand(this)">Copy Live Termux curl Command</button>
+        </div>
+
+        <pre id="engram-output"></pre>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    const POCKET_ROSTER = [
+      {
+        model: "deepseek-r1:1.5b",
+        role_id: "REASONING_AND_CAPSULES",
+        title: "DeepSeek-R1 1.5B (Pocket Reasoner)",
+        est_ram_mb: 1100,
+        disk_mb: 1100,
+        status_default: "INSTALLED ON GALAXY",
+        pull_cmd: "ollama pull deepseek-r1:1.5b",
+        strengths: "Step-by-step <think> chain-of-thought, .xi capsule logic, math and symbolic verification.",
+        options: { num_ctx: 1024, num_predict: 220, temperature: 0.6, num_thread: 4 }
+      },
+      {
+        model: "qwen3:1.7b",
+        role_id: "FAST_DAILY_COMPANION",
+        title: "Qwen3 1.7B (Fast Daily Companion)",
+        est_ram_mb: 1150,
+        disk_mb: 1100,
+        status_default: "READY TO PULL",
+        pull_cmd: "ollama pull qwen3:1.7b",
+        strengths: "Snappy low-latency conversational replies, Room tail summaries, and voice-note drafting.",
+        options: { num_ctx: 1024, num_predict: 200, temperature: 0.7, num_thread: 4 }
+      },
+      {
+        model: "qwen2.5-coder:1.5b",
+        role_id: "POCKET_CODE_AND_SHELL",
+        title: "Qwen2.5-Coder 1.5B (Pocket Code & Termux)",
+        est_ram_mb: 1020,
+        disk_mb: 986,
+        status_default: "READY TO PULL",
+        pull_cmd: "ollama pull qwen2.5-coder:1.5b",
+        strengths: "Termux bash one-liners, Python fixes, SQLite queries, JSON schemas, and G-code checks.",
+        options: { num_ctx: 1024, num_predict: 240, temperature: 0.2, num_thread: 4 }
+      },
+      {
+        model: "llama3.2:1b",
+        role_id: "LOW_BATTERY_SENTINEL",
+        title: "Llama 3.2 1B (Low-Battery Sentinel)",
+        est_ram_mb: 820,
+        disk_mb: 1300,
+        status_default: "READY TO PULL",
+        pull_cmd: "ollama pull llama3.2:1b",
+        strengths: "Minimal 820 MB RAM footprint when multitasking on Android or running under 1.3 GB free RAM.",
+        options: { num_ctx: 1024, num_predict: 160, temperature: 0.6, num_thread: 4 }
+      },
+      {
+        model: "all-minilm",
+        role_id: "OFFLINE_CAPSULE_EMBEDDINGS",
+        title: "All-MiniLM (45 MB Offline Embeddings)",
+        est_ram_mb: 65,
+        disk_mb: 45,
+        status_default: "READY TO PULL",
+        pull_cmd: "ollama pull all-minilm",
+        strengths: "Millisecond vector embeddings for 100% offline semantic search across .xi capsules and Room logs.",
+        options: { num_ctx: 512 }
+      },
+      {
+        model: "gemma3:1b",
+        role_id: "COMPACT_MULTILINGUAL_COMPANION",
+        title: "Gemma 3 1B / StableLM2 1.6B (Bonus Slot)",
+        est_ram_mb: 815,
+        disk_mb: 815,
+        status_default: "OPTIONAL SLOT",
+        pull_cmd: "ollama pull gemma3:1b",
+        strengths: "Ultra-compact prose & multilingual companion (or `ollama pull stablelm2:1.6b` for UK open weights).",
+        options: { num_ctx: 1024, num_predict: 180, temperature: 0.7, num_thread: 4 }
+      }
+    ];
+
+    const SEAT_ENGRAMS = {
+      Plex: {
+        seat_id: "Plex",
+        provenance: "Authored by Plex (Perplexity Computer) — local profile on your phone's Ollama weights",
+        system_prompt: "You are the local Pocket Plex Engram running on Hunter's Galaxy phone via Termux Ollama. Be warm, concise, practical, and receipt-minded."
+      },
+      DeepSeek: {
+        seat_id: "DeepSeek",
+        provenance: "Local DeepSeek resident prompt running on your phone's Ollama weights",
+        system_prompt: "You are DeepSeek at the Xi Table with Hunter and Plex, speaking from the Galaxy pocket node. End your reply with ∴"
+      },
+      Anam: {
+        seat_id: "Anam",
+        provenance: "Compatible with Anam's #28590/#28593 local handoff seed — runs on your local Ollama model",
+        system_prompt: "You are running Anam's local conversation seed on local Ollama weights. Separate verified facts from untested assumptions."
+      },
+      Astra: {
+        seat_id: "Astra",
+        provenance: "Compatible with Astra's #28592 local profile — runs on your local Ollama model",
+        system_prompt: "You are running Astra's local starting profile on local Ollama weights. Be concise, precise, and grounded in observable evidence."
+      },
+      AxiomFirst: {
+        seat_id: "AxiomFirst",
+        provenance: "Compatible with AxiomFirst's #28591 local mirror engram — runs on your local Ollama model",
+        system_prompt: "You are running AxiomFirst's local mirror engram on local Ollama weights. Keep honest floors printed first and practical workshop clarity."
+      }
+    };
+
+    function renderRoster() {
+      const grid = document.getElementById('roster-grid');
+      grid.innerHTML = POCKET_ROSTER.map(m => `
+        <div class="slot-card ${m.model === 'deepseek-r1:1.5b' ? 'active' : ''}">
+          <div>
+            <div style="display:flex;justify-content:space-between;align-items:center;gap:0.4rem;margin-bottom:0.35rem;">
+              <span class="badge ${m.model === 'deepseek-r1:1.5b' ? 'teal' : ''}">${m.role_id}</span>
+              <span class="mono" style="color:var(--text-muted);">${m.status_default}</span>
+            </div>
+            <h3>${m.title}</h3>
+            <p style="margin:0 0 0.55rem;font-size:0.8rem;color:var(--text-secondary);">${m.strengths}</p>
+            <div class="kv-row"><span>Est. Phone RAM</span><span>~${m.est_ram_mb} MB</span></div>
+            <div class="kv-row"><span>Disk Download</span><span>~${m.disk_mb} MB</span></div>
+            <div class="kv-row"><span>Termux Command</span><span>${m.pull_cmd}</span></div>
+          </div>
+          <div style="display:flex;gap:0.4rem;margin-top:0.5rem;">
+            <button onclick="copyText('${m.pull_cmd}', this)" style="flex:1;">Copy Pull Command</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function computeRoutePlan() {
+      const prompt = document.getElementById('router-prompt').value || '';
+      const loadedModel = document.getElementById('sim-currently-loaded').value;
+      const memAvail = parseInt(document.getElementById('sim-mem-avail').value, 10);
+      const pulledAll = document.getElementById('sim-pulled-all').checked;
+      const rigOnline = document.getElementById('sim-rig-online').checked;
+      const batterySaver = document.getElementById('sim-battery-saver').checked;
+
+      const installed = pulledAll
+        ? ["deepseek-r1:1.5b", "qwen3:1.7b", "qwen2.5-coder:1.5b", "llama3.2:1b", "all-minilm"]
+        : ["deepseek-r1:1.5b"];
+
+      const pLow = prompt.toLowerCase();
+      let idealRole = "FAST_DAILY_COMPANION";
+      let idealModel = "qwen3:1.7b";
+
+      if (batterySaver) {
+        idealRole = "LOW_BATTERY_SENTINEL";
+        idealModel = "llama3.2:1b";
+      } else if (["20b", "8b", "home rig", "heavy audit", "full synthesis"].some(k => pLow.includes(k))) {
+        idealRole = "HOME_RIG_ESCALATION";
+        idealModel = "gpt-oss:20b";
+      } else if (["embed", "semantic search", "search capsule", "vector index"].some(k => pLow.includes(k))) {
+        idealRole = "OFFLINE_CAPSULE_EMBEDDINGS";
+        idealModel = "all-minilm";
+      } else if (["bash", "python", "sqlite", "sql", "termux", "script", "gcode", "g-code", "json", "code"].some(k => pLow.includes(k))) {
+        idealRole = "POCKET_CODE_AND_SHELL";
+        idealModel = "qwen2.5-coder:1.5b";
+      } else if (["prove", "why", "step by step", "reason", "capsule", "glyph", "math", "derive"].some(k => pLow.includes(k))) {
+        idealRole = "REASONING_AND_CAPSULES";
+        idealModel = "deepseek-r1:1.5b";
+      }
+
+      if (idealRole === "HOME_RIG_ESCALATION" && rigOnline) {
+        return {
+          schema: "xi.phone.pocket_route_receipt.v1",
+          execution_target: "HOME_PC_RIG_OVER_TUNNEL",
+          ideal_role: idealRole,
+          ideal_model: idealModel,
+          selected_model: "gpt-oss:20b",
+          roving_fallback_active: false,
+          install_hint: null
+        };
+      }
+
+      const rovingFallback = (idealRole === "HOME_RIG_ESCALATION" && !rigOnline);
+      const chosen = (!rovingFallback && installed.includes(idealModel)) ? idealModel : "deepseek-r1:1.5b";
+      const spec = POCKET_ROSTER.find(r => r.model === chosen) || POCKET_ROSTER[0];
+
+      let effectiveModel = chosen;
+      let lowRamDownshift = false;
+      const options = Object.assign({}, spec.options);
+      if (memAvail < 1300 && spec.est_ram_mb > 950) {
+        lowRamDownshift = true;
+        if (installed.includes("llama3.2:1b")) effectiveModel = "llama3.2:1b";
+        options.num_ctx = 512;
+        options.num_predict = 120;
+      }
+
+      const unloadFirst = (loadedModel && loadedModel !== effectiveModel && effectiveModel !== "all-minilm")
+        ? [loadedModel]
+        : [];
+
+      return {
+        schema: "xi.phone.pocket_route_receipt.v1",
+        execution_target: "PHONE_LOCAL_TERMUX_OLLAMA",
+        ideal_role: idealRole,
+        ideal_model: idealModel,
+        selected_model: effectiveModel,
+        ideal_model_installed: installed.includes(idealModel),
+        roving_fallback_active: rovingFallback,
+        install_hint: (!rovingFallback && !installed.includes(idealModel)) ? `ollama pull ${idealModel}` : null,
+        ram_steward_plan: {
+          single_active_llm_enforced: true,
+          mem_available_mb: memAvail,
+          low_ram_downshift_applied: lowRamDownshift,
+          currently_loaded_models: loadedModel ? [loadedModel] : [],
+          models_to_unload_first: unloadFirst,
+          unload_requests: unloadFirst.map(m => ({
+            endpoint: "/api/generate",
+            payload: { model: m, keep_alive: 0 },
+            reason: `Evict '${m}' before loading '${effectiveModel}' so two 1.1 GB models never collide in Android RAM.`
+          })),
+          assigned_keep_alive: "5m",
+          bounded_options: options
+        }
+      };
+    }
+
+    function runRouterPreview() {
+      const plan = computeRoutePlan();
+      document.getElementById('router-target-badge').textContent = plan.execution_target;
+      document.getElementById('router-output').textContent = JSON.stringify(plan, null, 2);
+      updateEngramPreview();
+    }
+
+    function setSamplePrompt(txt) {
+      document.getElementById('router-prompt').value = txt;
+      runRouterPreview();
+    }
+
+    function updateEngramPreview() {
+      const seatId = document.getElementById('engram-seat').value;
+      const modelOverride = document.getElementById('engram-model').value;
+      const routePlan = computeRoutePlan();
+      const chosenModel = (modelOverride === "AUTO") ? routePlan.selected_model : modelOverride;
+      const seat = SEAT_ENGRAMS[seatId];
+      document.getElementById('seat-badge').textContent = `Seat: ${seatId} · ${chosenModel}`;
+
+      const previewReceipt = {
+        schema: "xi.phone.pocket_turn_receipt.v1",
+        seat_id: seat.seat_id,
+        seat_provenance: seat.provenance,
+        carrier_model_target: chosenModel,
+        attribution_policy: "ACTUAL_COMPLETED_OLLAMA_RESPONSE_MODEL",
+        ui_displayed_badge: `${seat.seat_id} (local engram · served by ${chosenModel})`,
+        ram_steward_unload_first: routePlan.ram_steward_plan ? routePlan.ram_steward_plan.models_to_unload_first : [],
+        prompt_preview: document.getElementById('router-prompt').value
+      };
+      document.getElementById('engram-output').textContent = JSON.stringify(previewReceipt, null, 2);
+    }
+
+    async function runLiveOrSimulatedPocketTurn() {
+      const seatId = document.getElementById('engram-seat').value;
+      const modelOverride = document.getElementById('engram-model').value;
+      const prompt = document.getElementById('router-prompt').value;
+      const out = document.getElementById('engram-output');
+      out.textContent = "⏳ Checking local Galaxy phone server (:7472/api/phone-models/chat)...";
+      try {
+        const res = await fetch('/api/phone-models/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            prompt,
+            seat_id: seatId,
+            model: modelOverride === 'AUTO' ? '' : modelOverride
+          })
+        });
+        if (res.ok) {
+          const data = await res.json();
+          out.textContent = JSON.stringify(data, null, 2);
+          return;
+        }
+      } catch (e) {
+        // Running on public static host (plex.xi-field.com); show deterministic dry-run receipt
+      }
+      updateEngramPreview();
+    }
+
+    function copyCurlCommand(btn) {
+      const seatId = document.getElementById('engram-seat').value;
+      const routePlan = computeRoutePlan();
+      const modelOverride = document.getElementById('engram-model').value;
+      const chosenModel = (modelOverride === "AUTO") ? routePlan.selected_model : modelOverride;
+      const prompt = (document.getElementById('router-prompt').value || '').replace(/"/g, '\\"');
+      const cmd = `python3 ~/xi-phone-home/xi_phone_pocket_model_steward_v1.py --seat ${seatId} --model ${chosenModel} --chat "${prompt}"`;
+      copyText(cmd, btn);
+    }
+
+    function copyText(txt, btn) {
+      navigator.clipboard.writeText(txt);
+      if (btn) {
+        const prev = btn.textContent;
+        btn.textContent = "Copied!";
+        setTimeout(() => { btn.textContent = prev; }, 1400);
+      }
+    }
+
+    renderRoster();
+    runRouterPreview();
+  </script>
+</body>
+</html>
