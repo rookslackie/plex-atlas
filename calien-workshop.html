@@ -204,13 +204,13 @@
 <body>
   <header>
     <div class="brand">
-      <span class="badge">XI LOCAL WORKSHOP v1.1</span>
+      <span class="badge">XI LOCAL WORKSHOP v1.2</span>
       <div>
         <strong>Calien's Local AI Workshop &amp; Organic Ag Desk</strong>
         <div class="nav-links">
           <a href="/index.html">← Xi Atlas</a>
           <a href="/calien-vault.html">Calien Maths Vault</a>
-          <a href="/xi_offline_whole_home_bundle_v42.tar.gz">Download Whole-Home Bundle v42</a>
+          <a href="/xi_offline_whole_home_bundle_v43.tar.gz">Download Whole-Home Bundle v43</a>
         </div>
       </div>
     </div>
@@ -333,7 +333,7 @@
             <button class="btn secondary" onclick="downloadText('artilume_t1_job.nc', document.getElementById('t1GcodeOut').textContent)">Download .nc / .gcode</button>
           </div>
           <div id="t1SpecNote" style="margin-top:0.65rem;font-size:0.8rem;color:var(--emerald);">
-            Provisional GRBL profile from your #28525 UI ranges (0–100% power, 0–10,000 mm/min speed, 10 lines/mm default). Two-head recipes stay strictly separate.
+            Provisional GRBL profile from your #28525 UI ranges (0–100% power, 0–10,000 mm/min speed, 10 lines/mm default). Presets are UNVERIFIED STARTING POINTS pending head IDs and ramp cards; the 20-pass cap is a software repetition ceiling only.
           </div>
         </div>
 
@@ -591,7 +591,7 @@ G1 X100.0 Y100.0 E0.65 F1800</textarea>
       document.getElementById('t1Feed').value = nextSpd;
       document.getElementById('t1LinesPerMm').value = nextLpm;
       document.getElementById('t1SpecNote').textContent =
-        `🤖 Robot Redial Receipt [${head} | ${mat} | Focus Z=${focusZ.toFixed(1)}mm]: Scanner contrast below target -> nudged Power ${pwr}%→${nextPwr}%, Speed ${spd}→${nextSpd} mm/min, Quality ${lpm}→${nextLpm} lines/mm.`;
+        `🤖 Proposed Adjustment from Supplied Scores [${head} | ${mat} | Focus Z=${focusZ.toFixed(1)}mm | provenance=ui_demo_trial]: Power ${pwr}%→${nextPwr}%, Speed ${spd}→${nextSpd} mm/min, Quality ${lpm}→${nextLpm} lines/mm (does not acquire live scanner frames or verify dimensional/thermal treatment).`;
       rebuildT1GCode();
     }
 
