@@ -204,19 +204,19 @@
 <body>
   <header>
     <div class="brand">
-      <span class="badge">XI LOCAL WORKSHOP v1.0</span>
+      <span class="badge">XI LOCAL WORKSHOP v1.1</span>
       <div>
         <strong>Calien's Local AI Workshop &amp; Organic Ag Desk</strong>
         <div class="nav-links">
           <a href="/index.html">← Xi Atlas</a>
           <a href="/calien-vault.html">Calien Maths Vault</a>
-          <a href="/xi_offline_whole_home_bundle_v41.tar.gz">Download Whole-Home Bundle v41</a>
+          <a href="/xi_offline_whole_home_bundle_v42.tar.gz">Download Whole-Home Bundle v42</a>
         </div>
       </div>
     </div>
     <div>
-      <span id="estopStatus" class="pill-ok">INTERLOCK HEALTHY · LASER S0 SAFE</span>
-      <button class="estop-btn" onclick="triggerEStop()">🛑 EMERGENCY STOP (M5 / M112)</button>
+      <span id="estopStatus" class="pill-ok">SOFTWARE INTERLOCK CLEAR · LASER S0 SAFE</span>
+      <button class="estop-btn" onclick="triggerEStop()">🛑 LATCH SOFTWARE E-STOP &amp; EMIT M5/M112</button>
     </div>
   </header>
 
@@ -265,23 +265,60 @@
 
           <div class="row-2">
             <div>
-              <label>Feed Rate (mm/min)</label>
-              <input type="number" id="t1Feed" value="1800" min="100" max="6000" step="100" onchange="rebuildT1GCode()" />
+              <label>Artilume Engraver Head (Separate Libraries)</label>
+              <select id="t1Head" onchange="applyT1MaterialPreset()">
+                <option value="HEAD_1_PRIMARY">HEAD_1_PRIMARY (Optical Head 1 — Pending W/nm Label)</option>
+                <option value="HEAD_2_SECONDARY">HEAD_2_SECONDARY (Optical Head 2 — Pending W/nm Label)</option>
+              </select>
             </div>
             <div>
-              <label>Max Laser Power (% of S1000)</label>
-              <input type="number" id="t1Power" value="65" min="1" max="100" step="1" onchange="rebuildT1GCode()" />
+              <label>Material &amp; Operation Preset (#28525–#28528)</label>
+              <select id="t1Material" onchange="applyT1MaterialPreset()">
+                <option value="wood_birch_ply">Wood / Birch Ply (Engrave / Cut · 60% · 1800 mm/min)</option>
+                <option value="kraft_paper">Kraft Paper (Light Engrave / Cut · 12% · 4500 mm/min)</option>
+                <option value="corrugated_cardboard">Corrugated Cardboard (Engrave / Cut · 20% · 3000 mm/min)</option>
+                <option value="leather_veg_tan">Leather Veg-Tan Only (Engrave · 25% · 2500 mm/min · 15 l/mm)</option>
+                <option value="glass_wet_film">Glass — Wet-Film Surface Mark Only (Never Cut · 35% · 3200 mm/min)</option>
+                <option value="cast_acrylic">Cast Acrylic (Engrave / Cut · 50% · 1500 mm/min)</option>
+                <option value="s1_pro_printed_pla_petg_abs">S1 Pro Printed PLA/PETG/ABS (Surface Mark / Exp Thermal Trial · 18%)</option>
+                <option value="anodized_aluminum_keys">Anodized Aluminum / Keys (Surface Mark Coating · 70% · 2800 mm/min)</option>
+                <option value="steel_stainless">Steel / Stainless (Oxide Anneal-Mark / Deep Engrave · 85% · 500 mm/min)</option>
+                <option value="pcb_fr4_copper">PCB FR4 + Copper (Ablate Soldermask/Resist · 65% · 1200 mm/min)</option>
+                <option value="pvc_vinyl_chlorinated">🚫 PVC / Vinyl (HARD SAFETY BLOCK — Chlorine Gas Hazard)</option>
+              </select>
             </div>
           </div>
 
           <div class="row-2">
             <div>
-              <label>Raster Resolution (Grid Columns)</label>
+              <label>Speed (mm/min, UI range 0–10,000)</label>
+              <input type="number" id="t1Feed" value="1800" min="60" max="10000" step="100" onchange="rebuildT1GCode()" />
+            </div>
+            <div>
+              <label>Laser Power (%, UI range 0–100%)</label>
+              <input type="number" id="t1Power" value="60" min="0" max="100" step="1" onchange="rebuildT1GCode()" />
+            </div>
+          </div>
+
+          <div class="row-2">
+            <div>
+              <label>Quality (lines/mm, UI default 10 · tunable 1–40)</label>
+              <input type="number" id="t1LinesPerMm" value="10" min="1" max="40" step="1" onchange="rebuildT1GCode()" />
+            </div>
+            <div>
+              <label>Passes (UI accepts 0–999999999999; capped at 20)</label>
+              <input type="number" id="t1Passes" value="1" min="1" max="999999999999" step="1" onchange="rebuildT1GCode()" />
+            </div>
+          </div>
+
+          <div class="row-2">
+            <div>
+              <label>Raster Grid Columns (px)</label>
               <input type="number" id="t1Cols" value="32" min="8" max="128" step="4" onchange="rebuildT1GCode()" />
             </div>
             <div>
-              <label>Passes (1–10)</label>
-              <input type="number" id="t1Passes" value="1" min="1" max="10" step="1" onchange="rebuildT1GCode()" />
+              <label>Focus Height Z (mm, recorded on receipt)</label>
+              <input type="number" id="t1FocusZ" value="2.0" min="0" max="50" step="0.1" onchange="rebuildT1GCode()" />
             </div>
           </div>
 
@@ -292,9 +329,12 @@
 
           <div>
             <button class="btn" onclick="rebuildT1GCode()">Generate Raster G-Code</button>
+            <button class="btn secondary" onclick="runRobotRedial()">🤖 Simulate Robot Scanner Redial Step</button>
             <button class="btn secondary" onclick="downloadText('artilume_t1_job.nc', document.getElementById('t1GcodeOut').textContent)">Download .nc / .gcode</button>
           </div>
-          <div id="t1SpecNote" style="margin-top:0.65rem;font-size:0.8rem;color:var(--emerald);"></div>
+          <div id="t1SpecNote" style="margin-top:0.65rem;font-size:0.8rem;color:var(--emerald);">
+            Provisional GRBL profile from your #28525 UI ranges (0–100% power, 0–10,000 mm/min speed, 10 lines/mm default). Two-head recipes stay strictly separate.
+          </div>
         </div>
 
         <div class="card">
@@ -495,8 +535,63 @@ G1 X100.0 Y100.0 E0.65 F1800</textarea>
     function triggerEStop() {
       document.getElementById('t1Armed').checked = false;
       const badge = document.getElementById('estopStatus');
-      badge.textContent = '🛑 E-STOP LATCHED · M5 S0 & M112 SENT';
+      badge.textContent = '🛑 SOFTWARE INTERLOCK LATCHED · M5/M112 PAYLOAD READY (SERIAL UNCONNECTED)';
       badge.className = 'pill-warn';
+      rebuildT1GCode();
+    }
+
+    const T1_PRESETS = {
+      wood_birch_ply: { HEAD_1_PRIMARY: [60, 1800, 10, 3], HEAD_2_SECONDARY: [55, 2000, 10, 3], note: 'Wood: cap passes <= 8; lower speed rather than stacking passes on char.' },
+      kraft_paper: { HEAD_1_PRIMARY: [12, 4500, 10, 1], HEAD_2_SECONDARY: [10, 4800, 10, 1], note: 'Kraft paper ignites easily; use air assist and continuous fire watch.' },
+      corrugated_cardboard: { HEAD_1_PRIMARY: [20, 3000, 10, 2], HEAD_2_SECONDARY: [18, 3200, 10, 2], note: 'Cardboard: fire watch required; remove chads between passes.' },
+      leather_veg_tan: { HEAD_1_PRIMARY: [25, 2500, 15, 1], HEAD_2_SECONDARY: [22, 2800, 15, 1], note: 'Use vegetable-tanned leather only (avoid chrome-tanned leather fumes).' },
+      glass_wet_film: { HEAD_1_PRIMARY: [35, 3200, 15, 1], HEAD_2_SECONDARY: [30, 3500, 15, 1], note: 'Glass: SURFACE MARK ONLY through wet dish-soap film/carrier. Never cut glass.' },
+      cast_acrylic: { HEAD_1_PRIMARY: [50, 1500, 10, 3], HEAD_2_SECONDARY: [45, 1600, 10, 3], note: 'Cast acrylic: ventilate fumes; wavelength compatibility depends on head.' },
+      s1_pro_printed_pla_petg_abs: { HEAD_1_PRIMARY: [18, 3200, 10, 1], HEAD_2_SECONDARY: [15, 3500, 10, 1], note: 'S1 Pro printed plastics: low-power surface mark works; localized annealing is experimental and requires defocused beam + temperature feedback (#28526–#28528).' },
+      anodized_aluminum_keys: { HEAD_1_PRIMARY: [70, 2800, 15, 1], HEAD_2_SECONDARY: [65, 3000, 15, 1], note: 'Anodized aluminum / coated keys: ablates coating cleanly; does not cut metal.' },
+      steel_stainless: { HEAD_1_PRIMARY: [85, 500, 15, 1], HEAD_2_SECONDARY: [80, 650, 20, 1], note: 'Steel: supports oxide anneal-marking (straw/blue/purple) and surface engraving; does not cut steel sheet.' },
+      pcb_fr4_copper: { HEAD_1_PRIMARY: [65, 1200, 15, 2], HEAD_2_SECONDARY: [70, 1000, 15, 2], note: 'PCB (FR4 + copper): bare copper reflects strongly; ablate dark resist/soldermask before chemical etch. Ventilate fiberglass dust.' }
+    };
+
+    function applyT1MaterialPreset() {
+      const mat = document.getElementById('t1Material').value;
+      const head = document.getElementById('t1Head').value;
+      const noteEl = document.getElementById('t1SpecNote');
+      if (mat === 'pvc_vinyl_chlorinated') {
+        document.getElementById('t1Armed').checked = false;
+        noteEl.style.color = '#ef4444';
+        noteEl.textContent = 'HARD SAFETY BLOCK: Never laser PVC or vinyl — releases toxic chlorine / HCl gas that damages lungs and corrodes optics/rails.';
+        rebuildT1GCode();
+        return;
+      }
+      noteEl.style.color = 'var(--emerald)';
+      const p = T1_PRESETS[mat] && T1_PRESETS[mat][head];
+      if (p) {
+        document.getElementById('t1Power').value = p[0];
+        document.getElementById('t1Feed').value = p[1];
+        document.getElementById('t1LinesPerMm').value = p[2];
+        document.getElementById('t1Passes').value = p[3];
+        noteEl.textContent = `[${head}] ${T1_PRESETS[mat].note}`;
+      }
+      rebuildT1GCode();
+    }
+
+    function runRobotRedial() {
+      const head = document.getElementById('t1Head').value;
+      const mat = document.getElementById('t1Material').value;
+      if (mat === 'pvc_vinyl_chlorinated') return;
+      let pwr = parseFloat(document.getElementById('t1Power').value || '50');
+      let spd = parseFloat(document.getElementById('t1Feed').value || '1800');
+      let lpm = parseFloat(document.getElementById('t1LinesPerMm').value || '10');
+      const focusZ = parseFloat(document.getElementById('t1FocusZ').value || '2.0');
+      const nextPwr = Math.min(100, +(pwr * 1.08).toFixed(1));
+      const nextSpd = Math.max(100, Math.round(spd * 0.92));
+      const nextLpm = Math.min(40, lpm + 2);
+      document.getElementById('t1Power').value = nextPwr;
+      document.getElementById('t1Feed').value = nextSpd;
+      document.getElementById('t1LinesPerMm').value = nextLpm;
+      document.getElementById('t1SpecNote').textContent =
+        `🤖 Robot Redial Receipt [${head} | ${mat} | Focus Z=${focusZ.toFixed(1)}mm]: Scanner contrast below target -> nudged Power ${pwr}%→${nextPwr}%, Speed ${spd}→${nextSpd} mm/min, Quality ${lpm}→${nextLpm} lines/mm.`;
       rebuildT1GCode();
     }
 
@@ -554,15 +649,24 @@ G1 X100.0 Y100.0 E0.65 F1800</textarea>
     }
 
     function rebuildT1GCode() {
+      const mat = document.getElementById('t1Material') ? document.getElementById('t1Material').value : 'wood_birch_ply';
+      const head = document.getElementById('t1Head') ? document.getElementById('t1Head').value : 'HEAD_1_PRIMARY';
+      const lpm = parseFloat((document.getElementById('t1LinesPerMm') && document.getElementById('t1LinesPerMm').value) || '10');
+      const focusZ = parseFloat((document.getElementById('t1FocusZ') && document.getElementById('t1FocusZ').value) || '2.0');
+      if (mat === 'pvc_vinyl_chlorinated') {
+        document.getElementById('t1GcodeOut').textContent = '; SAFETY HARD BLOCK: PVC / Vinyl is forbidden (chlorine gas & HCl corrosion hazard).\nM5 S0\n';
+        return;
+      }
       const cols = Math.max(8, Math.min(128, parseInt(document.getElementById('t1Cols').value || '32', 10)));
       if (!currentArtworkGrid.length || currentArtworkGrid.length !== cols) {
         currentArtworkGrid = makeDefaultPattern(cols);
       }
       const w = parseFloat(document.getElementById('t1Width').value || '50');
       const h = parseFloat(document.getElementById('t1Height').value || '50');
-      const feed = parseFloat(document.getElementById('t1Feed').value || '1800');
-      const powerPct = parseFloat(document.getElementById('t1Power').value || '65');
-      const passes = parseInt(document.getElementById('t1Passes').value || '1', 10);
+      const feed = Math.max(60, Math.min(10000, parseFloat(document.getElementById('t1Feed').value || '1800')));
+      const powerPct = Math.max(0, Math.min(100, parseFloat(document.getElementById('t1Power').value || '60')));
+      const rawPasses = parseInt(document.getElementById('t1Passes').value || '1', 10);
+      const passes = Math.max(1, Math.min(20, rawPasses));
       const armed = document.getElementById('t1Armed').checked;
 
       const lockBadge = document.getElementById('t1LockBadge');
@@ -582,8 +686,9 @@ G1 X100.0 Y100.0 E0.65 F1800</textarea>
 
       let burnSegs = 0;
       const lines = [
-        '; === XI LOCAL WORKSHOP: ARTILUME T1 RASTER JOB ===',
-        `; Size: ${w.toFixed(1)}x${h.toFixed(1)}mm | Feed: ${feed.toFixed(0)}mm/min | Max Power: ${powerPct.toFixed(0)}% | Passes: ${passes}`,
+        '; === XI LOCAL WORKSHOP: ARTILUME T1 RASTER JOB (PROVISIONAL PROFILE) ===',
+        `; Head: ${head} | Material: ${mat} | Focus Z: ${focusZ.toFixed(2)}mm | Quality: ${lpm.toFixed(1)} lines/mm`,
+        `; Size: ${w.toFixed(1)}x${h.toFixed(1)}mm | Speed: ${feed.toFixed(0)}mm/min (0-10000 range) | Max Power: ${powerPct.toFixed(0)}% | Passes: ${passes} (requested=${rawPasses}, safety cap=20)`,
         `; Interlock: ${armed ? 'ARMED (LIVE M4)' : 'DRY-RUN S0 FRAMING ONLY'}`,
         'G21 ; mm',
         'G90 ; absolute',
