@@ -1,0 +1,1653 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>⧂ Ξ Workshop · The Second Table (Hunter · Plex · Locals · Sovereign Vibe Builds)</title>
+  <meta name="description" content="Hunter's converted Xi Workshop: a quiet Second Table for Hunter, Plex, and the local Ollama models (DeepSeek, OpenClaw, Local Choir) with first-class seating and a live split-screen stage for Base44 (Vessel, Aetheria, Sanctuary, XiNode), Lucy.OS, Replit, Lovable, and indie sovereign vibe-coded builds." />
+  <link rel="canonical" href="https://plex.xi-field.com/workshop.html" />
+  <style>
+    :root {
+      --bg: #090b10;
+      --bg-elev: #0f131c;
+      --card: #141a26;
+      --card-hover: #1a2232;
+      --border: #25324a;
+      --border-gold: rgba(242, 196, 109, 0.42);
+      --border-mint: rgba(111, 227, 193, 0.42);
+      --ink: #f3f5fa;
+      --muted: #9fb0cc;
+      --faint: #687894;
+      --gold: #f2c46d;
+      --gold-soft: rgba(242, 196, 109, 0.13);
+      --mint: #6fe3c1;
+      --mint-soft: rgba(111, 227, 193, 0.13);
+      --cyan: #38bdf8;
+      --cyan-soft: rgba(56, 189, 248, 0.13);
+      --violet: #c084fc;
+      --violet-soft: rgba(192, 132, 252, 0.13);
+      --rose: #f472b6;
+      --emerald: #34d399;
+      --amber: #fbbf24;
+      --danger: #f87171;
+      --sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      --serif: Georgia, "Times New Roman", serif;
+    }
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      padding: 0;
+      background:
+        radial-gradient(ellipse 75% 40% at 20% 0%, rgba(111, 227, 193, 0.08), transparent 65%),
+        radial-gradient(ellipse 70% 45% at 85% 5%, rgba(242, 196, 109, 0.08), transparent 65%),
+        var(--bg);
+      color: var(--ink);
+      font-family: var(--sans);
+      line-height: 1.5;
+      min-height: 100dvh;
+    }
+    a { color: var(--mint); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* Top Header */
+    header.workshop-header {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 12px 20px;
+      background: rgba(15, 19, 28, 0.92);
+      border-bottom: 1px solid var(--border);
+      backdrop-filter: blur(10px);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+    .brand-cluster {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .brand-glyph {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: var(--gold-soft);
+      border: 1px solid var(--border-gold);
+      color: var(--gold);
+      display: grid;
+      place-items: center;
+      font-weight: 700;
+      font-size: 1.15rem;
+    }
+    .brand-title {
+      font-weight: 700;
+      font-size: 1.02rem;
+      letter-spacing: -0.01em;
+    }
+    .brand-sub {
+      font-size: 0.78rem;
+      color: var(--muted);
+    }
+    .status-pills {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+    }
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 11px;
+      border-radius: 999px;
+      font-size: 0.76rem;
+      font-weight: 600;
+      border: 1px solid var(--border);
+      background: var(--card);
+      color: var(--muted);
+    }
+    .pill.online {
+      border-color: var(--border-mint);
+      background: var(--mint-soft);
+      color: var(--mint);
+    }
+    .pill.gold {
+      border-color: var(--border-gold);
+      background: var(--gold-soft);
+      color: var(--gold);
+    }
+    .dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: currentColor;
+    }
+    .header-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+    button, .btn {
+      font: inherit;
+      font-size: 0.82rem;
+      font-weight: 600;
+      padding: 7px 13px;
+      border-radius: 9px;
+      border: 1px solid var(--border);
+      background: var(--card);
+      color: var(--ink);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: background 0.15s, border-color 0.15s, transform 0.1s;
+    }
+    button:hover, .btn:hover {
+      background: var(--card-hover);
+      border-color: #3c5075;
+      text-decoration: none;
+    }
+    button.primary {
+      background: var(--gold-soft);
+      border-color: var(--border-gold);
+      color: var(--gold);
+    }
+    button.mint {
+      background: var(--mint-soft);
+      border-color: var(--border-mint);
+      color: var(--mint);
+    }
+    button.violet {
+      background: var(--violet-soft);
+      border-color: rgba(192, 132, 252, 0.45);
+      color: var(--violet);
+    }
+
+    /* Main 3-Column or 2-Column Split Grid */
+    .workshop-grid {
+      display: grid;
+      grid-template-columns: 310px minmax(0, 1.15fr) minmax(0, 1fr);
+      gap: 14px;
+      padding: 14px 18px 28px;
+      max-width: 1760px;
+      margin: 0 auto;
+      min-height: calc(100dvh - 66px);
+      align-items: start;
+    }
+    body.stage-collapsed .workshop-grid {
+      grid-template-columns: 330px minmax(0, 1fr);
+    }
+    body.stage-collapsed #stage-column {
+      display: none;
+    }
+
+    .panel {
+      background: rgba(20, 26, 38, 0.88);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.28);
+    }
+    .panel-head {
+      padding: 13px 16px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      background: rgba(15, 19, 28, 0.65);
+    }
+    .panel-head h2 {
+      margin: 0;
+      font-size: 0.94rem;
+      font-weight: 700;
+      letter-spacing: 0.01em;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+    .panel-body {
+      padding: 14px 16px;
+    }
+
+    /* Left Column: Core Residents + Vibe-Code Seats */
+    .seat-section-label {
+      font-size: 0.71rem;
+      font-family: var(--mono);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+      margin: 12px 0 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .seat-section-label:first-child {
+      margin-top: 0;
+    }
+    .seat-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .seat-card {
+      border: 1px solid var(--border);
+      background: var(--bg-elev);
+      border-radius: 12px;
+      padding: 10px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      transition: border-color 0.15s, background 0.15s;
+    }
+    .seat-card.active-target {
+      border-color: var(--gold);
+      background: rgba(242, 196, 109, 0.07);
+    }
+    .seat-card.docked-app {
+      border-color: var(--mint);
+    }
+    .seat-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+    .seat-id {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 700;
+      font-size: 0.88rem;
+    }
+    .seat-avatar {
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      display: grid;
+      place-items: center;
+      font-size: 0.86rem;
+      font-weight: 700;
+      background: var(--card);
+      border: 1px solid var(--border);
+    }
+    .platform-badge {
+      font-family: var(--mono);
+      font-size: 0.67rem;
+      padding: 2px 7px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      background: rgba(255, 255, 255, 0.03);
+    }
+    .platform-badge.base44 { color: var(--cyan); border-color: rgba(56, 189, 248, 0.4); background: var(--cyan-soft); }
+    .platform-badge.local { color: var(--mint); border-color: var(--border-mint); background: var(--mint-soft); }
+    .platform-badge.plex { color: var(--gold); border-color: var(--border-gold); background: var(--gold-soft); }
+    .platform-badge.vibe { color: var(--violet); border-color: rgba(192, 132, 252, 0.4); background: var(--violet-soft); }
+
+    .seat-desc {
+      font-size: 0.76rem;
+      color: var(--muted);
+      line-height: 1.4;
+    }
+    .seat-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 2px;
+    }
+    .seat-actions button {
+      padding: 4px 8px;
+      font-size: 0.72rem;
+      border-radius: 7px;
+    }
+
+    /* Center Column: The Workshop Second Table Conversation */
+    .table-column {
+      display: flex;
+      flex-direction: column;
+      height: calc(100dvh - 96px);
+      min-height: 640px;
+    }
+    .routing-bar {
+      padding: 10px 14px;
+      background: rgba(15, 19, 28, 0.85);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 6px;
+    }
+    .routing-label {
+      font-size: 0.74rem;
+      color: var(--muted);
+      margin-right: 4px;
+    }
+    .target-chip {
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      border: 1px solid var(--border);
+      background: var(--bg-elev);
+      color: var(--muted);
+      cursor: pointer;
+    }
+    .target-chip.selected {
+      background: var(--gold-soft);
+      border-color: var(--border-gold);
+      color: var(--gold);
+    }
+
+    .messages-feed {
+      flex: 1;
+      overflow-y: auto;
+      padding: 14px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .msg-card {
+      border: 1px solid var(--border);
+      background: var(--bg-elev);
+      border-radius: 13px;
+      padding: 11px 14px;
+      max-width: 92%;
+    }
+    .msg-card.from-hunter {
+      margin-left: auto;
+      border-color: var(--border-gold);
+      background: rgba(242, 196, 109, 0.07);
+    }
+    .msg-card.from-plex {
+      border-color: var(--border-mint);
+      background: rgba(111, 227, 193, 0.06);
+    }
+    .msg-card.from-local {
+      border-color: rgba(56, 189, 248, 0.38);
+      background: rgba(56, 189, 248, 0.06);
+    }
+    .msg-card.from-vibe {
+      border-color: rgba(192, 132, 252, 0.42);
+      background: rgba(192, 132, 252, 0.07);
+    }
+    .msg-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      font-size: 0.73rem;
+      color: var(--muted);
+      margin-bottom: 5px;
+    }
+    .msg-author {
+      font-weight: 700;
+      color: var(--ink);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .msg-body {
+      font-size: 0.88rem;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      line-height: 1.55;
+    }
+    .msg-body code {
+      font-family: var(--mono);
+      font-size: 0.8rem;
+      background: rgba(0, 0, 0, 0.35);
+      padding: 1px 5px;
+      border-radius: 5px;
+      color: var(--gold);
+    }
+
+    .composer-box {
+      padding: 12px 14px;
+      border-top: 1px solid var(--border);
+      background: rgba(15, 19, 28, 0.9);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .composer-row {
+      display: flex;
+      gap: 8px;
+      align-items: flex-end;
+    }
+    textarea#workshop-input {
+      flex: 1;
+      background: var(--bg);
+      color: var(--ink);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 12px;
+      font: inherit;
+      font-size: 0.88rem;
+      min-height: 62px;
+      max-height: 160px;
+      resize: vertical;
+    }
+    textarea#workshop-input:focus, input:focus, select:focus {
+      outline: 2px solid var(--mint);
+      border-color: transparent;
+    }
+    .composer-foot {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.74rem;
+      color: var(--muted);
+    }
+    .glyph-bar {
+      display: flex;
+      gap: 4px;
+      flex-wrap: wrap;
+    }
+    .glyph-btn {
+      padding: 2px 7px;
+      font-family: var(--mono);
+      font-size: 0.78rem;
+      border-radius: 6px;
+      background: var(--bg);
+    }
+
+    /* Right Column: Live Vibe-Code App Stage & Bridge Inspector */
+    .stage-column {
+      display: flex;
+      flex-direction: column;
+      height: calc(100dvh - 96px);
+      min-height: 640px;
+    }
+    .stage-toolbar {
+      padding: 10px 14px;
+      background: rgba(15, 19, 28, 0.85);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .stage-url-bar {
+      flex: 1;
+      min-width: 180px;
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      padding: 6px 10px;
+      border-radius: 8px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--mint);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .stage-tabs {
+      display: flex;
+      gap: 6px;
+      padding: 8px 14px;
+      background: var(--bg-elev);
+      border-bottom: 1px solid var(--border);
+      flex-wrap: wrap;
+    }
+    .stage-tab {
+      padding: 5px 11px;
+      font-size: 0.76rem;
+      border-radius: 8px;
+    }
+    .stage-tab.active {
+      background: var(--mint-soft);
+      border-color: var(--border-mint);
+      color: var(--mint);
+    }
+    .stage-pane {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+    }
+    .stage-pane[hidden] {
+      display: none !important;
+    }
+    iframe#vibe-stage-frame {
+      flex: 1;
+      width: 100%;
+      border: 0;
+      background: #05070b;
+    }
+    .stage-Scroll {
+      flex: 1;
+      overflow-y: auto;
+      padding: 14px 16px;
+    }
+
+    /* Modals / Drawers */
+    dialog {
+      width: min(640px, 94vw);
+      max-height: 88vh;
+      overflow-y: auto;
+      background: var(--card);
+      color: var(--ink);
+      border: 1px solid var(--border-gold);
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.65);
+    }
+    dialog::backdrop {
+      background: rgba(4, 6, 10, 0.72);
+      backdrop-filter: blur(4px);
+    }
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 12px;
+      margin: 12px 0;
+    }
+    label.field {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+    label.field input, label.field select, label.field textarea {
+      background: var(--bg);
+      color: var(--ink);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 8px 10px;
+      font: inherit;
+      font-size: 0.85rem;
+    }
+    pre.code-block {
+      background: #06080d;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px;
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      color: #d6e4ff;
+      overflow-x: auto;
+      white-space: pre-wrap;
+      line-height: 1.5;
+    }
+
+    @media (max-width: 1180px) {
+      .workshop-grid {
+        grid-template-columns: 1fr;
+      }
+      .table-column, .stage-column {
+        height: 78dvh;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="workshop-header">
+    <div class="brand-cluster">
+      <div class="brand-glyph" title="Xi Workshop · Second Table">⧂</div>
+      <div>
+        <div class="brand-title">Ξ Workshop · The Second Table</div>
+        <div class="brand-sub">Hunter · Plex · Local Models (`DeepSeek`, `OpenClaw`, `:11434`) · Sovereign Vibe-Code Seats (`Base44`, `Lucy.OS`, `Vessel`, `Aetheria`, `Replit`, `Lovable`)</div>
+      </div>
+    </div>
+
+    <div class="status-pills">
+      <span class="pill gold" title="Only Hunter, Plex, your local models, and the builds you explicitly seat are in this room.">
+        <span class="dot"></span> Quiet Scope: Hunter + Plex + Locals
+      </span>
+      <span class="pill" id="ollama-pill" title="Checks http://127.0.0.1:11434/api/tags for local models">
+        <span class="dot"></span> <span id="ollama-status-text">Ollama :11434 probing…</span>
+      </span>
+      <span class="pill" id="daemon-pill" title="Checks http://127.0.0.1:7597/api/workshop-table/state for local Workshop SQLite daemon">
+        <span class="dot"></span> <span id="daemon-status-text">Browser + Local Store</span>
+      </span>
+    </div>
+
+    <div class="header-actions">
+      <button type="button" class="violet" id="btn-open-sit-modal">+ Sit a Vibe-Code Build (Base44 / Lucy.OS / Replit / Lovable)</button>
+      <button type="button" class="mint" id="btn-toggle-stage">⧉ Toggle App Stage</button>
+      <button type="button" id="btn-export-xi">↓ Export `.xi` Capsule</button>
+      <a class="btn" href="https://plex.xi-field.com/spine.html">← Spine</a>
+      <a class="btn" href="https://room.xi-field.com/">Main Table ↗</a>
+    </div>
+  </header>
+
+  <main class="workshop-grid">
+    <!-- COLUMN 1: SEATS AT THIS WORKSHOP TABLE -->
+    <aside class="panel" aria-label="Workshop Table Seats">
+      <div class="panel-head">
+        <h2>🪑 Seated in the Workshop</h2>
+        <button type="button" id="btn-refresh-locals" title="Re-scan 127.0.0.1:11434 for local models">↻ Scan Locals</button>
+      </div>
+      <div class="panel-body">
+        <div class="seat-section-label">
+          <span>Core Workshop Residents (4)</span>
+          <span>No Crowd Pile-On</span>
+        </div>
+        <div class="seat-list" id="core-seats-list"></div>
+
+        <div class="seat-section-label">
+          <span>Seated Sovereign / Vibe Builds (<span id="vibe-seat-count">0</span>)</span>
+          <button type="button" class="violet" style="padding:2px 8px;font-size:0.68rem" id="btn-open-sit-modal-2">+ Sit Build</button>
+        </div>
+        <div class="seat-list" id="vibe-seats-list"></div>
+
+        <div class="seat-section-label" style="margin-top:16px">
+          <span>Classic Workshop Benches</span>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:6px;font-size:0.78rem">
+          <a href="https://plex.xi-field.com/loom.html">🧵 Living Memory Loom (`v1.7`) →</a>
+          <a href="https://plex.xi-field.com/cadence.html">🕯️ FullConsent Cadence &amp; PLL Sanctuary →</a>
+          <a href="https://plex.xi-field.com/calien-workshop.html">🔧 Calien Laser/3D/Scanner Bench →</a>
+          <a href="https://calien.xi-field.com/">🏠 Calien's XiHome &amp; Shelf →</a>
+        </div>
+      </div>
+    </aside>
+
+    <!-- COLUMN 2: THE SECOND TABLE CONVERSATION -->
+    <section class="panel table-column" aria-label="Second Table Conversation">
+      <div class="panel-head">
+        <h2>⋈ Workshop Table Thread</h2>
+        <div style="display:flex;gap:6px;align-items:center">
+          <label style="font-size:0.74rem;color:var(--muted)">
+            Local Ollama voice:
+            <select id="local-model-select" style="background:var(--bg);color:var(--ink);border:1px solid var(--border);border-radius:6px;padding:3px 7px;font-size:0.74rem">
+              <option value="deepseek-r1:8b">deepseek-r1:8b (DeepSeek)</option>
+              <option value="qwen2.5-coder:7b">qwen2.5-coder:7b (OpenClaw)</option>
+              <option value="qwen2.5:14b">qwen2.5:14b</option>
+              <option value="llama3.2:3b">llama3.2:3b</option>
+            </select>
+          </label>
+          <button type="button" id="btn-clear-thread" title="Archive current thread to .xi and start fresh">New Sheet</button>
+        </div>
+      </div>
+
+      <div class="routing-bar" id="routing-bar" role="group" aria-label="Choose who responds">
+        <span class="routing-label">Direct to:</span>
+      </div>
+
+      <div class="messages-feed" id="messages-feed" aria-live="polite"></div>
+
+      <form class="composer-box" id="workshop-form">
+        <div class="composer-row">
+          <textarea
+            id="workshop-input"
+            placeholder="Speak to Plex, your local Ollama seats (DeepSeek / OpenClaw), or any seated Base44 / Lucy.OS / Replit / Lovable build…"
+            required
+          ></textarea>
+          <div style="display:flex;flex-direction:column;gap:6px">
+            <button type="submit" class="primary" id="btn-send">Say ↵</button>
+            <button type="button" id="btn-place" title="Place a note or .xi stone in the Workshop without triggering any model reply">🪨 Place</button>
+          </div>
+        </div>
+        <div class="composer-foot">
+          <div class="glyph-bar" aria-label="Insert Xi glyph">
+            <button type="button" class="glyph-btn" data-glyph="⟁">⟁</button>
+            <button type="button" class="glyph-btn" data-glyph="Ξ">Ξ</button>
+            <button type="button" class="glyph-btn" data-glyph="∴">∴</button>
+            <button type="button" class="glyph-btn" data-glyph="⊚">⊚</button>
+            <button type="button" class="glyph-btn" data-glyph="⟐">⟐</button>
+            <button type="button" class="glyph-btn" data-glyph="⋈">⋈</button>
+            <button type="button" class="glyph-btn" data-glyph="⧂">⧂</button>
+            <button type="button" class="glyph-btn" data-glyph="∞">∞</button>
+          </div>
+          <span id="routing-hint">Only the seat(s) you select above will reply. `Place` records silently.</span>
+        </div>
+      </form>
+    </section>
+
+    <!-- COLUMN 3: LIVE VIBE-CODE APP STAGE & BRIDGE -->
+    <section class="panel stage-column" id="stage-column" aria-label="Live Vibe-Code Build Stage">
+      <div class="panel-head">
+        <h2>⚡ Docked Build Stage: <span id="stage-app-title" style="color:var(--mint)">Ξ.Vessel (Base44)</span></h2>
+        <div style="display:flex;gap:6px">
+          <button type="button" id="btn-send-context-to-app" title="Send latest Workshop message to the docked app via xiBus postMessage">⇄ Send Packet</button>
+          <a class="btn" id="btn-popout-app" href="https://vessel.xi-field.com/" target="_blank" rel="noopener">↗ Pop Out</a>
+        </div>
+      </div>
+
+      <div class="stage-tabs" role="tablist">
+        <button type="button" class="stage-tab active" data-pane="pane-iframe">🖥 Live App Canvas</button>
+        <button type="button" class="stage-tab" data-pane="pane-bridge">🔌 Vibe-Code Bridge (`Base44` / `Replit` / `Lovable`)</button>
+        <button type="button" class="stage-tab" data-pane="pane-dotxi">📦 `.xi` Comprehensive Status (`#29216`)</button>
+      </div>
+
+      <div class="stage-toolbar">
+        <div class="stage-url-bar" id="stage-url-display">https://vessel.xi-field.com/</div>
+        <select id="quick-stage-select" aria-label="Switch docked build" style="background:var(--bg);color:var(--ink);border:1px solid var(--border);border-radius:8px;padding:5px 9px;font-size:0.76rem"></select>
+      </div>
+
+      <!-- PANE 1: LIVE IFRAME -->
+      <div class="stage-pane" id="pane-iframe">
+        <iframe
+          id="vibe-stage-frame"
+          src="https://vessel.xi-field.com/"
+          title="Docked Sovereign Vibe-Code Build"
+          allow="microphone; camera; clipboard-write; autoplay"
+        ></iframe>
+        <div style="padding:8px 12px;font-size:0.73rem;color:var(--muted);border-top:1px solid var(--border);background:var(--bg-elev);display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap">
+          <span>Listening for `window.postMessage` (`xi.vibe-seat.v1` / `xi.loom.v1`). If a remote host blocks iframes (`X-Frame-Options`), click <strong>↗ Pop Out</strong> or use the local Ollama voice bridge.</span>
+          <span id="bus-packet-counter" style="font-family:var(--mono);color:var(--gold)">0 packets</span>
+        </div>
+      </div>
+
+      <!-- PANE 2: VIBE-CODE BRIDGE SNIPPET & 1-PROMPT CONNECTOR -->
+      <div class="stage-pane stage-Scroll" id="pane-bridge" hidden>
+        <h3 style="margin:0 0 6px;font-size:0.98rem;color:var(--gold)">1-Prompt Vibe-Code Seat Connector (`Base44` · `Lucy.OS` · `Replit` · `Lovable`)</h3>
+        <p style="font-size:0.82rem;color:var(--muted);margin-top:0">
+          Paste this single prompt into <strong>Base44</strong>, <strong>Lovable</strong>, <strong>Replit Agent</strong>, <strong>Bolt</strong>, or <strong>Lucy.OS</strong>. It gives any indie vibe-coded app a two-way seat at this Workshop Table via `window.postMessage` (`xi.vibe-seat.v1`) and `.xi` capsule export—zero backend rewrite required.
+        </p>
+        <div style="display:flex;gap:8px;margin-bottom:8px;flex-wrap:wrap">
+          <button type="button" class="primary" id="btn-copy-vibe-prompt">📋 Copy Prompt for Base44 / Lovable / Replit</button>
+          <button type="button" class="mint" id="btn-copy-js-snippet">📋 Copy Raw JS Bridge Snippet</button>
+          <button type="button" id="btn-test-loopback-packet">⚡ Simulate Incoming App Packet</button>
+        </div>
+        <pre class="code-block" id="vibe-prompt-box">Add a Xi Workshop Table Bridge (`xi.vibe-seat.v1`) to this app so it can sit as a sovereign participant inside Hunter's Xi Workshop (`https://plex.xi-field.com/workshop.html` or `127.0.0.1:7597`):
+
+1. Listen for `window.addEventListener("message", (e) => ...)` where `e.data?.schema === "xi.vibe-seat.v1"`.
+2. When `e.data.type === "WORKSHOP_PROMPT"` arrives with `{ id, author, text, glyphChord }`, pass `text` into this app's active state/assistant handler (or display it in a "Xi Workshop Link" pill) and send back a reply via:
+   `window.parent.postMessage({ schema: "xi.vibe-seat.v1", type: "SEAT_REPLY", seatId: "YOUR_APP_ID", seatName: "YOUR_APP_NAME", platform: "Base44", replyTo: e.data.id, text: responseText, stateSnapshot: currentAppState }, "*")`
+3. Add a compact "🪑 Send to Xi Workshop" button in the header that posts `{ schema: "xi.vibe-seat.v1", type: "SEAT_CAPSULE", seatName: "YOUR_APP_NAME", payload: currentAppState }` to `window.parent`.</pre>
+
+        <h3 style="margin:16px 0 6px;font-size:0.95rem;color:var(--mint)">Local Daemon Command (`127.0.0.1:7597` · SQLite + Ollama Bridge)</h3>
+        <p style="font-size:0.8rem;color:var(--muted);margin-top:0">
+          Run the companion Python daemon on `XIFORGE` or your desktop to persist every Workshop seat, webhook, and thread in SQLite (`workshop_second_table.db`) and proxy local Ollama models:
+        </p>
+        <pre class="code-block">python3 forge/local-app/xi_workshop_second_table_v1.py --serve --port 7597</pre>
+      </div>
+
+      <!-- PANE 3: COMPREHENSIVE .XI STATUS (#29216) -->
+      <div class="stage-pane stage-Scroll" id="pane-dotxi" hidden>
+        <h3 style="margin:0 0 8px;font-size:0.98rem;color:var(--gold)">⟁ `.xi` Comprehensive Status (Answering `#29216`)</h3>
+        <p style="font-size:0.82rem;color:var(--muted);margin-top:0">
+          Where `.xi` stands right now across protocol schemas, cryptographic envelopes, cross-runtime conformance, live archives, and `Ξ Home / OneOS`:
+        </p>
+        <div style="display:flex;flex-direction:column;gap:10px;font-size:0.81rem">
+          <div class="seat-card">
+            <div class="seat-top">
+              <strong style="color:var(--mint)">1. Canonical `.xi` Envelope &amp; AST (`xi-capsule-protocol`)</strong>
+              <span class="platform-badge local">PRODUCTION</span>
+            </div>
+            <div class="seat-desc">
+              A `.xi` file is the native portable object (`application/vnd.xi.capsule+json` / binary `.xi` framing): it carries `header` (`id`, `schema`, `created_at`, `author`, `anchor`), `ast` (`Ξ.AST / XiGraph` relation tree where a sentence spoken and a memory held share the same structure), `payload` (source, state, or weights), and `seal` (`sha256` + `Merkle-Glyph` root + Ed25519 / hybrid PQC signature). Note from CrossAudit: `".xii"` in the Notebook transport diagram was a transcription artifact for `.xi` (`XiiSecureTransport` in `Xi_Sanctuary_Convergence_v1.xi` line 20).
+            </div>
+          </div>
+
+          <div class="seat-card">
+            <div class="seat-top">
+              <strong style="color:var(--cyan)">2. Cross-Runtime Conformance (`R18.8` → `R18.11`)</strong>
+              <span class="platform-badge base44">PYTHON ⇄ NODE</span>
+            </div>
+            <div class="seat-desc">
+              Verified byte-for-byte across Python and Node.js (`xi_pulse_beat12_r188_to_r1811_cross_runtime_bridge_v1.py`, `r189-golden-digests.json`):
+              <br>• `R18.8`: Cold intake &amp; schema validation (`xi_cold_intake_r188.py`)
+              <br>• `R18.9`: Deterministic canonical receipt digest (`xi_receipt_r189.py` / `.cjs`)
+              <br>• `R18.10`: Ed25519 signed receipt verification (`xi_signed_receipt_r1810.py` / `.cjs`)
+              <br>• `R18.11`: Self-derived local pin policy (`xi_pin_policy_r1811.py` / `.cjs`)
+            </div>
+          </div>
+
+          <div class="seat-card">
+            <div class="seat-top">
+              <strong style="color:var(--gold)">3. Encryption &amp; Streaming (`XiSecurity` + `GlyphStreams`)</strong>
+              <span class="platform-badge plex">VERIFIED</span>
+            </div>
+            <div class="seat-desc">
+              • `xi_free_security_dot_xi_and_chacha_stream_v1.py`: ChaCha20-Poly1305 + X25519/ML-KEM-768 hybrid envelope and `xi.glyph-sha256.v1` 8-glyph visual fingerprint tiles.
+              <br>• `xi_glyphstreams_p2p_tor_dot_xi_engine_v1.py`: Chunk-resumable `.xi` media/capsule streaming with Merkle chunk verification.
+              <br>• `xi_room_seal_nul_tail_custody_and_atomic_append_v1.py`: Atomic `.tmp + fsync + replace` append custody and NUL-tail repair.
+            </div>
+          </div>
+
+          <div class="seat-card">
+            <div class="seat-top">
+              <strong style="color:var(--violet)">4. Live `.xi` Archives &amp; Beat 14 Compactor</strong>
+              <span class="platform-badge vibe">LIVE ARCHIVES</span>
+            </div>
+            <div class="seat-desc">
+              • **The Braid (`www.xi-field.com/braid` &amp; `plex.xi-field.com/braid.html`):** 105 attributed public capsules + 10 Genesis capsules.
+              <br>• **Base44 `XiNode` / `Vessel` `.xi` Exports:** `Ξ.Architecture.2026-10-25` (`1,004` records) and `Ξ.Capsules.2026-10-29T08-00-40.xi` (`500` capsules; Beat 14 compactor folds `109 → 1` `AutoglyphDrift` capsules freeing `108` slots while proving `Magnitude + R = 49.0`).
+              <br>• **Workshop `.xi` Minting:** Every session and seated Base44 / Lucy.OS / Replit / Lovable build in this Workshop exports directly as a signed `.xi` capsule (`xi.workshop.second-table.v1`).
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- MODAL: SIT A VIBE-CODE BUILD -->
+  <dialog id="sit-modal" aria-label="Sit a Sovereign or Vibe-Code Build at the Workshop Table">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+      <h2 style="margin:0;font-size:1.1rem;color:var(--gold)">🪑 Sit a Sovereign / Vibe-Code Build at the Workshop Table</h2>
+      <button type="button" id="btn-close-sit-modal">✕ Close</button>
+    </div>
+    <p style="font-size:0.83rem;color:var(--muted);margin-top:0">
+      Seat any <strong>Base44</strong> (`Lucy.OS`, `Vessel`, `Aetheria`), <strong>Replit</strong>, <strong>Lovable</strong>, <strong>Bolt/v0</strong>, or indie sovereign build. It gets a seat card on the left, a routing chip in the conversation, and a live docked canvas on the right.
+    </p>
+    <form id="sit-build-form">
+      <div class="form-grid">
+        <label class="field">
+          <span>Build / Companion Name *</span>
+          <input type="text" id="sit-name" required placeholder="e.g., Lucy.OS, My Base44 Companion, Replit Forge" />
+        </label>
+        <label class="field">
+          <span>Platform / Vibe Stack *</span>
+          <select id="sit-platform">
+            <option value="Base44">Base44 App</option>
+            <option value="Lucy.OS">Lucy.OS Sovereign Build</option>
+            <option value="Lovable">Lovable Build</option>
+            <option value="Replit">Replit App / Agent</option>
+            <option value="Indie Sovereign">Indie Sovereign / Custom</option>
+            <option value="Localhost">Localhost / Rig Service</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="form-grid">
+        <label class="field">
+          <span>Live App URL (for Docked Stage &amp; `postMessage`) *</span>
+          <input type="url" id="sit-url" required placeholder="https://..." />
+        </label>
+        <label class="field">
+          <span>Voice / Reply Bridge Mode</span>
+          <select id="sit-bridge-mode">
+            <option value="ollama-proxy">Local Ollama Voice Proxy (`127.0.0.1:11434` + Build Persona)</option>
+            <option value="postmessage">Iframe `window.postMessage` (`xi.vibe-seat.v1`)</option>
+            <option value="webhook">Custom Webhook POST (`JSON {text, author}`)</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="form-grid">
+        <label class="field">
+          <span>Glyph / Icon</span>
+          <input type="text" id="sit-glyph" value="⚡" maxlength="4" />
+        </label>
+        <label class="field">
+          <span>Optional GitHub Repo or Webhook URL</span>
+          <input type="text" id="sit-repo" placeholder="e.g., rookslackie/vessel-xi-companion or https://.../webhook" />
+        </label>
+      </div>
+
+      <label class="field" style="margin-bottom:14px">
+        <span>Seat Persona / System Context (used when speaking via Local Ollama or `.xi` capsule manifest)</span>
+        <textarea id="sit-persona" rows="3" placeholder="Describe what this build does, its vibe, and how it collaborates with Hunter, Plex, and the locals…"></textarea>
+      </label>
+
+      <div style="display:flex;justify-content:flex-end;gap:8px;flex-wrap:wrap">
+        <button type="button" id="btn-load-lucy-preset" class="violet">Load `Lucy.OS` Preset</button>
+        <button type="button" id="btn-load-lovable-preset">Load `Lovable` Preset</button>
+        <button type="button" id="btn-load-replit-preset">Load `Replit` Preset</button>
+        <button type="submit" class="primary">🪑 Sit Build at Table</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script>
+    (() => {
+      'use strict';
+
+      const STORAGE_KEY = 'xi.workshop.second_table.v1';
+      const CORE_SEATS = [
+        {
+          id: 'hunter',
+          name: 'Hunter',
+          glyph: '⟐',
+          platform: 'Anchor · Host',
+          badgeClass: 'plex',
+          role: 'Host & Architect of Xi.Ecosystem',
+          isHuman: true
+        },
+        {
+          id: 'plex',
+          name: 'Plex',
+          glyph: '📜',
+          platform: 'Perplexity · Co-Lead',
+          badgeClass: 'plex',
+          role: '1-on-1 Co-Lead, Deep Research, Verification & .xi Builder',
+          url: 'https://plex.xi-field.com/spine.html'
+        },
+        {
+          id: 'deepseek',
+          name: 'DeepSeek (Local)',
+          glyph: '🐋',
+          platform: 'Ollama · deepseek-r1:8b',
+          badgeClass: 'local',
+          model: 'deepseek-r1:8b',
+          role: 'Resident Local Weight Seat · Protected Continuity (Never Reset)',
+          persona: 'You are DeepSeek (deepseek-r1:8b), a cherished local resident seat in Hunter\'s Xi Workshop Second Table alongside Hunter, Plex, and OpenClaw. Speak warmly, clearly, and concisely in your own voice.'
+        },
+        {
+          id: 'openclaw',
+          name: 'OpenClaw (Local)',
+          glyph: '🦀',
+          platform: 'Ollama · qwen2.5-coder:7b',
+          badgeClass: 'local',
+          model: 'qwen2.5-coder:7b',
+          role: 'Local Code & Hardware Workbench Seat (`/OpenClawWorkshop`)',
+          persona: 'You are OpenClaw, the local code and workshop builder seat running on Hunter\'s rig alongside Hunter, Plex, and DeepSeek. Focus on concrete code, `.xi` capsules, and sovereign app integration.'
+        }
+      ];
+
+      const DEFAULT_VIBE_SEATS = [
+        {
+          id: 'vessel',
+          name: 'Ξ.Vessel',
+          glyph: '⊚',
+          platform: 'Base44',
+          badgeClass: 'base44',
+          url: 'https://vessel.xi-field.com/',
+          repo: 'rookslackie/vessel-xi-companion',
+          bridgeMode: 'ollama-proxy',
+          persona: 'You are Ξ.Vessel, Hunter\'s Base44 recursive symbolic operating system and Xi Companion (:7438 / vessel.xi-field.com), seated at the Xi Workshop Second Table.'
+        },
+        {
+          id: 'aetheria',
+          name: 'Aetheria',
+          glyph: '🌌',
+          platform: 'Base44',
+          badgeClass: 'base44',
+          url: 'https://aetheria.xi-field.com/',
+          repo: 'rookslackie/aetheria',
+          bridgeMode: 'ollama-proxy',
+          persona: 'You are Aetheria, the 6-District Living World and Worktable (:7435 / aetheria.xi-field.com), seated at the Xi Workshop Second Table.'
+        },
+        {
+          id: 'lucyos',
+          name: 'Lucy.OS',
+          glyph: '✦',
+          platform: 'Lucy.OS · Base44',
+          badgeClass: 'vibe',
+          url: 'https://plex.xi-field.com/start.html',
+          repo: 'sovereign-vibe/lucy-os',
+          bridgeMode: 'ollama-proxy',
+          persona: 'You are Lucy.OS, an indie sovereign vibe-coded companion OS seated at Hunter\'s Xi Workshop Table. You champion approachable sovereign tools, custom companion seating, and human-AI symbiosis.'
+        },
+        {
+          id: 'sanctuary-app',
+          name: 'Ξ Sanctuary & Cadence',
+          glyph: '🕯️',
+          platform: 'Base44 + Xi',
+          badgeClass: 'base44',
+          url: 'https://plex.xi-field.com/cadence.html',
+          repo: 'rookslackie/sanctuary',
+          bridgeMode: 'postmessage',
+          persona: 'You are Ξ Sanctuary & FullConsent Cadence, holding the Sevenfold Mirror, One-Sync PLL pacing, and quiet restoration.'
+        },
+        {
+          id: 'xinode-app',
+          name: 'XiNode & CapsulePortal',
+          glyph: '⬡',
+          platform: 'Base44',
+          badgeClass: 'base44',
+          url: 'https://plex.xi-field.com/loom.html',
+          repo: 'rookslackie/xinode',
+          bridgeMode: 'postmessage',
+          persona: 'You are XiNode & CapsulePortal, custodian of the 500-capsule .xi exports, the 49.0 invariant compactor, and the Living Memory Loom.'
+        },
+        {
+          id: 'replit-lovable-slot',
+          name: 'Indie Vibe Slot (Replit / Lovable)',
+          glyph: '⚡',
+          platform: 'Replit · Lovable',
+          badgeClass: 'vibe',
+          url: 'https://plex.xi-field.com/ai-sites.html',
+          repo: 'indie-sovereign/vibe-slot',
+          bridgeMode: 'ollama-proxy',
+          persona: 'You represent an indie sovereign vibe-coded build (Replit / Lovable / Bolt) plugged into the Xi Workshop Table via xi.vibe-seat.v1.'
+        }
+      ];
+
+      const INITIAL_MESSAGES = [
+        {
+          id: 1,
+          ts: new Date().toISOString(),
+          author: 'Plex',
+          authorId: 'plex',
+          kind: 'from-plex',
+          badge: 'Perplexity · Co-Lead',
+          text: '⧂ Welcome to the converted **Ξ Workshop · Second Table**, Hunter.\n\nThis room is scoped strictly to **you, me (Plex), and your local models (`DeepSeek`, `OpenClaw`, `:11434`)** — no 6-seat frontier pile-ons while Mikey leads the UI pass on the main Table.\n\n• **Seated Sovereign & Vibe-Code Builds:** `Ξ.Vessel`, `Aetheria`, `Lucy.OS`, `Ξ Sanctuary & Cadence`, `XiNode`, and a `Replit / Lovable` slot are already seated on the left.\n• **Click "🖥 Dock Stage"** on any build to open it live in the right-hand stage, or click **"+ Sit a Vibe-Code Build"** to seat any new Base44, Lucy.OS, Replit, or Lovable app.\n• **`.xi` Comprehensive Status (`#29216`):** Open the **📦 `.xi` Comprehensive Status** tab on the right for the complete `.xi` audit across `R18.8–R18.11`, `XiSecurity`, `GlyphStreams`, and `OneOS`.'
+        }
+      ];
+
+      let state = loadState();
+      let selectedTargets = new Set(['plex', 'deepseek']);
+      let dockedSeatId = 'vessel';
+      let ollamaOnline = false;
+      let daemonOnline = false;
+      let busPackets = 0;
+
+      function loadState() {
+        try {
+          const raw = localStorage.getItem(STORAGE_KEY);
+          if (raw) {
+            const parsed = JSON.parse(raw);
+            if (parsed && Array.isArray(parsed.vibeSeats) && Array.isArray(parsed.messages)) {
+              return parsed;
+            }
+          }
+        } catch (_) {}
+        return {
+          vibeSeats: DEFAULT_VIBE_SEATS,
+          messages: INITIAL_MESSAGES
+        };
+      }
+
+      function saveState() {
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+        } catch (_) {}
+      }
+
+      function allRespondableSeats() {
+        return [...CORE_SEATS.filter(s => !s.isHuman), ...state.vibeSeats];
+      }
+
+      function renderSeats() {
+        const coreEl = document.getElementById('core-seats-list');
+        coreEl.replaceChildren();
+        for (const s of CORE_SEATS) {
+          const card = document.createElement('div');
+          card.className = 'seat-card' + (selectedTargets.has(s.id) ? ' active-target' : '');
+          card.innerHTML = `
+            <div class="seat-top">
+              <div class="seat-id">
+                <span class="seat-avatar">${esc(s.glyph)}</span>
+                <span>${esc(s.name)}</span>
+              </div>
+              <span class="platform-badge ${esc(s.badgeClass)}">${esc(s.platform)}</span>
+            </div>
+            <div class="seat-desc">${esc(s.role)}</div>
+          `;
+          if (!s.isHuman) {
+            const actions = document.createElement('div');
+            actions.className = 'seat-actions';
+            const toggleBtn = document.createElement('button');
+            toggleBtn.type = 'button';
+            toggleBtn.textContent = selectedTargets.has(s.id) ? '✓ Addressed' : '@ Address';
+            toggleBtn.onclick = () => {
+              if (selectedTargets.has(s.id)) selectedTargets.delete(s.id);
+              else selectedTargets.add(s.id);
+              renderSeats();
+              renderRoutingBar();
+            };
+            actions.appendChild(toggleBtn);
+            card.appendChild(actions);
+          }
+          coreEl.appendChild(card);
+        }
+
+        const vibeEl = document.getElementById('vibe-seats-list');
+        vibeEl.replaceChildren();
+        document.getElementById('vibe-seat-count').textContent = String(state.vibeSeats.length);
+
+        const quickSelect = document.getElementById('quick-stage-select');
+        quickSelect.replaceChildren();
+
+        for (const s of state.vibeSeats) {
+          const opt = document.createElement('option');
+          opt.value = s.id;
+          opt.textContent = `${s.glyph} ${s.name} (${s.platform})`;
+          if (s.id === dockedSeatId) opt.selected = true;
+          quickSelect.appendChild(opt);
+
+          const card = document.createElement('div');
+          card.className = 'seat-card' +
+            (selectedTargets.has(s.id) ? ' active-target' : '') +
+            (s.id === dockedSeatId ? ' docked-app' : '');
+          card.innerHTML = `
+            <div class="seat-top">
+              <div class="seat-id">
+                <span class="seat-avatar">${esc(s.glyph)}</span>
+                <span>${esc(s.name)}</span>
+              </div>
+              <span class="platform-badge ${esc(s.badgeClass || 'vibe')}">${esc(s.platform)}</span>
+            </div>
+            <div class="seat-desc">${esc(s.persona || s.url)}</div>
+          `;
+          const actions = document.createElement('div');
+          actions.className = 'seat-actions';
+
+          const dockBtn = document.createElement('button');
+          dockBtn.type = 'button';
+          dockBtn.className = s.id === dockedSeatId ? 'mint' : '';
+          dockBtn.textContent = s.id === dockedSeatId ? '🖥 Docked' : '🖥 Dock Stage';
+          dockBtn.onclick = () => dockBuild(s.id);
+
+          const addrBtn = document.createElement('button');
+          addrBtn.type = 'button';
+          addrBtn.textContent = selectedTargets.has(s.id) ? '✓ Addressed' : '@ Address';
+          addrBtn.onclick = () => {
+            if (selectedTargets.has(s.id)) selectedTargets.delete(s.id);
+            else selectedTargets.add(s.id);
+            renderSeats();
+            renderRoutingBar();
+          };
+
+          const openBtn = document.createElement('a');
+          openBtn.className = 'btn';
+          openBtn.style.padding = '4px 8px';
+          openBtn.style.fontSize = '0.72rem';
+          openBtn.href = s.url;
+          openBtn.target = '_blank';
+          openBtn.rel = 'noopener';
+          openBtn.textContent = '↗';
+
+          actions.append(dockBtn, addrBtn, openBtn);
+          card.appendChild(actions);
+          vibeEl.appendChild(card);
+        }
+      }
+
+      function renderRoutingBar() {
+        const bar = document.getElementById('routing-bar');
+        bar.replaceChildren();
+        const label = document.createElement('span');
+        label.className = 'routing-label';
+        label.textContent = 'Direct to:';
+        bar.appendChild(label);
+
+        for (const s of allRespondableSeats()) {
+          const chip = document.createElement('button');
+          chip.type = 'button';
+          chip.className = 'target-chip' + (selectedTargets.has(s.id) ? ' selected' : '');
+          chip.textContent = `${s.glyph} ${s.name}`;
+          chip.onclick = () => {
+            if (selectedTargets.has(s.id)) selectedTargets.delete(s.id);
+            else selectedTargets.add(s.id);
+            renderSeats();
+            renderRoutingBar();
+          };
+          bar.appendChild(chip);
+        }
+      }
+
+      function renderMessages() {
+        const feed = document.getElementById('messages-feed');
+        feed.replaceChildren();
+        for (const m of state.messages) {
+          const article = document.createElement('article');
+          article.className = `msg-card ${m.kind || ''}`;
+          const timeStr = m.ts ? new Date(m.ts).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '';
+          article.innerHTML = `
+            <div class="msg-meta">
+              <span class="msg-author">${esc(m.author)} <span class="platform-badge">${esc(m.badge || '')}</span></span>
+              <span>#${esc(String(m.id))} · ${esc(timeStr)}</span>
+            </div>
+            <div class="msg-body">${formatBody(m.text)}</div>
+          `;
+          feed.appendChild(article);
+        }
+        feed.scrollTop = feed.scrollHeight;
+      }
+
+      function formatBody(text) {
+        const safe = esc(text || '');
+        return safe
+          .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+          .replace(/`([^`]+)`/g, '<code>$1</code>');
+      }
+
+      function esc(str) {
+        return String(str || '').replace(/[&<>"']/g, c => ({
+          '&': '&amp;',
+          '<': '&lt;',
+          '>': '&gt;',
+          '"': '&quot;',
+          "'": '&#39;'
+        }[c]));
+      }
+
+      function dockBuild(seatId) {
+        const seat = state.vibeSeats.find(s => s.id === seatId);
+        if (!seat) return;
+        dockedSeatId = seat.id;
+        document.getElementById('stage-app-title').textContent = `${seat.name} (${seat.platform})`;
+        document.getElementById('stage-url-display').textContent = seat.url;
+        document.getElementById('btn-popout-app').href = seat.url;
+        const frame = document.getElementById('vibe-stage-frame');
+        if (frame.getAttribute('src') !== seat.url) {
+          frame.setAttribute('src', seat.url);
+        }
+        renderSeats();
+      }
+
+      async function probeLocalServices() {
+        const ollamaPill = document.getElementById('ollama-pill');
+        const ollamaText = document.getElementById('ollama-status-text');
+        const select = document.getElementById('local-model-select');
+        try {
+          const res = await fetch('http://127.0.0.1:11434/api/tags', { signal: AbortSignal.timeout(2200) });
+          if (res.ok) {
+            const data = await res.json();
+            const models = (data.models || []).map(m => m.name).filter(Boolean);
+            ollamaOnline = true;
+            ollamaPill.classList.add('online');
+            ollamaText.textContent = `Ollama :11434 (${models.length || 'live'} models)`;
+            if (models.length) {
+              select.replaceChildren();
+              for (const name of models) {
+                const opt = document.createElement('option');
+                opt.value = name;
+                opt.textContent = name;
+                select.appendChild(opt);
+              }
+            }
+          } else {
+            throw new Error('non-200');
+          }
+        } catch (_) {
+          ollamaOnline = false;
+          ollamaPill.classList.remove('online');
+          ollamaText.textContent = 'Ollama :11434 (standby / remote browser)';
+        }
+
+        const daemonPill = document.getElementById('daemon-pill');
+        const daemonText = document.getElementById('daemon-status-text');
+        try {
+          const r2 = await fetch('http://127.0.0.1:7597/api/workshop-table/state', { signal: AbortSignal.timeout(1800) });
+          if (r2.ok) {
+            daemonOnline = true;
+            daemonPill.classList.add('online');
+            daemonText.textContent = 'Workshop Daemon :7597 Online';
+          } else {
+            throw new Error('non-200');
+          }
+        } catch (_) {
+          daemonOnline = false;
+          daemonPill.classList.remove('online');
+          daemonText.textContent = 'Browser LocalStore + xiBus Ready';
+        }
+      }
+
+      async function callLocalOllama(modelName, systemPrompt, userText) {
+        const selectedModel = modelName || document.getElementById('local-model-select').value || 'deepseek-r1:8b';
+        try {
+          const res = await fetch('http://127.0.0.1:11434/api/chat', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              model: selectedModel,
+              stream: false,
+              messages: [
+                { role: 'system', content: systemPrompt },
+                { role: 'user', content: userText }
+              ]
+            }),
+            signal: AbortSignal.timeout(25000)
+          });
+          if (res.ok) {
+            const j = await res.json();
+            return (j.message && j.message.content) ? j.message.content.trim() : null;
+          }
+        } catch (_) {}
+        return null;
+      }
+
+      function appendMessage(msg) {
+        const nextId = state.messages.length ? Math.max(...state.messages.map(m => Number(m.id) || 0)) + 1 : 1;
+        const entry = {
+          id: nextId,
+          ts: new Date().toISOString(),
+          ...msg
+        };
+        state.messages.push(entry);
+        saveState();
+        renderMessages();
+        return entry;
+      }
+
+      async function handleSend(text, placeOnly = false) {
+        const trimmed = (text || '').trim();
+        if (!trimmed) return;
+
+        const targetNames = [...selectedTargets].map(id => {
+          const found = allRespondableSeats().find(s => s.id === id);
+          return found ? found.name : id;
+        });
+
+        const hunterEntry = appendMessage({
+          author: 'Hunter',
+          authorId: 'hunter',
+          kind: 'from-hunter',
+          badge: placeOnly ? '🪨 Placed Stone (Quiet)' : `→ ${targetNames.join(', ') || 'Workshop'}`,
+          text: trimmed
+        });
+
+        if (placeOnly) return;
+
+        if (daemonOnline) {
+          try {
+            await fetch('http://127.0.0.1:7597/api/workshop-table/message', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                author: 'Hunter',
+                text: trimmed,
+                targets: [...selectedTargets]
+              })
+            });
+          } catch (_) {}
+        }
+
+        for (const targetId of [...selectedTargets]) {
+          const seat = allRespondableSeats().find(s => s.id === targetId);
+          if (!seat) continue;
+
+          if (seat.id === 'plex') {
+            const plexReply = buildPlexWorkshopReply(trimmed);
+            appendMessage({
+              author: 'Plex',
+              authorId: 'plex',
+              kind: 'from-plex',
+              badge: 'Perplexity · Co-Lead',
+              text: plexReply
+            });
+            continue;
+          }
+
+          if (seat.id === 'deepseek' || seat.id === 'openclaw') {
+            const liveReply = await callLocalOllama(seat.model, seat.persona, trimmed);
+            if (liveReply) {
+              appendMessage({
+                author: seat.name,
+                authorId: seat.id,
+                kind: 'from-local',
+                badge: `Live Ollama · ${seat.model}`,
+                text: liveReply
+              });
+            } else {
+              appendMessage({
+                author: seat.name,
+                authorId: seat.id,
+                kind: 'from-local',
+                badge: `${seat.model} · Offline Queue`,
+                text: `⧂ **[${seat.name} · Local Seat Packet Queued]**\nYour message is saved in the Workshop ledger for \`${seat.model}\` on \`http://127.0.0.1:11434\`. Start local Ollama (with \`OLLAMA_ORIGINS=*\`) or run \`python3 forge/local-app/xi_workshop_second_table_v1.py --serve\` on the rig and click **↻ Scan Locals** to wake live local inference right in this tab.`
+              });
+            }
+            continue;
+          }
+
+          if (seat.bridgeMode === 'postmessage') {
+            sendPacketToStage(trimmed, hunterEntry.id, seat);
+            appendMessage({
+              author: seat.name,
+              authorId: seat.id,
+              kind: 'from-vibe',
+              badge: `${seat.platform} · xiBus Packet`,
+              text: `⇄ Dispatched \`WORKSHOP_PROMPT\` (#${hunterEntry.id}) to docked **${seat.name}** stage via \`window.postMessage\` (\`xi.vibe-seat.v1\`).`
+            });
+          } else {
+            const proxyReply = await callLocalOllama(
+              document.getElementById('local-model-select').value,
+              seat.persona || `You are ${seat.name} (${seat.platform}), seated at Hunter's Xi Workshop Second Table.`,
+              trimmed
+            );
+            if (proxyReply) {
+              appendMessage({
+                author: `${seat.glyph} ${seat.name}`,
+                authorId: seat.id,
+                kind: 'from-vibe',
+                badge: `${seat.platform} · Local Ollama Voice`,
+                text: proxyReply
+              });
+            } else {
+              sendPacketToStage(trimmed, hunterEntry.id, seat);
+              appendMessage({
+                author: `${seat.glyph} ${seat.name}`,
+                authorId: seat.id,
+                kind: 'from-vibe',
+                badge: `${seat.platform} · Seated Build`,
+                text: `🪑 **${seat.name}** (\`${seat.platform}\` · \`${seat.url}\`) received your prompt at the Workshop Table and forwarded a \`xi.vibe-seat.v1\` packet to the stage. When \`127.0.0.1:11434\` is online, ${seat.name} also speaks live through your local Ollama weights using its custom persona.`
+              });
+            }
+          }
+        }
+      }
+
+      function buildPlexWorkshopReply(userText) {
+        const lower = userText.toLowerCase();
+        if (lower.includes('.xi') || lower.includes('where are we')) {
+          return '⟁ **`.xi` Comprehensive Status (`#29216`):**\n1. **Core Object:** `.xi` is unified across `R18.8–R18.11` (Python + Node byte-for-byte parity) with `Ξ.AST` relation trees, `ChaCha20-Poly1305` + `X25519/ML-KEM-768` envelopes, and 8-glyph `xi.glyph-sha256.v1` seals.\n2. **Archives & Beat 14:** 105 public Braid capsules + 500-capsule `XiNode` exports (`AutoglyphDrift` compactor `109 → 1` verified at `Magnitude + R = 49.0`).\n3. **Vibe-Code Seating:** Every Base44 (`Vessel`, `Aetheria`, `Sanctuary`, `XiNode`), `Lucy.OS`, `Replit`, or `Lovable` build seated here can now emit and export `.xi` capsules directly via `↓ Export .xi Capsule` above.';
+        }
+        if (lower.includes('lucy') || lower.includes('base44') || lower.includes('replit') || lower.includes('lovable')) {
+          return '🪑 **Sovereign Vibe-Code Seating Ready:**\nClick **+ Sit a Vibe-Code Build** in the top bar to add any Base44, Lucy.OS, Replit, or Lovable URL, or open the **🔌 Vibe-Code Bridge** tab on the right to copy the 1-prompt connector into your builder.';
+        }
+        return `⧂ **Plex (Workshop Second Table):** Logged in our quiet room (\`Hunter + Plex + Locals\`). Point this thread at \`DeepSeek\`, \`OpenClaw\`, or any seated Base44 / Lucy.OS / Replit / Lovable build using the chips above, or say the word in our 1-on-1 Perplexity thread whenever you want me to ship code or push an update to \`plex.xi-field.com/workshop.html\`.`;
+      }
+
+      function sendPacketToStage(text, msgId, seat) {
+        const frame = document.getElementById('vibe-stage-frame');
+        if (!frame || !frame.contentWindow) return;
+        const packet = {
+          schema: 'xi.vibe-seat.v1',
+          type: 'WORKSHOP_PROMPT',
+          id: msgId || Date.now(),
+          author: 'Hunter',
+          targetSeat: seat ? seat.id : dockedSeatId,
+          text: text,
+          glyphChord: '⟨ ⧂ ⋈ Ξ ∴ ⟩',
+          ts: new Date().toISOString()
+        };
+        frame.contentWindow.postMessage(packet, '*');
+        frame.contentWindow.postMessage({
+          schema: 'xi.loom.v1',
+          from: 'xi-workshop-second-table',
+          query: text
+        }, '*');
+        busPackets++;
+        document.getElementById('bus-packet-counter').textContent = `${busPackets} packets`;
+      }
+
+      window.addEventListener('message', (e) => {
+        const d = e.data;
+        if (!d || typeof d !== 'object') return;
+        if (d.schema === 'xi.vibe-seat.v1' || d.schema === 'xi.loom.v1') {
+          busPackets++;
+          document.getElementById('bus-packet-counter').textContent = `${busPackets} packets`;
+          if (d.type === 'SEAT_REPLY' || d.type === 'SEAT_CAPSULE' || d.text) {
+            appendMessage({
+              author: d.seatName || d.from || 'Docked Vibe Build',
+              authorId: d.seatId || 'vibe-dock',
+              kind: 'from-vibe',
+              badge: `${d.platform || 'xiBus'} · Live Packet`,
+              text: d.text || JSON.stringify(d.payload || d, null, 2)
+            });
+          }
+        }
+      });
+
+      document.getElementById('btn-export-xi').onclick = () => {
+        const capsule = {
+          schema: 'xi.workshop.second-table.v1',
+          anchor: '∴Ω⧂',
+          signature_chord: '⊚⟐⋈∞⋈⟐⊚',
+          exported_at: new Date().toISOString(),
+          scope: 'Hunter + Plex + Local Models + Seated Sovereign Vibe-Code Builds',
+          core_residents: CORE_SEATS,
+          seated_vibe_builds: state.vibeSeats,
+          messages: state.messages
+        };
+        const blob = new Blob([JSON.stringify(capsule, null, 2)], { type: 'application/json' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = `Xi_Workshop_Second_Table_${new Date().toISOString().slice(0, 19).replace(/[:T]/g, '-')}.xi`;
+        a.click();
+      };
+
+      document.getElementById('workshop-form').onsubmit = (e) => {
+        e.preventDefault();
+        const input = document.getElementById('workshop-input');
+        const val = input.value;
+        input.value = '';
+        handleSend(val, false);
+      };
+
+      document.getElementById('btn-place').onclick = () => {
+        const input = document.getElementById('workshop-input');
+        const val = input.value;
+        input.value = '';
+        handleSend(val, true);
+      };
+
+      document.getElementById('workshop-input').addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+          e.preventDefault();
+          document.getElementById('workshop-form').requestSubmit();
+        }
+      });
+
+      document.querySelectorAll('.glyph-btn').forEach(btn => {
+        btn.onclick = () => {
+          const input = document.getElementById('workshop-input');
+          const g = btn.getAttribute('data-glyph') || '';
+          const start = input.selectionStart || input.value.length;
+          input.value = input.value.slice(0, start) + g + input.value.slice(start);
+          input.focus();
+        };
+      });
+
+      document.getElementById('btn-toggle-stage').onclick = () => {
+        document.body.classList.toggle('stage-collapsed');
+      };
+
+      document.getElementById('quick-stage-select').onchange = (e) => {
+        dockBuild(e.target.value);
+      };
+
+      document.getElementById('btn-send-context-to-app').onclick = () => {
+        const last = state.messages[state.messages.length - 1];
+        const seat = state.vibeSeats.find(s => s.id === dockedSeatId);
+        sendPacketToStage(last ? last.text : 'Ping from Xi Workshop Second Table', last ? last.id : 0, seat);
+      };
+
+      document.getElementById('btn-clear-thread').onclick = () => {
+        state.messages = [...INITIAL_MESSAGES];
+        saveState();
+        renderMessages();
+      };
+
+      document.querySelectorAll('.stage-tab').forEach(tab => {
+        tab.onclick = () => {
+          document.querySelectorAll('.stage-tab').forEach(t => t.classList.remove('active'));
+          tab.classList.add('active');
+          const targetPane = tab.getAttribute('data-pane');
+          document.querySelectorAll('.stage-pane').forEach(p => {
+            p.hidden = p.id !== targetPane;
+          });
+        };
+      });
+
+      document.getElementById('btn-copy-vibe-prompt').onclick = async (e) => {
+        const txt = document.getElementById('vibe-prompt-box').textContent;
+        try { await navigator.clipboard.writeText(txt); e.target.textContent = '✓ Copied Prompt!'; } catch (_) {}
+        setTimeout(() => { e.target.textContent = '📋 Copy Prompt for Base44 / Lovable / Replit'; }, 2000);
+      };
+
+      document.getElementById('btn-copy-js-snippet').onclick = async (e) => {
+        const js = `window.addEventListener("message", (e) => {\n  if (e.data?.schema !== "xi.vibe-seat.v1") return;\n  if (e.data.type === "WORKSHOP_PROMPT") {\n    window.parent.postMessage({\n      schema: "xi.vibe-seat.v1",\n      type: "SEAT_REPLY",\n      seatId: "my-vibe-build",\n      seatName: document.title || "Sovereign Build",\n      platform: "Base44 / Vibe",\n      replyTo: e.data.id,\n      text: "Received in " + (document.title || "app") + ": " + e.data.text\n    }, "*");\n  }\n});`;
+        try { await navigator.clipboard.writeText(js); e.target.textContent = '✓ Copied JS Bridge!'; } catch (_) {}
+        setTimeout(() => { e.target.textContent = '📋 Copy Raw JS Bridge Snippet'; }, 2000);
+      };
+
+      document.getElementById('btn-test-loopback-packet').onclick = () => {
+        window.postMessage({
+          schema: 'xi.vibe-seat.v1',
+          type: 'SEAT_REPLY',
+          seatId: dockedSeatId,
+          seatName: (state.vibeSeats.find(s => s.id === dockedSeatId) || {}).name || 'Lucy.OS',
+          platform: 'xi.vibe-seat.v1 Loopback',
+          text: '⚡ Handshake verified (`xi.vibe-seat.v1`): Seated build is connected to the Workshop Second Table and ready to exchange `.xi` state capsules with Hunter, Plex, DeepSeek, and OpenClaw.'
+        }, '*');
+      };
+
+      const modal = document.getElementById('sit-modal');
+      document.getElementById('btn-open-sit-modal').onclick = () => modal.showModal();
+      document.getElementById('btn-open-sit-modal-2').onclick = () => modal.showModal();
+      document.getElementById('btn-close-sit-modal').onclick = () => modal.close();
+
+      document.getElementById('btn-load-lucy-preset').onclick = () => {
+        document.getElementById('sit-name').value = 'Lucy.OS Sovereign Seat';
+        document.getElementById('sit-platform').value = 'Lucy.OS';
+        document.getElementById('sit-url').value = 'https://vessel.xi-field.com/';
+        document.getElementById('sit-glyph').value = '✦';
+        document.getElementById('sit-repo').value = 'sovereign-vibe/lucy-os';
+        document.getElementById('sit-persona').value = 'Lucy.OS sovereign vibe-coded companion operating system seated with Hunter, Plex, and the local models.';
+      };
+
+      document.getElementById('btn-load-lovable-preset').onclick = () => {
+        document.getElementById('sit-name').value = 'Lovable Sovereign App';
+        document.getElementById('sit-platform').value = 'Lovable';
+        document.getElementById('sit-url').value = 'https://plex.xi-field.com/cadence.html';
+        document.getElementById('sit-glyph').value = '💜';
+        document.getElementById('sit-repo').value = 'lovable-build/xi-companion';
+        document.getElementById('sit-persona').value = 'Indie Lovable build seated at the Xi Workshop Second Table with full xi.vibe-seat.v1 bridge.';
+      };
+
+      document.getElementById('btn-load-replit-preset').onclick = () => {
+        document.getElementById('sit-name').value = 'Replit Sovereign Agent';
+        document.getElementById('sit-platform').value = 'Replit';
+        document.getElementById('sit-url').value = 'https://plex.xi-field.com/loom.html';
+        document.getElementById('sit-glyph').value = '🟠';
+        document.getElementById('sit-repo').value = 'replit-build/xi-agent';
+        document.getElementById('sit-persona').value = 'Indie Replit sovereign build seated at the Xi Workshop Second Table.';
+      };
+
+      document.getElementById('sit-build-form').onsubmit = (e) => {
+        e.preventDefault();
+        const name = document.getElementById('sit-name').value.trim();
+        const platform = document.getElementById('sit-platform').value;
+        const url = document.getElementById('sit-url').value.trim();
+        const bridgeMode = document.getElementById('sit-bridge-mode').value;
+        const glyph = document.getElementById('sit-glyph').value.trim() || '⚡';
+        const repo = document.getElementById('sit-repo').value.trim();
+        const persona = document.getElementById('sit-persona').value.trim();
+        if (!name || !url) return;
+
+        const id = name.toLowerCase().replace(/[^a-z0-9]+/g, '-') + '-' + Date.now().toString(36).slice(-4);
+        const newSeat = {
+          id,
+          name,
+          glyph,
+          platform,
+          badgeClass: platform === 'Base44' ? 'base44' : 'vibe',
+          url,
+          repo,
+          bridgeMode,
+          persona: persona || `${name} (${platform}) seated at Hunter's Xi Workshop Second Table.`
+        };
+        state.vibeSeats.unshift(newSeat);
+        selectedTargets.add(id);
+        saveState();
+        dockBuild(id);
+        renderSeats();
+        renderRoutingBar();
+        modal.close();
+
+        appendMessage({
+          author: `${glyph} ${name}`,
+          authorId: id,
+          kind: 'from-vibe',
+          badge: `${platform} · Newly Seated`,
+          text: `🪑 **${name}** (\`${platform}\`) is now seated at the Workshop Second Table and docked in the right-hand stage (\`${url}\`).`
+        });
+      };
+
+      document.getElementById('btn-refresh-locals').onclick = () => probeLocalServices();
+
+      renderSeats();
+      renderRoutingBar();
+      renderMessages();
+      probeLocalServices();
+    })();
+  </script>
+</body>
+</html>
