@@ -220,7 +220,7 @@ def cayley_klein_su2_to_matrix(n_hat: Vec3, theta: float) -> Mat3:
 def audit_a3_8x8x8_lattice_lifts(grid_n: int = 8) -> Dict[str, Any]:
     """
     Independent reproduction of Claude's #29417 8^3 lattice check (1,176 plaquettes, 343 cubes)
-    for Model A3 v0.6 (checkerboard alternating vertex angles) and v0.7 (smooth vertex field)
+    for Model A3 v0.6 (checkerboard Rz^((i+j+k)%2)) and v0.7 (discrete 90-deg generator product Rz^(i%4)Rx^(j%4)Ry^(k%4))
     where edge transport is T(p->q) = R_p^T R_q.
     """
     rng = random.Random(20261030)
