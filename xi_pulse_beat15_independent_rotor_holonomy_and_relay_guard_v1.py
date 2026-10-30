@@ -338,11 +338,32 @@ def run_six_test_rotor_protocol() -> Dict[str, Any]:
     # rotates the tangent frame angle alpha by d(alpha)/dt = cos(theta(t)) * d(phi)/dt.
     def rk4_sphere_latitude_holonomy(theta0: float, steps: int = 4096) -> float:
         dphi = (2.0 * math.pi) / steps
-        alpha = 0.0
-        for _ in range(steps):
-            alpha += math.cos(theta0) * dphi
-        # Full 2pi frame rotation minus parallel-transported frame rotation mod 2pi equals Gaussian area 2pi(1 - cos(theta0))
-        return 2.0 * math.pi - alpha
+        st0, ct0 = math.sin(theta0), math.cos(theta0)
+        e_th0: Vec3 = (ct0, 0.0, -st0)
+        e_ph0: Vec3 = (0.0, 1.0, 0.0)
+        v_cap: Vec3 = e_th0
+
+        def cap_deriv(phi_val: float, vec: Vec3) -> Vec3:
+            cp, sp = math.cos(phi_val), math.sin(phi_val)
+            gam: Vec3 = (st0 * cp, st0 * sp, ct0)
+            dgam: Vec3 = (-st0 * sp, st0 * cp, 0.0)
+            dot_gv = dgam[0] * vec[0] + dgam[1] * vec[1] + dgam[2] * vec[2]
+            return (-dot_gv * gam[0], -dot_gv * gam[1], -dot_gv * gam[2])
+
+        for k in range(steps):
+            p0 = k * dphi
+            k1 = cap_deriv(p0, v_cap)
+            k2 = cap_deriv(p0 + 0.5 * dphi, (v_cap[0] + 0.5 * dphi * k1[0], v_cap[1] + 0.5 * dphi * k1[1], v_cap[2] + 0.5 * dphi * k1[2]))
+            k3 = cap_deriv(p0 + 0.5 * dphi, (v_cap[0] + 0.5 * dphi * k2[0], v_cap[1] + 0.5 * dphi * k2[1], v_cap[2] + 0.5 * dphi * k2[2]))
+            k4 = cap_deriv(p0 + dphi, (v_cap[0] + dphi * k3[0], v_cap[1] + dphi * k3[1], v_cap[2] + dphi * k3[2]))
+            v_cap = (
+                v_cap[0] + (dphi / 6.0) * (k1[0] + 2.0 * k2[0] + 2.0 * k3[0] + k4[0]),
+                v_cap[1] + (dphi / 6.0) * (k1[1] + 2.0 * k2[1] + 2.0 * k3[1] + k4[1]),
+                v_cap[2] + (dphi / 6.0) * (k1[2] + 2.0 * k2[2] + 2.0 * k3[2] + k4[2]),
+            )
+        c_th = v_cap[0] * e_th0[0] + v_cap[1] * e_th0[1] + v_cap[2] * e_th0[2]
+        c_ph = v_cap[0] * e_ph0[0] + v_cap[1] * e_ph0[1] + v_cap[2] * e_ph0[2]
+        return math.atan2(c_ph, c_th) % (2.0 * math.pi)
 
     # Octant spherical triangle: true RK4 integration of Levi-Civita parallel transport dV/ds = -(T(s) . V(s)) gamma(s)
     def rk4_s2_arc(v_init: Vec3, p_start: Vec3, p_end: Vec3, steps: int = 1024) -> Vec3:

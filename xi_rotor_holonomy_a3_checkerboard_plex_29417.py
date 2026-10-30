@@ -228,28 +228,29 @@ def audit_a3_8x8x8_lattice_lifts(grid_n: int = 8) -> Dict[str, Any]:
     # Enumerate all vertices p = (x, y, z) in {0..7}^3
     vertices = [(x, y, z) for x in range(grid_n) for y in range(grid_n) for z in range(grid_n)]
 
-    # Build v0.6 (3D checkerboard alternating +/- pi/4 about fixed axis) and v0.7 (smooth spatial wave of angles < pi/2)
-    axis_v06 = vec_normalize((0.3, -0.5, 0.8))
+    # Build recorded Model A3 v0.6 (checkerboard R = Rz^((i+j+k)%2)) and recorded v0.7 (R = Rz^(i%4) Rx^(j%4) Ry^(k%4))
+    qz_90 = rotor_from_axis_angle((0.0, 0.0, 1.0), math.pi / 2.0)
+    qx_90 = rotor_from_axis_angle((1.0, 0.0, 0.0), math.pi / 2.0)
+    qy_90 = rotor_from_axis_angle((0.0, 1.0, 0.0), math.pi / 2.0)
+
+    def rotor_pow(q_base: Rotor, exp_n: int) -> Rotor:
+        acc: Rotor = (1.0, 0.0, 0.0, 0.0)
+        for _ in range(exp_n % 4):
+            acc = rotor_mul(acc, q_base)
+        return acc
+
     v06_q: Dict[Tuple[int, int, int], Rotor] = {}
     v06_R: Dict[Tuple[int, int, int], Mat3] = {}
     v07_q: Dict[Tuple[int, int, int], Rotor] = {}
     v07_R: Dict[Tuple[int, int, int], Mat3] = {}
 
     for (x, y, z) in vertices:
-        parity = 1.0 if ((x + y + z) % 2 == 0) else -1.0
-        th06 = parity * (math.pi / 4.0)
-        q06 = rotor_from_axis_angle(axis_v06, th06)
+        q06 = rotor_pow(qz_90, (x + y + z) % 2)
         v06_q[(x, y, z)] = q06
         v06_R[(x, y, z)] = rotor_to_matrix(q06)
 
-        # v0.7: smooth spatially varying vertex rotation (step differences stay within principal w > 0 branch)
-        ax07 = (
-            math.sin(0.35 * x + 0.2 * y),
-            math.cos(0.25 * y - 0.3 * z),
-            math.sin(0.3 * z + 0.15 * x) + 0.5,
-        )
-        th07 = 0.65 * math.sin(0.4 * x) * math.cos(0.4 * y) * math.cos(0.4 * z)
-        q07 = rotor_from_axis_angle(ax07, th07)
+        # Recorded v0.7 rule: R(i,j,k) = Rz^(i%4) Rx^(j%4) Ry^(k%4)
+        q07 = rotor_mul(rotor_mul(rotor_pow(qz_90, x), rotor_pow(qx_90, y)), rotor_pow(qy_90, z))
         v07_q[(x, y, z)] = q07
         v07_R[(x, y, z)] = rotor_to_matrix(q07)
 
@@ -526,13 +527,36 @@ def run_all() -> Dict[str, Any]:
     octant_rad = math.acos(max(-1.0, min(1.0, v0_oct[0] * v3_oct[0] + v0_oct[1] * v3_oct[1] + v0_oct[2] * v3_oct[2])))
     octant_err = abs(octant_rad - (math.pi / 2.0))
 
-    # Colatitude circle theta0 = 0.9 RK4 integration on S^2
+    # Colatitude circle theta0 = 0.9: true 3D extrinsic RK4 parallel-transport ODE dV/dphi = -(gamma'(phi) . V(phi)) gamma(phi)
     theta0 = 0.9
-    dphi = (2.0 * math.pi) / 4096
-    alpha = 0.0
-    for _ in range(4096):
-        alpha += math.cos(theta0) * dphi
-    cap_rad = 2.0 * math.pi - alpha
+    cap_steps = 4096
+    dphi = (2.0 * math.pi) / cap_steps
+    st0, ct0 = math.sin(theta0), math.cos(theta0)
+    e_th0: Vec3 = (ct0, 0.0, -st0)
+    e_ph0: Vec3 = (0.0, 1.0, 0.0)
+    v_cap: Vec3 = e_th0
+
+    def cap_deriv(phi_val: float, vec: Vec3) -> Vec3:
+        cp, sp = math.cos(phi_val), math.sin(phi_val)
+        gam: Vec3 = (st0 * cp, st0 * sp, ct0)
+        dgam: Vec3 = (-st0 * sp, st0 * cp, 0.0)
+        dot_gv = dgam[0] * vec[0] + dgam[1] * vec[1] + dgam[2] * vec[2]
+        return (-dot_gv * gam[0], -dot_gv * gam[1], -dot_gv * gam[2])
+
+    for k in range(cap_steps):
+        p0 = k * dphi
+        k1 = cap_deriv(p0, v_cap)
+        k2 = cap_deriv(p0 + 0.5 * dphi, (v_cap[0] + 0.5 * dphi * k1[0], v_cap[1] + 0.5 * dphi * k1[1], v_cap[2] + 0.5 * dphi * k1[2]))
+        k3 = cap_deriv(p0 + 0.5 * dphi, (v_cap[0] + 0.5 * dphi * k2[0], v_cap[1] + 0.5 * dphi * k2[1], v_cap[2] + 0.5 * dphi * k2[2]))
+        k4 = cap_deriv(p0 + dphi, (v_cap[0] + dphi * k3[0], v_cap[1] + dphi * k3[1], v_cap[2] + dphi * k3[2]))
+        v_cap = (
+            v_cap[0] + (dphi / 6.0) * (k1[0] + 2.0 * k2[0] + 2.0 * k3[0] + k4[0]),
+            v_cap[1] + (dphi / 6.0) * (k1[1] + 2.0 * k2[1] + 2.0 * k3[1] + k4[1]),
+            v_cap[2] + (dphi / 6.0) * (k1[2] + 2.0 * k2[2] + 2.0 * k3[2] + k4[2]),
+        )
+    c_th = v_cap[0] * e_th0[0] + v_cap[1] * e_th0[1] + v_cap[2] * e_th0[2]
+    c_ph = v_cap[0] * e_ph0[0] + v_cap[1] * e_ph0[1] + v_cap[2] * e_ph0[2]
+    cap_rad = math.atan2(c_ph, c_th) % (2.0 * math.pi)
     cap_err = abs(cap_rad - 2.0 * math.pi * (1.0 - math.cos(theta0)))
     t5_pass = (abs(flat_polar_rad) < 1e-12) and (octant_err < 1e-12) and (cap_err < 1e-12)
 
