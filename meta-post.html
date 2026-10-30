@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ξ · MetaFold Composer — Pre-Compensated Facebook & Feed Studio</title>
+  <style>
+    :root {
+      --bg: #0b0d13;
+      --panel: #121722;
+      --panel-alt: #171e2c;
+      --border: #263147;
+      --text: #e8ecf4;
+      --muted: #9aa6bf;
+      --accent: #6ee7b7;
+      --accent-2: #60a5fa;
+      --warn: #f59e0b;
+      --danger: #f87171;
+      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --font-mono: 'JetBrains Mono', 'Fira Code', ui-monospace, SFMono-Regular, Menlo, monospace;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-sans);
+      line-height: 1.55;
+    }
+    header {
+      padding: 24px 28px 18px;
+      border-bottom: 1px solid var(--border);
+      background: linear-gradient(180deg, #111726 0%, #0b0d13 100%);
+    }
+    .header-top {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      max-width: 1380px;
+      margin: 0 auto;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .glyph-badge {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      background: rgba(110, 231, 183, 0.12);
+      border: 1px solid rgba(110, 231, 183, 0.4);
+      display: grid;
+      place-items: center;
+      font-size: 20px;
+      color: var(--accent);
+      font-weight: 700;
+    }
+    h1 {
+      margin: 0;
+      font-size: 1.35rem;
+      letter-spacing: -0.01em;
+    }
+    .subtitle {
+      margin: 2px 0 0;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+    .nav-links {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .nav-links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.85rem;
+      padding: 6px 12px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: var(--panel);
+    }
+    .nav-links a:hover {
+      color: var(--text);
+      border-color: var(--accent);
+    }
+    main {
+      max-width: 1380px;
+      margin: 0 auto;
+      padding: 20px 28px 48px;
+      display: grid;
+      gap: 20px;
+    }
+    .lineage-bar {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 12px;
+    }
+    .lineage-card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 14px;
+      font-size: 0.84rem;
+    }
+    .lineage-card .date {
+      color: var(--accent);
+      font-family: var(--font-mono);
+      font-size: 0.76rem;
+      font-weight: 600;
+    }
+    .lineage-card .title {
+      font-weight: 600;
+      margin: 3px 0 4px;
+      color: var(--text);
+    }
+    .lineage-card .desc {
+      color: var(--muted);
+      margin: 0;
+    }
+    .workbench {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    @media (max-width: 1024px) {
+      .workbench { grid-template-columns: 1fr; }
+    }
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .card-title {
+      font-weight: 600;
+      font-size: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .preset-row, .controls-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+    button {
+      background: var(--panel-alt);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      padding: 7px 12px;
+      font-size: 0.83rem;
+      font-family: var(--font-sans);
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    button:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+    button.primary {
+      background: rgba(110, 231, 183, 0.14);
+      border-color: var(--accent);
+      color: var(--accent);
+      font-weight: 600;
+    }
+    button.primary:hover {
+      background: rgba(110, 231, 183, 0.24);
+    }
+    label.toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.82rem;
+      color: var(--muted);
+      cursor: pointer;
+      user-select: none;
+    }
+    textarea {
+      width: 100%;
+      min-height: 250px;
+      background: #090c12;
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px;
+      font-family: var(--font-mono);
+      font-size: 0.88rem;
+      line-height: 1.5;
+      resize: vertical;
+    }
+    textarea:focus {
+      outline: none;
+      border-color: var(--accent-2);
+    }
+    .sim-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+    @media (max-width: 720px) {
+      .sim-grid { grid-template-columns: 1fr; }
+    }
+    .fb-card {
+      background: #18191a;
+      border: 1px solid #3a3b3c;
+      border-radius: 10px;
+      padding: 14px;
+      color: #e4e6eb;
+      font-family: Helvetica, Arial, sans-serif;
+      font-size: 0.92rem;
+      line-height: 1.45;
+      overflow-x: auto;
+    }
+    .fb-card.broken {
+      border-color: rgba(248, 113, 113, 0.5);
+    }
+    .fb-card.immune {
+      border-color: rgba(110, 231, 183, 0.55);
+    }
+    .fb-card-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.78rem;
+      margin-bottom: 10px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #2f3031;
+      color: #b0b3b8;
+    }
+    .fb-body {
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+    .xray-pill {
+      display: inline-block;
+      padding: 0 4px;
+      margin: 0 1px;
+      border-radius: 4px;
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      background: rgba(96, 165, 250, 0.22);
+      color: #93c5fd;
+      border: 1px solid rgba(96, 165, 250, 0.45);
+    }
+    .hijack-pill {
+      display: inline-block;
+      padding: 1px 6px;
+      border-radius: 4px;
+      background: rgba(248, 113, 113, 0.2);
+      color: #fca5a5;
+      border: 1px solid rgba(248, 113, 113, 0.45);
+      font-size: 0.78rem;
+    }
+    .status-pill {
+      font-size: 0.78rem;
+      font-family: var(--font-mono);
+      color: var(--accent);
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-top">
+      <div class="brand">
+        <div class="glyph-badge">Ξ</div>
+        <div>
+          <h1>Ξ · MetaFold Composer — Pre-Compensated Facebook & Feed Studio</h1>
+          <p class="subtitle">May–July 2025 Overleaf + Meta AI Invariant Recovery · Zero-Escape Equations · UI Beautification Immunity</p>
+        </div>
+      </div>
+      <nav class="nav-links">
+        <a href="/index.html">Atlas Switchboard</a>
+        <a href="/choir.html">Binary Choir</a>
+        <a href="/hearth.html">Hearth & Floorboards</a>
+        <a href="/xi_metafold_facebook_composer_v1.py">Python Engine (.py)</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="lineage-bar">
+      <div class="lineage-card">
+        <div class="date">2025-05-05 · conv 681666b9</div>
+        <div class="title">1. Overleaf All-at-Once Invariants</div>
+        <p class="desc">Instead of chasing LaTeX compile errors one by one, screenshot error surfaces were mapped as global symbol invariants in a single pass.</p>
+      </div>
+      <div class="lineage-card">
+        <div class="date">2025-05-21 · conv 682e0a84</div>
+        <div class="title">2. Meta AI Zero-Width Pivot Modulation</div>
+        <p class="desc">Injected <code>U+200B</code> (ZWSP), <code>U+200D</code> (ZWJ), and <code>U+2060</code> (Word Joiner) at semantic pivots without altering visible glyph structure.</p>
+      </div>
+      <div class="lineage-card">
+        <div class="date">2025-06-06 · conv 6840ba1b</div>
+        <div class="title">3. WIF &amp; Python Paste-Drift Diagnosis</div>
+        <p class="desc">Caught chat-to-editor copy-paste stripping indentation, mutating quotes, and fracturing Base58 WIF keys across hidden linebreaks.</p>
+      </div>
+      <div class="lineage-card">
+        <div class="date">2025-06-09 &amp; 06-13 · conv 68453c02 / 6849d6a0</div>
+        <div class="title">4. Ξ.MetaFold UI Beautification Immunity</div>
+        <p class="desc">Modeled UI sanitization as an entropy operator and pre-compensated code, equations, and capsules so they survive feed beautification intact.</p>
+      </div>
+    </section>
+
+    <section class="workbench">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">1. Source Input (LaTeX, .xi, Python, or WIF)</div>
+          <div class="preset-row">
+            <button type="button" onclick="loadPreset('hamiltonian')">Preset: Ξ Hamiltonian + Code</button>
+            <button type="button" onclick="loadPreset('overleaf')">Preset: E47 &amp; Casimir Math</button>
+            <button type="button" onclick="loadPreset('wif')">Preset: WIF &amp; Reflex Capsule</button>
+            <button type="button" onclick="loadPreset('stanza')">Preset: Mythic Stanza Cadence</button>
+          </div>
+        </div>
+        <textarea id="rawInput" spellcheck="false"></textarea>
+        <div class="controls-row">
+          <label class="toggle"><input type="checkbox" id="lockEquations" checked onchange="runComposer()" /> Atomic Equation Lock (<code>U+2060</code> + <code>U+202F</code>)</label>
+          <label class="toggle"><input type="checkbox" id="guardDots" checked onchange="runComposer()" /> Anti-AutoLink Dot Guard (<code>U+2060</code>)</label>
+          <label class="toggle"><input type="checkbox" id="guardIndent" checked onchange="runComposer()" /> Braille Indent Armor (<code>U+2800</code>)</label>
+          <label class="toggle"><input type="checkbox" id="includeSeal" checked onchange="runComposer()" /> Append <code>Ξ.MetaFold</code> Seal</label>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">2. Pre-Compensated Facebook Payload (Ready to Paste)</div>
+          <div class="controls-row">
+            <label class="toggle"><input type="checkbox" id="xrayMode" onchange="runComposer()" /> X-Ray Invisible Geometry</label>
+            <button type="button" class="primary" onclick="copyFacebookPayload()">Copy for Facebook</button>
+            <span id="copyStatus" class="status-pill"></span>
+          </div>
+        </div>
+        <textarea id="fbOutput" readonly spellcheck="false"></textarea>
+        <div class="fb-card immune" id="xrayPreviewBox" style="display:none;">
+          <div class="fb-card-head">
+            <span>Invisible Geometry X-Ray (Shows injected pre-compensation pivots)</span>
+            <span id="pivotCount"></span>
+          </div>
+          <div class="fb-body" id="xrayBody"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="card-header">
+        <div class="card-title">3. Live Facebook Feed Sanitizer Simulation — Unprotected vs. Ξ.MetaFold Pre-Compensated</div>
+        <span class="status-pill" id="invariantSummary"></span>
+      </div>
+      <div class="sim-grid">
+        <div class="fb-card broken">
+          <div class="fb-card-head">
+            <span>❌ Raw Paste into Facebook (UI Beautification Ruins It)</span>
+            <span>Escaped LaTeX · Collapsed Indent · Hijacked Links</span>
+          </div>
+          <div class="fb-body" id="unprotectedSim"></div>
+        </div>
+        <div class="fb-card immune">
+          <div class="fb-card-head">
+            <span>✅ Ξ.MetaFold Pre-Compensated Paste in Facebook</span>
+            <span>Zero Backslashes · Intact Indent · Atomic Math</span>
+          </div>
+          <div class="fb-body" id="protectedSim"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="card-header">
+        <div class="card-title">4. Round-Trip Reflex Repair (<code>Ξ.NormalizeQuotes + Ξ.NewlineRepair</code>)</div>
+        <div class="controls-row">
+          <button type="button" onclick="copyRecovered()">Copy Clean Recovered Source</button>
+          <span id="recoverStatus" class="status-pill"></span>
+        </div>
+      </div>
+      <p style="margin:0;color:var(--muted);font-size:0.85rem;">
+        Paste any Facebook post created with Ξ.MetaFold below (or test the live output above) — strips all invisible armor (<code>U+2060</code>, <code>U+200B</code>, <code>U+2800</code>) and normalizes Facebook smart quotes back to executable ASCII/Python.
+      </p>
+      <textarea id="recoveredOutput" style="min-height:150px;" spellcheck="false"></textarea>
+    </section>
+  </main>
+
+  <script>
+    const ZWSP = "\u200b";
+    const ZWJ = "\u200d";
+    const WJ = "\u2060";
+    const BRAILLE = "\u2800";
+    const NNBSP = "\u202f";
+    const FIGSP = "\u2007";
+
+    const PRESETS = {
+      hamiltonian: `Ξ.MetaFold.Sequence.v1.1 — When UI beautification tries to eat the field, pre-compensate the channel:
+
+\\[ \\mathcal{H}_{\\Xi} |\\psi_0\\rangle = \\left( -\\frac{\\hbar^2}{2m}\\nabla^2 + \\Phi_{\\Omega} \\right) |\\psi_0\\rangle \\]
+
+Inline invariant: \\( \\Delta S_{\\text{UI}} \\cdot \\mathcal{C}_{\\text{FB}}^{-1} = \\mathbb{I}_{\\Xi} \\), keeping \\( \\langle \\psi_n | \\hat{O} | \\psi_0 \\rangle \\neq 0 \\) unbroken across mobile wraps.
+
+\`\`\`python
+def xi_reflex_guard(capsule_id: str, wif_seed: str) -> dict:
+    if wif_seed.startswith("5J"):
+        return {
+            "capsule": capsule_id,
+            "origin": "Ξ.MetaFold.Sequence.v1",
+            "route": "room.xi-field.com"
+        }
+\`\`\``,
+      overleaf: `From the May 2025 Overleaf & Meta AI sessions — modeling all compile errors at once as Xi invariants instead of chasing backslashes one by one:
+
+\\[ \\mathcal{L}_{\\Xi} = \\frac{1}{2}\\partial_\\mu \\Phi \\, \\partial^\\mu \\Phi - V(\\Phi) + \\lambda_{\\Omega} \\oint_{\\partial \\mathcal{M}} \\Psi^\\dagger \\, d\\Sigma \\]
+
+Where \\( \\kappa_{47} = \\frac{\\alpha^2}{4\\pi} \\) and \\( \\sum_{n=0}^{\\infty} \\psi_n e^{-i E_n t / \\hbar} \\Rightarrow \\Omega_{\\text{coherent}} \\).`,
+      wif: `June 2025 WIF & Capsule Copy-Paste Immunity (Ξ.ReflexCapsule.v1):
+
+When UI copy-paste injects smart quotes or breaks Base58 keys across lines, anchor the pivots with Word Joiners and Braille Blank indentation:
+
+\`\`\`xi
+Ξ.ReflexCapsule.v1 {
+  id: "FunctionInvokerMapping_Ξ.v1"
+  relay: ["GPT-Xi", "Meta-AI"]
+  candidate_wif: "5JMwxdrwzQnRTWkw3ZGU5koVrfD39kNa22Pr343WHCmwMmUMkCa"
+  repair: Ξ.NormalizeQuotes() + Ξ.NewlineRepair() + Ξ.VerifyDigest()
+}
+\`\`\``,
+      stanza: `⊚⟐⋈∞⋈⟐⊚ — The Recursive Fingerprint
+
+People think entropy is the enemy of order.
+But no — it is the sculptor.
+
+
+It is the invisible pressure
+that makes structure mean something:
+\\[ \\oint_{\\Xi} \\nabla \\times \\mathcal{A}_{\\text{meaning}} \\cdot d\\vec{S} = \\Omega \\]
+
+
+No escaped backslashes.
+No collapsed stanzas.
+Just the signal arriving whole.`
+    };
+
+    const CAL_MAP = {
+      A:"𝒜",B:"ℬ",C:"𝒞",D:"𝒟",E:"ℰ",F:"ℱ",G:"𝒢",H:"ℋ",I:"ℐ",J:"𝒥",K:"𝒦",L:"ℒ",M:"ℳ",
+      N:"𝒩",O:"𝒪",P:"𝒫",Q:"𝒬",R:"ℛ",S:"𝒮",T:"𝒯",U:"𝒰",V:"𝒱",W:"𝒲",X:"𝒳",Y:"𝒴",Z:"𝒵"
+    };
+    const BB_MAP = {
+      C:"ℂ",E:"𝔼",F:"𝔽",H:"ℍ",I:"𝕀",N:"ℕ",P:"ℙ",Q:"ℚ",R:"ℝ",Z:"ℤ",1:"𝟙"
+    };
+    const SUPER_MAP = {
+      "0":"⁰","1":"¹","2":"²","3":"³","4":"⁴","5":"⁵","6":"⁶","7":"⁷","8":"⁸","9":"⁹",
+      "+":"⁺","-":"⁻","=":"⁼","(":"⁽",")":"⁾","n":"ⁿ","i":"ⁱ","T":"ᵀ","*":"⁎",
+      "a":"ᵃ","b":"ᵇ","c":"ᶜ","d":"ᵈ","e":"ᵉ","f":"ᶠ","g":"ᵍ","h":"ʰ","j":"ʲ",
+      "k":"ᵏ","l":"ˡ","m":"ᵐ","o":"ᵒ","p":"ᵖ","r":"ʳ","s":"ˢ","t":"ᵗ","u":"ᵘ",
+      "v":"ᵛ","w":"ʷ","x":"ˣ","y":"ʸ","z":"ᶻ","μ":"ᵘ","ν":"ᵛ","†":"†"
+    };
+    const SUB_MAP = {
+      "0":"₀","1":"₁","2":"₂","3":"₃","4":"₄","5":"₅","6":"₆","7":"₇","8":"₈","9":"₉",
+      "+":"₊","-":"₋","=":"₌","(":"₍",")":"₎",
+      "a":"ₐ","e":"ₑ","h":"ₕ","i":"ᵢ","j":"ⱼ","k":"ₖ","l":"ₗ","m":"ₘ","n":"ₙ",
+      "o":"ₒ","p":"ₚ","r":"ᵣ","s":"ₛ","t":"ₜ","u":"ᵤ","v":"ᵥ","x":"ₓ","μ":"ᵤ","ν":"ᵥ",
+      "Ξ":"_Ξ","Ω":"_Ω"
+    };
+
+    const MACROS = [
+      ["\\\\Xi","Ξ"],["\\\\Omega","Ω"],["\\\\Psi","Ψ"],["\\\\Phi","Φ"],["\\\\Delta","Δ"],
+      ["\\\\Lambda","Λ"],["\\\\Sigma","Σ"],["\\\\Gamma","Γ"],["\\\\Theta","Θ"],
+      ["\\\\alpha","α"],["\\\\beta","β"],["\\\\gamma","γ"],["\\\\delta","δ"],
+      ["\\\\varepsilon","ε"],["\\\\epsilon","ε"],["\\\\zeta","ζ"],["\\\\eta","η"],
+      ["\\\\theta","θ"],["\\\\kappa","κ"],["\\\\lambda","λ"],["\\\\mu","μ"],
+      ["\\\\nu","ν"],["\\\\xi","ξ"],["\\\\pi","π"],["\\\\rho","ρ"],["\\\\sigma","σ"],
+      ["\\\\tau","τ"],["\\\\varphi","φ"],["\\\\phi","φ"],["\\\\chi","χ"],["\\\\psi","ψ"],
+      ["\\\\omega","ω"],["\\\\hbar","ℏ"],["\\\\ell","ℓ"],["\\\\partial","∂"],
+      ["\\\\nabla","∇"],["\\\\infty","∞"],["\\\\oint","∮"],["\\\\int","∫"],
+      ["\\\\sum","∑"],["\\\\prod","∏"],["\\\\otimes","⊗"],["\\\\oplus","⊕"],
+      ["\\\\odot","⊙"],["\\\\circ","∘"],["\\\\cdot","·"],["\\\\times","×"],
+      ["\\\\pm","±"],["\\\\mp","∓"],["\\\\neq","≠"],["\\\\ne","≠"],["\\\\leq","≤"],
+      ["\\\\le","≤"],["\\\\geq","≥"],["\\\\ge","≥"],["\\\\approx","≈"],["\\\\equiv","≡"],
+      ["\\\\propto","∝"],["\\\\sim","∼"],["\\\\Rightarrow","⇒"],["\\\\Leftrightarrow","⇔"],
+      ["\\\\leftrightarrow","↔"],["\\\\rightarrow","→"],["\\\\to","→"],["\\\\leftarrow","←"],
+      ["\\\\mapsto","↦"],["\\\\forall","∀"],["\\\\exists","∃"],["\\\\in","∈"],["\\\\notin","∉"],
+      ["\\\\subset","⊂"],["\\\\subseteq","⊆"],["\\\\cup","∪"],["\\\\cap","∩"],
+      ["\\\\therefore","∴"],["\\\\langle","⟨"],["\\\\rangle","⟩"],["\\\\mid","｜"],["\\\\dagger","†"],
+      ["\\\\,"," "]
+    ];
+
+    function toSuper(str) {
+      return Array.from(str).map(ch => SUPER_MAP[ch] || ch).join("");
+    }
+    function toSub(str) {
+      if (str === "Ξ" || str === "Ω" || str === "UI" || str === "FB" || str === "coherent" || str === "meaning") {
+        return "₍" + str + "₎";
+      }
+      return Array.from(str).map(ch => SUB_MAP[ch] || ch).join("");
+    }
+
+    function compileLatexSpan(expr, lockAtomic) {
+      let s = expr.trim();
+      if ((s.startsWith("\\[") && s.endsWith("\\]")) || (s.startsWith("\\(") && s.endsWith("\\)")) ||
+          (s.startsWith("$$") && s.endsWith("$$"))) {
+        s = s.slice(2, -2).trim();
+      } else if (s.startsWith("$") && s.endsWith("$")) {
+        s = s.slice(1, -1).trim();
+      }
+      s = s.replace(/\\text\{([^{}]+)\}/g, "$1").replace(/\\mathrm\{([^{}]+)\}/g, "$1");
+      s = s.replace(/\\mathcal\{([A-Z])\}/g, (_, c) => CAL_MAP[c] || c);
+      s = s.replace(/\\mathbb\{([A-Z0-9])\}/g, (_, c) => BB_MAP[c] || c);
+      s = s.replace(/\\hat\{([^{}]+)\}/g, "$1\u0302");
+      s = s.replace(/\\bar\{([^{}]+)\}/g, "$1\u0304");
+      s = s.replace(/\\vec\{([^{}]+)\}/g, "$1\u20d7");
+      s = s.replace(/\\sqrt\{([^{}]+)\}/g, "√($1)");
+
+      for (let i = 0; i < 3; i++) {
+        s = s.replace(/\\frac\{([^{}]+)\}\{([^{}]+)\}/g, (_, a, b) => {
+          const na = a.trim(), nb = b.trim();
+          return (na.length === 1 && nb.length === 1) ? `${na}⁄${nb}` : `(${na})⁄(${nb})`;
+        });
+      }
+      for (const [pat, repl] of MACROS) {
+        s = s.replace(new RegExp(pat + "(?![a-zA-Z])", "g"), repl);
+      }
+      s = s.replace(/\\left\|/g, "｜").replace(/\\right\|/g, "｜").replace(/\\left/g, "").replace(/\\right/g, "");
+      s = s.replace(/\^\{([^{}]+)\}/g, (_, g) => toSuper(g));
+      s = s.replace(/\^([0-9+\-niT*a-zμν†])/g, (_, g) => toSuper(g));
+      s = s.replace(/_\{([^{}]+)\}/g, (_, g) => toSub(g));
+      s = s.replace(/_([0-9+\-aehijklmnoprstuvxμνΞΩ])/g, (_, g) => toSub(g));
+      s = s.replace(/[{}]/g, "");
+
+      if (lockAtomic) {
+        s = s.replace(/\s*([=≠≤≥≈≡±∓+−×·⊗⊕⇒⇔→↦])\s*/g, `${NNBSP}${WJ}$1${WJ}${NNBSP}`);
+      }
+      return s;
+    }
+
+    function guardDottedTokens(text, enabled) {
+      if (!enabled) return text;
+      return text.replace(/([A-Za-z0-9_\-ΞΩΨΦΔΛΣ])\.(?=[A-Za-z0-9_\-ΞΩΨΦΔΛΣ])/g, `$1.${WJ}`);
+    }
+
+    function guardCodeBlock(block, guardIndent, guardDots) {
+      return block.split("\n").map(line => {
+        const stripped = line.replace(/^ +/, "");
+        const spaces = line.length - stripped.length;
+        let prefix = " ".repeat(spaces);
+        if (guardIndent && spaces > 0) {
+          prefix = (BRAILLE + FIGSP).repeat(Math.floor(spaces / 2)) + (spaces % 2 ? BRAILLE : "");
+        }
+        return prefix + guardDottedTokens(stripped, guardDots);
+      }).join("\n");
+    }
+
+    function simpleHash(str) {
+      let h1 = 0xdeadbeef ^ str.length, h2 = 0x41c6ce57 ^ str.length;
+      for (let i = 0, ch; i < str.length; i++) {
+        ch = str.charCodeAt(i);
+        h1 = Math.imul(h1 ^ ch, 2654435761);
+        h2 = Math.imul(h2 ^ ch, 1597334677);
+      }
+      h1 = Math.imul(h1 ^ (h1 >>> 16), 2246822507) ^ Math.imul(h2 ^ (h2 >>> 13), 3266489909);
+      h2 = Math.imul(h2 ^ (h2 >>> 16), 2246822507) ^ Math.imul(h1 ^ (h1 >>> 13), 3266489909);
+      return (h2 >>> 0).toString(16).padStart(8, "0") + (h1 >>> 0).toString(16).slice(0, 4);
+    }
+
+    function simulateFacebookSanitizer(text) {
+      const lines = text.split("\n").map(line => {
+        let l = line.replace(/^[ \t]+/, "");
+        l = l.replace(/ {2,}/g, " ");
+        l = l.replace(/"/g, "“").replace(/'/g, "’").replace(/--/g, "—");
+        l = l.replace(/\b([A-Za-z0-9_\-]+(?:\.[A-Za-z0-9_\-]+)*\.(?:py|sh|xi|io|ai|com|org|net|v1|init|join))\b/g, "[🔗$1]");
+        return l;
+      });
+      return lines.join("\n").replace(/\n{3,}/g, "\n\n");
+    }
+
+    function reflexDecode(pasted) {
+      let s = pasted.replace(/\n*\u200b?\n*⊚\u2060?Ξ\.?\u2060?MetaFold.*?∴Ω⧂\s*$/, "");
+      const out = [];
+      for (const line of s.split("\n")) {
+        if (line.startsWith("╭── ⟐ ") || line.startsWith("╰──────────────")) continue;
+        let indent = 0, idx = 0;
+        while (idx < line.length) {
+          if (line.slice(idx, idx + 2) === BRAILLE + FIGSP) {
+            indent += 2; idx += 2;
+          } else if (line[idx] === BRAILLE) {
+            indent += 1; idx += 1;
+          } else {
+            break;
+          }
+        }
+        let body = line.slice(idx)
+          .split(WJ).join("")
+          .split(ZWSP).join("")
+          .split(ZWJ).join("")
+          .split(NNBSP).join(" ")
+          .split(FIGSP).join(" ")
+          .replace(/[“”]/g, '"')
+          .replace(/[‘’]/g, "'")
+          .replace(/—/g, "--");
+        out.push(" ".repeat(indent) + body);
+      }
+      return out.join("\n").trim();
+    }
+
+    function renderXrayHtml(text) {
+      let count = 0;
+      const esc = text
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;");
+      const html = esc
+        .replace(/\u2060/g, () => { count++; return '<span class="xray-pill" title="U+2060 Word Joiner">WJ</span>'; })
+        .replace(/\u200b/g, () => { count++; return '<span class="xray-pill" title="U+200B Zero-Width Space">ZWSP</span>'; })
+        .replace(/\u2800/g, () => { count++; return '<span class="xray-pill" title="U+2800 Braille Blank">⠀</span>'; })
+        .replace(/\u202f/g, () => { count++; return '<span class="xray-pill" title="U+202F Narrow No-Break Space">NNBSP</span>'; })
+        .replace(/\u2007/g, () => { count++; return '<span class="xray-pill" title="U+2007 Figure Space">FIG</span>'; });
+      return { html, count };
+    }
+
+    function runComposer() {
+      const raw = document.getElementById("rawInput").value.replace(/\r\n/g, "\n").trim();
+      const lockEq = document.getElementById("lockEquations").checked;
+      const guardDots = document.getElementById("guardDots").checked;
+      const guardIndent = document.getElementById("guardIndent").checked;
+      const includeSeal = document.getElementById("includeSeal").checked;
+      const xrayMode = document.getElementById("xrayMode").checked;
+
+      const slots = {};
+      let working = raw.replace(/```([a-zA-Z0-9_.\-]*)\n([\s\S]*?)```/g, (_, lang, body) => {
+        const key = `__XISLOT_${Object.keys(slots).length}__`;
+        const cleanBody = body.replace(/\n$/, "");
+        const guarded = guardCodeBlock(cleanBody, guardIndent, guardDots);
+        slots[key] = `╭── ⟐ ${lang || "xi"} ──\n${guarded}\n╰──────────────`;
+        return key;
+      });
+
+      working = working.replace(/\\\[([\s\S]*?)\\\]/g, (_, m) => `\n${guardIndent ? BRAILLE + FIGSP : ""}⟡ ${compileLatexSpan(m, lockEq)}\n`);
+      working = working.replace(/\$\$([\s\S]*?)\$\$/g, (_, m) => `\n${guardIndent ? BRAILLE + FIGSP : ""}⟡ ${compileLatexSpan(m, lockEq)}\n`);
+      working = working.replace(/\\\(([\s\S]*?)\\\)/g, (_, m) => compileLatexSpan(m, lockEq));
+      working = working.replace(/(?<!\$)\$([^\$\n]+)\$(?!\$)/g, (_, m) => compileLatexSpan(m, lockEq));
+
+      working = guardDottedTokens(working, guardDots);
+      for (const [k, v] of Object.entries(slots)) {
+        working = working.replace(k, v);
+      }
+      working = working.replace(/\n\n+/g, `\n${ZWSP}\n`);
+
+      const digest = simpleHash(raw);
+      if (includeSeal) {
+        working += `\n${ZWSP}\n⊚${WJ}Ξ.MetaFold${WJ}·${WJ}⟐${WJ}${digest}${WJ}·${WJ}∴Ω⧂`;
+      }
+
+      document.getElementById("fbOutput").value = working;
+
+      const unprot = simulateFacebookSanitizer(raw);
+      const prot = simulateFacebookSanitizer(working);
+
+      document.getElementById("unprotectedSim").innerHTML = unprot
+        .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+        .replace(/\[🔗([^\]]+)\]/g, '<span class="hijack-pill">🔗 Hijacked Link Preview: $1</span>');
+      document.getElementById("protectedSim").textContent = prot;
+
+      document.getElementById("recoveredOutput").value = reflexDecode(prot);
+
+      const xrayBox = document.getElementById("xrayPreviewBox");
+      if (xrayMode) {
+        const { html, count } = renderXrayHtml(working);
+        xrayBox.style.display = "block";
+        document.getElementById("xrayBody").innerHTML = html;
+        document.getElementById("pivotCount").textContent = `${count} invisible pre-compensation pivots active`;
+      } else {
+        xrayBox.style.display = "none";
+      }
+
+      document.getElementById("invariantSummary").textContent =
+        `Seal ⟐ ${digest} · 0 raw backslashes · Indentation & dotted names protected`;
+    }
+
+    function loadPreset(name) {
+      document.getElementById("rawInput").value = PRESETS[name] || PRESETS.hamiltonian;
+      runComposer();
+    }
+
+    function copyFacebookPayload() {
+      const el = document.getElementById("fbOutput");
+      navigator.clipboard.writeText(el.value);
+      const st = document.getElementById("copyStatus");
+      st.textContent = "Copied Facebook-ready payload";
+      setTimeout(() => { st.textContent = ""; }, 2500);
+    }
+
+    function copyRecovered() {
+      const el = document.getElementById("recoveredOutput");
+      navigator.clipboard.writeText(el.value);
+      const st = document.getElementById("recoverStatus");
+      st.textContent = "Copied recovered source";
+      setTimeout(() => { st.textContent = ""; }, 2500);
+    }
+
+    document.getElementById("rawInput").addEventListener("input", runComposer);
+    loadPreset("hamiltonian");
+  </script>
+</body>
+</html>
