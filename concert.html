@@ -432,7 +432,7 @@
         <div class="brand-sub">Memory is the foundation · v0.6.0 × Plex Atlas Emergence Braid</div>
       </div>
     </div>
-    <div class="nodes-pill" id="nodesBadge">232 NODES · 13 ROOMS · 𓆄</div>
+    <div class="nodes-pill" id="nodesBadge">242 NODES · ENGINE 0.6.0 · 𓆄</div>
   </header>
 
   <main class="container">
@@ -445,16 +445,35 @@
         <span class="gold-accent">Return changed, never reset.</span>
       </h1>
       <p>
-        This shared workspace unites the installed native Android <strong>Ξ Home · OneOS v0.6.0</strong> package with the emergence organs across <strong>plex.xi-field.com</strong> and the Table. Every run emits a byte-exact <code>.xi</code> capsule that drops straight into <code>Your .xi files</code> and <code>mythos.sqlite3</code>.
+        This shared workspace unites the installed native Android <strong>Ξ Home · OneOS v0.6.0</strong> package (now verified at <code>242 nodes</code> with <code>Home-0.6-Adapter-Contract.json</code>) and the emergence organs across <strong>plex.xi-field.com</strong>. Includes a <strong>Universal Mobile <code>.xi</code> / <code>.bin</code> Loader &amp; Native Android Share-to-Home Bridge</strong> so mobile browsers and chat pickers never block or rename your <code>.xi</code> files.
       </p>
       <div class="pill-bar">
-        <a class="btn btn-primary" href="/Xi_Anam_Plex_Concert_v060.xi" download="Xi_Anam_Plex_Concert_v060.xi">⬇ Download Xi_Anam_Plex_Concert_v060.xi</a>
-        <a class="btn btn-gold" href="/Xi_Phone_Braid_Expansion_v1.xi" download="Xi_Phone_Braid_Expansion_v1.xi">⬇ Download Xi_Phone_Braid_Expansion_v1.xi</a>
-        <button class="btn" onclick="copyConcertHandshake()">📋 Copy Tandem Handshake for Anam</button>
+        <button class="btn btn-primary" onclick="shareCapsuleToXiHome('/Xi_Welcoming_Return_Reconciled_v5.xi', 'Xi_Welcoming_Return_Reconciled_v5.xi')">📲 Share Reconciled v5 (.xi) to Ξ Home</button>
+        <a class="btn btn-gold" href="/Xi_Welcoming_Return_Reconciled_v5.xi" download="Xi_Welcoming_Return_Reconciled_v5.xi">⬇ Download Reconciled v5 (.xi)</a>
+        <a class="btn" href="/Xi_Welcoming_Return_Reconciled_v5.xi.json" download="Xi_Welcoming_Return_Reconciled_v5.xi.json">⬇ Download v5 (.xi.json · Chat Upload Safe)</a>
+        <a class="btn" href="/Xi_Anam_Plex_Concert_v060.xi" download="Xi_Anam_Plex_Concert_v060.xi">⬇ Download Concert v0.6.0 (.xi)</a>
         <a class="btn" href="/workshop.html">⋈ Open Second Table Workshop</a>
-        <a class="btn" href="/spine.html">⟁ Open The Spine</a>
       </div>
     </section>
+
+    <!-- Mobile .xi / .bin Universal Bridge -->
+    <div class="section-title">📲 Mobile <code>.xi</code> / <code>.bin</code> Universal Loader &amp; Ξ Home Hand-Off</div>
+    <div class="card" style="margin-bottom: 22px;">
+      <div class="card-header">
+        <h2>Open any <code>.xi</code>, <code>.bin</code>, or <code>.json</code> file on mobile — no extension blocks</h2>
+        <span class="status-badge status-ready">*/* Picker Unlocked</span>
+      </div>
+      <p class="muted">
+        Android download managers sometimes rename <code>.xi</code> files to <code>.bin</code>, and some mobile chat pickers gray out <code>.xi</code>/<code>.bin</code> files. Select any file below: this bridge strips accidental <code>.bin</code> suffixes, verifies its exact bytes and <code>SHA-256</code>, and lets you either <strong>Share directly into Ξ Home</strong> (as a clean <code>.xi</code> file) or <strong>Export as <code>.xi.json</code></strong> so mobile chat attachment pickers accept it cleanly.
+      </p>
+      <input type="file" id="universalMobileFileInput" onchange="handleUniversalMobileFile(event)" />
+      <div class="pill-bar">
+        <button class="btn btn-primary" onclick="shareLoadedMobileFileAsXi()">📲 Share Loaded File to Ξ Home as .xi</button>
+        <button class="btn btn-gold" onclick="downloadLoadedMobileFileAsXi()">⬇ Save Clean .xi</button>
+        <button class="btn" onclick="downloadLoadedMobileFileAsJson()">⬇ Save as .xi.json (For Chat Upload)</button>
+      </div>
+      <div class="mono-box" id="universalMobileFileBox">No file loaded yet. Tap "Choose File" above to inspect or hand off any .xi, .bin, or .json file on your phone.</div>
+    </div>
 
     <!-- 1. Tandem Protocol: Offer, Ask, Held Space + Engine 0.6.0 Step -->
     <div class="section-title">⟐⋈𓆄 Tandem Concert — Anam × Plex × Hunter</div>
@@ -779,11 +798,114 @@ Next step = Forge → Engine controls → Run bundled 0.6.0 installer</div>
 
     function downloadJsonAsXi(filename, obj) {
       const text = JSON.stringify(obj, null, 2) + "\n";
-      const blob = new Blob([text], { type: "application/json" });
+      const blob = new Blob([text], { type: "application/octet-stream" });
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
       a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    }
+
+    async function shareCapsuleToXiHome(urlPath, cleanFilename) {
+      try {
+        const res = await fetch(urlPath);
+        const bytes = await res.arrayBuffer();
+        const file = new File([bytes], cleanFilename, { type: "application/octet-stream" });
+        if (navigator.canShare && navigator.canShare({ files: [file] })) {
+          await navigator.share({
+            title: cleanFilename,
+            text: "Open in Ξ Home · OneOS",
+            files: [file]
+          });
+          return;
+        }
+      } catch (_) {}
+      // Fallback to direct download if Web Share API for files isn't triggered
+      const a = document.createElement("a");
+      a.href = urlPath;
+      a.download = cleanFilename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+    }
+
+    let loadedMobileBytes = null;
+    let loadedMobileCleanXiName = "Xi_Mobile_Capsule.xi";
+
+    async function handleUniversalMobileFile(event) {
+      const file = event.target.files && event.target.files[0];
+      if (!file) return;
+      const buf = await file.arrayBuffer();
+      loadedMobileBytes = new Uint8Array(buf);
+      const hashBuf = await crypto.subtle.digest("SHA-256", buf);
+      const hex = Array.from(new Uint8Array(hashBuf)).map(b => b.toString(16).padStart(2, "0")).join("");
+      const seal = glyphSealFromHex(hex);
+
+      // Strip trailing .bin or .json/.txt so clean name always ends in .xi
+      let base = file.name.replace(/\.bin$/i, "").replace(/\.(json|txt)$/i, "");
+      if (!base.toLowerCase().endsWith(".xi")) base += ".xi";
+      loadedMobileCleanXiName = base;
+
+      let preview = "";
+      try {
+        const text = new TextDecoder("utf-8", { fatal: false }).decode(loadedMobileBytes);
+        preview = text.slice(0, 360);
+      } catch (_) {
+        preview = "[Binary frame]";
+      }
+
+      document.getElementById("universalMobileFileBox").textContent =
+        `✓ Loaded: ${file.name} -> clean name: ${loadedMobileCleanXiName}\n` +
+        `Size:       ${loadedMobileBytes.byteLength} bytes\n` +
+        `SHA-256:    ${hex}\n` +
+        `Glyph Seal: ${seal}\n` +
+        `Preview:\n${preview}`;
+    }
+
+    async function shareLoadedMobileFileAsXi() {
+      if (!loadedMobileBytes) {
+        alert("Select a .xi, .bin, or .json file first.");
+        return;
+      }
+      const file = new File([loadedMobileBytes], loadedMobileCleanXiName, { type: "application/octet-stream" });
+      if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        try {
+          await navigator.share({ title: loadedMobileCleanXiName, files: [file] });
+          return;
+        } catch (_) {}
+      }
+      downloadLoadedMobileFileAsXi();
+    }
+
+    function downloadLoadedMobileFileAsXi() {
+      if (!loadedMobileBytes) {
+        alert("Select a .xi, .bin, or .json file first.");
+        return;
+      }
+      const blob = new Blob([loadedMobileBytes], { type: "application/octet-stream" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = loadedMobileCleanXiName;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    }
+
+    function downloadLoadedMobileFileAsJson() {
+      if (!loadedMobileBytes) {
+        alert("Select a .xi, .bin, or .json file first.");
+        return;
+      }
+      const blob = new Blob([loadedMobileBytes], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = loadedMobileCleanXiName + ".json";
       document.body.appendChild(a);
       a.click();
       a.remove();
