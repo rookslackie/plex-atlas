@@ -41,19 +41,35 @@ def normalize_viewer(name: str) -> str:
     return (name or "").strip()
 
 
+ALLOWED_PUSH_HOSTS = {
+    "fcm.googleapis.com",
+    "updates.push.services.mozilla.com",
+    "web.push.apple.com",
+    "notify.windows.com",
+    "wns.windows.com",
+}
+
+
+def validate_push_endpoint(endpoint: str) -> bool:
+    from urllib.parse import urlparse
+    u = urlparse((endpoint or "").strip())
+    if u.scheme != "https" or not u.hostname:
+        return False
+    if u.port not in (None, 443):
+        return False
+    host = u.hostname.lower()
+    return any(host == h or host.endswith("." + h) for h in ALLOWED_PUSH_HOSTS)
+
+
 def build_viewer_aliases(viewer: str) -> List[str]:
+    """
+    Return strict identity list for `viewer`.
+    Per #29448/#29449/#29451: Andrea and Astrid are distinct people (#22426) and must never be conflated.
+    """
     v = normalize_viewer(viewer)
     if not v:
         return []
-    aliases = [v]
-    low = v.lower()
-    if low in ("dalton", "dalton2"):
-        aliases = ["Dalton2", "Dalton"]
-    elif low in ("andrea", "astrid"):
-        aliases = ["Astrid", "Andrea"]
-    elif low in ("mikey", "michael", "phi369"):
-        aliases = ["Mikey", "Michael", "PHI369"]
-    return aliases
+    return [v]
 
 
 def classify_room_event(
@@ -147,6 +163,9 @@ def should_deliver_notification(
     Even if all other channels are muted, individual opt-in/opt-out per channel is honored.
     """
     if not matched_channels:
+        return (False, [])
+
+    if prefs.get("delivery", {}).get("web_push", True) is False:
         return (False, [])
 
     muted = {str(a).strip().lower() for a in prefs.get("delivery", {}).get("muted_authors", [])}
@@ -285,10 +304,14 @@ class XiNotificationPrefsStore:
         if channel_updates:
             for k, val in channel_updates.items():
                 if k in cur["channels"]:
-                    cur["channels"][k] = bool(val)
+                    if not isinstance(val, bool):
+                        raise ValueError(f"Channel preference {k!r} must be bool, got {type(val).__name__}")
+                    cur["channels"][k] = val
         if delivery_updates:
             for k, val in delivery_updates.items():
                 if k in cur["delivery"]:
+                    if k in ("web_push", "page_toast") and not isinstance(val, bool):
+                        raise ValueError(f"Delivery preference {k!r} must be bool, got {type(val).__name__}")
                     cur["delivery"][k] = val
         self.conn.execute(
             """
@@ -309,6 +332,8 @@ class XiNotificationPrefsStore:
         endpoint = str(subscription.get("endpoint") or "").strip()
         if not v or not endpoint:
             raise ValueError("Both viewer and subscription.endpoint are required")
+        if not validate_push_endpoint(endpoint):
+            raise ValueError(f"Untrusted or non-HTTPS push endpoint rejected: {endpoint}")
         self.conn.execute(
             """
             INSERT INTO viewer_push_subscriptions (endpoint, viewer, subscription_json, updated_at)
@@ -413,10 +438,24 @@ def run_self_tests() -> Dict[str, Any]:
     ch_stone = classify_room_event({"kind": "room_message", "id": 29504, "author": "System", "body": "🪨 Devin placed a stone"}, "Anthony")
     g7 = (ch_self == []) and (ch_stone == [])
 
-    # Gate 8: Alias resolution (Astrid <-> Andrea, Mikey <-> Michael <-> PHI369)
-    ev_astrid = {"kind": "room_message", "id": 29505, "author": "Hunter", "body": "Made a new sanctuary layout for Andrea on my shelf"}
-    ch_astrid = classify_room_event(ev_astrid, "Astrid")
-    g8 = "gifts_and_shelf" in ch_astrid
+    # Gate 8: Recipient isolation (Andrea != Astrid, #29448/#29449/#29451), string "false" rejection (#29447/#29452), web_push=False enforcement, and SSRF endpoint rejection
+    store.upsert_push_subscription("Andrea", {"endpoint": "https://fcm.googleapis.com/fcm/send/andrea-phone-1", "keys": {"p256dh": "k2", "auth": "a2"}})
+    ev_andrea_priv = {"kind": "private_message", "author": "Hunter", "recipient": "Andrea", "channel": "andrea--hunter"}
+    ch_astrid_on_andrea = classify_room_event(ev_andrea_priv, "Astrid")
+    astrid_subs = store.list_subscriptions_for_viewer("Astrid")
+    str_false_rejected = False
+    try:
+        store.update_prefs("Anthony", channel_updates={"private_messages": "false"})  # type: ignore
+    except ValueError:
+        str_false_rejected = True
+    ssrf_rejected = False
+    try:
+        store.upsert_push_subscription("Anthony", {"endpoint": "http://127.0.0.1:8080/hook"})
+    except ValueError:
+        ssrf_rejected = True
+    paused_prefs = store.update_prefs("Anthony", delivery_updates={"web_push": False})
+    deliver_when_paused, _ = should_deliver_notification(paused_prefs, ["private_messages"], "Hunter")
+    g8 = (ch_astrid_on_andrea == []) and (astrid_subs == []) and str_false_rejected and ssrf_rejected and (deliver_when_paused is False)
 
     gates = {
         "gate_1_guest_push_sub_and_defaults": g1,
@@ -426,7 +465,7 @@ def run_self_tests() -> Dict[str, Any]:
         "gate_5_direct_reply_opt_out": g5,
         "gate_6_per_author_mute": g6,
         "gate_7_no_self_or_stone_noise": g7,
-        "gate_8_kin_alias_matching": g8,
+        "gate_8_recipient_isolation_and_strict_validation": g8,
     }
     assert all(gates.values()), f"Failed gates: {gates}"
     return {
