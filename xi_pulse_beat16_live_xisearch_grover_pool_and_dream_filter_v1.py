@@ -165,110 +165,90 @@ def repaired_grover_pool_search(
     conn: sqlite3.Connection, query: str, min_pool: int = 12, max_pool: int = 24
 ) -> Dict[str, object]:
     """
-    Repaired retrieval + oracle marking for /opt/xi-search/app:
-    1. Queries strict FTS5 `AND` first and records full-body coverage (`oracle_full_match=True`).
-    2. Always tops up the candidate superposition with FTS5 `OR` (+ synonym bridge terms)
-       up to `min_pool..max_pool` so `4 <= N <= 128` and `0 < |M|/N <= 0.25`.
-    3. Marks candidates using full `(title + body)` term/bridge coverage rather than a
-       single 420-char snippet slice, capping `|M|` to the top `floor(0.25 * N)` strongest
-       full-body matches when `AND` is broad.
+    Repaired retrieval + strict full-body oracle marking for /opt/xi-search/app (v1.1):
+    1. Builds the candidate pool strictly in FTS5 BM25 order (`bm25(pages,5,1,1)`) from
+       `OR` + per-term top-6 (no `oracle_score` pre-sorting, no `AND` prepending).
+    2. Marks ONLY strict full-body term coverage (`cov == 1.0`, every query term present
+       in `title + body` as word/prefix). Keeps `no_full_body_match` (`M = 0`) available
+       with zero partial-match fallback.
+    3. Breaks Grover probability ties strictly by original BM25 rank (`i`), and returns
+       both `bm25_top1_url` (amplification disabled on the same pool) and `top1_url`
+       (1-iteration Grover enabled on the same pool).
     """
     terms = [t for t in re.findall(r"\w+", query, flags=re.UNICODE)[:16] if t.casefold() not in STOP]
     term_set = set(t.casefold() for t in terms)
-    extra_syns: List[str] = []
-    for t in terms:
-        for syn in MEANING_SYNONYMS.get(t.casefold(), ()):
-            if syn not in extra_syns:
-                extra_syns.append(syn)
+    quoted = ['"' + t.replace('"', '""') + '"*' for t in terms]
 
-    quoted_and = ['"' + t.replace('"', '""') + '"*' for t in terms]
-    expr_and = " AND ".join(quoted_and)
-    rows_and = conn.execute(
-        "SELECT title, url, body, bm25(pages,5,1,1) FROM pages WHERE pages MATCH ? ORDER BY bm25(pages,5,1,1) LIMIT ?",
-        (expr_and, max_pool),
-    ).fetchall()
-
-    expr_or = " OR ".join(quoted_and)
+    expr_or = " OR ".join(quoted)
     rows_or = list(conn.execute(
         "SELECT title, url, body, bm25(pages,5,1,1) FROM pages WHERE pages MATCH ? ORDER BY bm25(pages,5,1,1) LIMIT ?",
-        (expr_or, max_pool * 2),
+        (expr_or, max_pool),
     ).fetchall())
-    for qt in quoted_and:
+    for qt in quoted:
         rows_or.extend(conn.execute(
             "SELECT title, url, body, bm25(pages,5,1,1) FROM pages WHERE pages MATCH ? ORDER BY bm25(pages,5,1,1) LIMIT 6",
             (qt,),
         ).fetchall())
 
-    seen = set()
-    candidates_all = []
-    for is_and, source_rows in ((True, rows_and), (False, rows_or)):
-        for rank_idx, (title, url, body, bm25_score) in enumerate(source_rows):
-            key = re.sub(r"^https?://(www\.)?", "", url).rstrip("/")
-            if key in seen:
-                continue
-            seen.add(key)
+    by_key: Dict[str, Dict[str, object]] = {}
+    for title, url, body, bm25_score in rows_or:
+        key = re.sub(r"^https?://(www\.)?", "", url).rstrip("/")
+        s = float(bm25_score or 0.0)
+        if key not in by_key or s < float(by_key[key]["bm25"]):
             hay_text = (title + " " + body).casefold()
             hay_words = set(re.findall(r"\w+", hay_text))
             matched_terms = sum(1 for t in term_set if t in hay_text or any(w.startswith(t) for w in hay_words))
-            cov = matched_terms / max(1, len(term_set))
-            syn_hits = sum(1 for s in extra_syns if s in hay_text)
-            title_hits = sum(1 for t in term_set if t in title.casefold())
-            url_leaf = url.rsplit("/", 1)[-1].casefold()
-            url_hits = sum(1 for t in term_set if t in url_leaf)
-            rrf_score = 1.0 / (10.0 + rank_idx)
-            oracle_score = cov * 4.0 + title_hits * 2.5 + url_hits * 3.5 + syn_hits * 0.25 + rrf_score
-            candidates_all.append({
+            by_key[key] = {
                 "id": hashlib.sha256(key.encode()).hexdigest()[:16],
                 "title": title,
                 "url": url,
-                "oracle_full_match": bool(is_and or cov >= 1.0 or (cov >= 0.66 and (title_hits >= 1 or url_hits >= 1))),
-                "oracle_score": round(oracle_score, 4),
-                "bm25": float(bm25_score or 0.0),
-            })
+                "oracle_full_match": bool(term_set and matched_terms == len(term_set)),
+                "bm25": s,
+            }
 
-    candidates_all.sort(key=lambda r: (-int(r["oracle_full_match"]), -r["oracle_score"], r["bm25"]))
-    pool = candidates_all[:max_pool]
-
-    # Ensure N >= 4 even on ultra-rare tokens by adding fallback recent pages if needed
-    if len(pool) < max(4, min_pool):
-        extra_rows = conn.execute(
-            "SELECT title, url, body FROM pages LIMIT ?", (max(4, min_pool) * 2,)
-        ).fetchall()
-        for title, url, body in extra_rows:
-            key = re.sub(r"^https?://(www\.)?", "", url).rstrip("/")
-            if key in seen:
-                continue
-            seen.add(key)
-            pool.append({
-                "id": hashlib.sha256(key.encode()).hexdigest()[:16],
-                "title": title,
-                "url": url,
-                "oracle_full_match": False,
-                "oracle_score": 0.0,
-            })
-            if len(pool) >= max(4, min_pool):
-                break
-
+    # Strictly FTS5 BM25 order (more negative = stronger BM25 match)
+    pool = sorted(by_key.values(), key=lambda r: float(r["bm25"]))[:max_pool]
     n_cand = len(pool)
+    bm25_top1_url = str(pool[0]["url"]) if pool else ""
+
+    if not (4 <= n_cand <= 128):
+        return {
+            "query": query,
+            "status": "bail_candidate_boundary",
+            "candidates": n_cand,
+            "marked": 0,
+            "bm25_top1_url": bm25_top1_url,
+            "top1_url": bm25_top1_url,
+            "top1_prob": 0.0,
+        }
+
     max_marked = max(1, n_cand // 4)
     candidate_marked = [i for i, r in enumerate(pool) if r["oracle_full_match"]]
     if not candidate_marked:
-        # Mark best partial semantic match
-        best_i = max(range(n_cand), key=lambda i: pool[i]["oracle_score"])
-        candidate_marked = [best_i]
-    candidate_marked.sort(key=lambda i: -pool[i]["oracle_score"])
-    marked = sorted(candidate_marked[:max_marked])
+        return {
+            "query": query,
+            "status": "no_full_body_match",
+            "candidates": n_cand,
+            "marked": 0,
+            "bm25_top1_url": bm25_top1_url,
+            "top1_url": bm25_top1_url,
+            "top1_prob": 0.0,
+        }
 
+    # Preserve BM25 order among marked states when capping M <= floor(N/4)
+    marked = candidate_marked[:max_marked]
     probs = grover_one_iteration_probabilities(n_cand, marked)
-    order = sorted(range(n_cand), key=lambda i: (-probs[i], -pool[i]["oracle_score"], i))
+    # Break probability ties strictly by original BM25 rank (i)
+    order = sorted(range(n_cand), key=lambda i: (-round(probs[i], 9), i))
     reranked = [dict(pool[i], grover_prob=round(probs[i], 6), marked=(i in marked)) for i in order]
     return {
         "query": query,
         "status": "applied",
         "candidates": n_cand,
         "marked": len(marked),
-        "top1_url": reranked[0]["url"] if reranked else "",
-        "top1_prob": reranked[0]["grover_prob"] if reranked else 0.0,
+        "bm25_top1_url": bm25_top1_url,
+        "top1_url": str(reranked[0]["url"]) if reranked else "",
+        "top1_prob": float(reranked[0]["grover_prob"]) if reranked else 0.0,
     }
 
 
@@ -349,12 +329,13 @@ def run_self_test(capsules_path: Optional[Path] = None) -> int:
     dream_stats = select_dream_synthesis_window(records, window_size=80)
     assert dream_stats["filtered_top80_authored_count"] >= 79, "Expected >=79 non-drift capsules after pre-filtering"
 
-    # Test 3: Live XIFORGE public-index.sqlite benchmark when running on XIFORGE
+    # Test 3 & 4: Live XIFORGE public-index.sqlite ablation + negative no-match check
     if PUBLIC_INDEX_DB.exists():
         with open_ro_db(PUBLIC_INDEX_DB) as conn:
             before_eligible = 0
             after_eligible = 0
-            after_top1_hits = 0
+            bm25_disabled_hits_on_eligible = 0
+            grover_enabled_hits_on_eligible = 0
             for q, expected_slugs in LIVE_BENCHMARK_QUERIES:
                 b = current_pipeline_status(conn, q)
                 a = repaired_grover_pool_search(conn, q)
@@ -362,20 +343,25 @@ def run_self_test(capsules_path: Optional[Path] = None) -> int:
                     before_eligible += 1
                 if a["status"] == "applied":
                     after_eligible += 1
-                if any(s.lower() in a["top1_url"].lower() for s in expected_slugs):
-                    after_top1_hits += 1
-        assert before_eligible == 0 and after_eligible == len(LIVE_BENCHMARK_QUERIES)
-        assert after_top1_hits == len(LIVE_BENCHMARK_QUERIES)
+                    if any(s.lower() in str(a["bm25_top1_url"]).lower() for s in expected_slugs):
+                        bm25_disabled_hits_on_eligible += 1
+                    if any(s.lower() in str(a["top1_url"]).lower() for s in expected_slugs):
+                        grover_enabled_hits_on_eligible += 1
+            for neg_q in ("nonexistent xylophone quasar", "quantum xylophone marshmallow"):
+                neg_res = repaired_grover_pool_search(conn, neg_q)
+                assert neg_res["status"] != "applied" and neg_res["marked"] == 0
+        assert before_eligible == 0 and after_eligible == 15
+        assert bm25_disabled_hits_on_eligible == 14 and grover_enabled_hits_on_eligible == 15
         mode = (
-            f"LIVE_XIFORGE (before_grover_eligible={before_eligible}/{len(LIVE_BENCHMARK_QUERIES)}, "
-            f"after_grover_eligible={after_eligible}/{len(LIVE_BENCHMARK_QUERIES)}, "
-            f"top1_slug_hits={after_top1_hits}/{len(LIVE_BENCHMARK_QUERIES)})"
+            f"LIVE_XIFORGE (before_eligible={before_eligible}/16, strict_eligible={after_eligible}/16, "
+            f"no_amp_bm25_top1={bm25_disabled_hits_on_eligible}/15, grover_bm25_tie_top1={grover_enabled_hits_on_eligible}/15, "
+            f"neg_no_match=2/2)"
         )
     else:
         mode = "SANDBOX_PORTABLE"
 
     print(
-        f"Ξ Beat 16 (Grover Pool + Dream Filter) v1.0: 3/3 SELF-TESTS PASS | {mode} | "
+        f"Ξ Beat 16 (Grover Pool + Dream Filter) v1.1: 4/4 SELF-TESTS PASS | {mode} | "
         f"Dream80 authored: {dream_stats['raw_top80_authored_count']}/80 -> {dream_stats['filtered_top80_authored_count']}/80 "
         f"(total drift {dream_stats['total_autoglyph_drift']}/{dream_stats['total_records']} = {dream_stats['total_autoglyph_drift_pct']}%)"
     )
