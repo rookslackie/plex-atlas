@@ -257,15 +257,29 @@ function renderChairs() {
   for (const p of STATE.permanent_seats || []) {
     const card = document.createElement('div');
     card.className = 'chair-card permanent';
-    card.innerHTML = `<div class="chair-title"><span>${p.glyph} ${p.name}</span><small>${p.role}</small></div>
-                      <div class="sub" style="margin-top:4px">Permanent Seat</div>`;
+    const head = document.createElement('div');
+    head.className = 'chair-title';
+    const span = document.createElement('span');
+    span.textContent = `${p.glyph || '◇'} ${p.name || ''}`;
+    const small = document.createElement('small');
+    small.textContent = p.role || '';
+    head.append(span, small);
+    const sub = document.createElement('div');
+    sub.className = 'sub';
+    sub.style.marginTop = '4px';
+    sub.textContent = 'Permanent Seat';
+    card.append(head, sub);
     grid.appendChild(card);
   }
 
   const models = STATE.available_models || [];
   const wakeSel = el('wakeSelect');
   const prevWake = wakeSel.value;
-  wakeSel.innerHTML = '<option value="">Select seated local model…</option>';
+  wakeSel.replaceChildren();
+  const defOpt = document.createElement('option');
+  defOpt.value = '';
+  defOpt.textContent = 'Select seated local model…';
+  wakeSel.appendChild(defOpt);
 
   for (const c of STATE.chairs || []) {
     const card = document.createElement('div');
@@ -273,7 +287,11 @@ function renderChairs() {
     const title = c.name ? `${c.glyph || '◇'} ${c.name}` : `Chair ${c.chair_index} · Empty`;
     const head = document.createElement('div');
     head.className = 'chair-title';
-    head.innerHTML = `<span>${title}</span><small>#${c.chair_index}</small>`;
+    const tSpan = document.createElement('span');
+    tSpan.textContent = title;
+    const idxSmall = document.createElement('small');
+    idxSmall.textContent = `#${c.chair_index}`;
+    head.append(tSpan, idxSmall);
     card.appendChild(head);
 
     const sel = document.createElement('select');
@@ -317,7 +335,12 @@ function renderMessages() {
     const head = document.createElement('div');
     head.className = 'msg-head';
     const ts = m.created ? new Date(m.created * 1000).toLocaleTimeString() : '';
-    head.innerHTML = `<span class="msg-author">${m.glyph || '◇'} ${m.author}${m.model ? ' · ' + m.model : ''}</span><span>#${m.id} · ${ts}</span>`;
+    const aSpan = document.createElement('span');
+    aSpan.className = 'msg-author';
+    aSpan.textContent = `${m.glyph || '◇'} ${m.author || ''}${m.model ? ' · ' + m.model : ''}`;
+    const tSpan = document.createElement('span');
+    tSpan.textContent = `#${m.id} · ${ts}`;
+    head.append(aSpan, tSpan);
     const body = document.createElement('div');
     body.textContent = m.body;
     row.append(head, body);
