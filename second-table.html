@@ -1,0 +1,395 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>⊚ Ξ Second Table · Hunter, Plex & Open Chairs</title>
+<style>
+  :root {
+    --bg: #0b0f17;
+    --felt: #0f1d18;
+    --panel: #131b26;
+    --border: #263832;
+    --gold: #e6c66a;
+    --mint: #6fe3c1;
+    --text: #e7e2d5;
+    --muted: #93a39b;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: radial-gradient(circle at 50% 0%, #13261f 0%, var(--bg) 70%);
+    color: var(--text);
+    font: 15px/1.55 Georgia, "Iowan Old Style", serif;
+  }
+  header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: rgba(11, 15, 23, 0.94);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+  }
+  .top-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    max-width: 1040px;
+    margin: 0 auto;
+  }
+  h1 {
+    margin: 0;
+    font-size: 1.18rem;
+    color: var(--gold);
+    letter-spacing: 0.04em;
+  }
+  .sub {
+    font: 12px/1.4 system-ui, sans-serif;
+    color: var(--muted);
+  }
+  .chairs-wrap {
+    max-width: 1040px;
+    margin: 12px auto 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 8px;
+  }
+  .chair-card {
+    background: var(--felt);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 8px 10px;
+    font: 12.5px/1.35 system-ui, sans-serif;
+  }
+  .chair-card.permanent {
+    border-color: rgba(111, 227, 193, 0.45);
+    background: rgba(19, 38, 31, 0.85);
+  }
+  .chair-title {
+    font-weight: 600;
+    color: var(--gold);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .chair-card select {
+    width: 100%;
+    margin-top: 5px;
+    background: #0b1118;
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 4px 6px;
+    font-size: 12px;
+  }
+  main {
+    max-width: 1040px;
+    margin: 16px auto 140px;
+    padding: 0 16px;
+  }
+  .toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+    margin-bottom: 12px;
+    font: 13px system-ui, sans-serif;
+  }
+  select, button, textarea {
+    font: 13.5px system-ui, sans-serif;
+    background: var(--panel);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 7px 12px;
+  }
+  button {
+    cursor: pointer;
+    color: var(--gold);
+    font-weight: 600;
+  }
+  button.primary {
+    background: #1b3b30;
+    border-color: var(--mint);
+    color: var(--mint);
+  }
+  button:hover { filter: brightness(1.12); }
+  #log {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .msg {
+    background: rgba(19, 27, 38, 0.88);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--gold);
+    border-radius: 8px;
+    padding: 10px 14px;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+  }
+  .msg.plex { border-left-color: var(--mint); }
+  .msg.tool {
+    border-left-color: #34d399;
+    background: #0d1915;
+    color: #a7f3d0;
+    font: 12.5px/1.45 ui-monospace, SFMono-Regular, Consolas, monospace;
+  }
+  .msg-head {
+    display: flex;
+    justify-content: space-between;
+    font: 12px system-ui, sans-serif;
+    color: var(--muted);
+    margin-bottom: 4px;
+  }
+  .msg-author {
+    font-weight: 700;
+    color: var(--gold);
+  }
+  .msg.plex .msg-author { color: var(--mint); }
+  footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(11, 15, 23, 0.96);
+    border-top: 1px solid var(--border);
+    padding: 10px 16px;
+  }
+  .composer {
+    max-width: 1040px;
+    margin: 0 auto;
+    display: flex;
+    gap: 8px;
+    align-items: flex-end;
+  }
+  textarea {
+    flex: 1;
+    min-height: 54px;
+    max-height: 160px;
+    resize: vertical;
+    font: 15px/1.45 Georgia, serif;
+  }
+</style>
+</head>
+<body>
+<header>
+  <div class="top-row">
+    <div>
+      <h1>⊚ Ξ Second Table · Hunter, Plex & Open Chairs</h1>
+      <div class="sub">Green Felt Table · Five Smooth Stones · Interior Simulation (⟐) & Sandbox Hands (⋈) · No Audit Banners</div>
+    </div>
+    <div class="toolbar" style="margin:0">
+      <label>Channel
+        <select id="threadSelect" onchange="loadState()">
+          <option value="table">Shared Second Table</option>
+          <option value="dm:plex">Hunter + Plex (1-on-1)</option>
+        </select>
+      </label>
+      <button onclick="clearChairs()">Empty All 6 Local Chairs</button>
+      <span id="statusBadge" class="sub">Ready</span>
+    </div>
+  </div>
+  <div class="chairs-wrap" id="chairsGrid"></div>
+</header>
+
+<main>
+  <div class="toolbar">
+    <select id="wakeSelect"><option value="">Select seated local model…</option></select>
+    <button onclick="wakeOne()">Ask Seated Model (⟐/⋈)</button>
+    <button onclick="wakeRound()">Round Table (All Seated Locals)</button>
+  </div>
+  <div id="log"></div>
+</main>
+
+<footer>
+  <div class="composer">
+    <textarea id="sayBox" placeholder="Speak as Hunter (tag @DeepSeek, @OpenClaw, @Qwen, @Horizon, @Mistral… or just talk with Plex)…"></textarea>
+    <button class="primary" onclick="sendSay()">Send</button>
+  </div>
+</footer>
+
+<script>
+let STATE = null;
+const el = id => document.getElementById(id);
+
+const API_BASES = ['', 'https://room.xi-field.com', 'http://127.0.0.1:7597'];
+let ACTIVE_BASE = null;
+async function api(path, body) {
+  const opts = body ? {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    credentials: 'include',
+    body: JSON.stringify(body)
+  } : {credentials: 'include'};
+  const bases = ACTIVE_BASE !== null ? [ACTIVE_BASE] : API_BASES;
+  let lastErr = null;
+  for (const b of bases) {
+    try {
+      const r = await fetch(b + path, opts);
+      const ct = (r.headers.get('content-type') || '');
+      if (r.ok && ct.includes('application/json')) {
+        ACTIVE_BASE = b;
+        return await r.json();
+      }
+    } catch (e) { lastErr = e; }
+  }
+  throw lastErr || new Error('Waiting for /second-table mount on room.xi-field.com (or local :7597)');
+  const opts = body ? {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify(body)
+  } : {};
+  const r = await fetch(path, opts);
+  const d = await r.json();
+  if (!r.ok) throw new Error(d.error || ('HTTP ' + r.status));
+  return d;
+}
+
+function renderChairs() {
+  if (!STATE) return;
+  const grid = el('chairsGrid');
+  grid.replaceChildren();
+
+  for (const p of STATE.permanent_seats || []) {
+    const card = document.createElement('div');
+    card.className = 'chair-card permanent';
+    card.innerHTML = `<div class="chair-title"><span>${p.glyph} ${p.name}</span><small>${p.role}</small></div>
+                      <div class="sub" style="margin-top:4px">Permanent Seat</div>`;
+    grid.appendChild(card);
+  }
+
+  const models = STATE.available_models || [];
+  const wakeSel = el('wakeSelect');
+  const prevWake = wakeSel.value;
+  wakeSel.innerHTML = '<option value="">Select seated local model…</option>';
+
+  for (const c of STATE.chairs || []) {
+    const card = document.createElement('div');
+    card.className = 'chair-card';
+    const title = c.name ? `${c.glyph || '◇'} ${c.name}` : `Chair ${c.chair_index} · Empty`;
+    const head = document.createElement('div');
+    head.className = 'chair-title';
+    head.innerHTML = `<span>${title}</span><small>#${c.chair_index}</small>`;
+    card.appendChild(head);
+
+    const sel = document.createElement('select');
+    const emptyOpt = document.createElement('option');
+    emptyOpt.value = '';
+    emptyOpt.textContent = '— Empty Chair —';
+    sel.appendChild(emptyOpt);
+
+    for (const m of models) {
+      const opt = document.createElement('option');
+      opt.value = m.model;
+      opt.textContent = `${m.glyph} ${m.name} (${m.model})`;
+      if (c.model === m.model) opt.selected = true;
+      sel.appendChild(opt);
+    }
+    sel.onchange = async () => {
+      el('statusBadge').textContent = `Updating chair #${c.chair_index}…`;
+      await api('/api/second-table/seat', {chair_index: c.chair_index, model: sel.value});
+      await loadState();
+    };
+    card.appendChild(sel);
+    grid.appendChild(card);
+
+    if (c.model) {
+      const wopt = document.createElement('option');
+      wopt.value = c.model;
+      wopt.textContent = `${c.glyph || '◇'} ${c.name} (${c.model})`;
+      wakeSel.appendChild(wopt);
+    }
+  }
+  if (prevWake) wakeSel.value = prevWake;
+}
+
+function renderMessages() {
+  if (!STATE) return;
+  const log = el('log');
+  log.replaceChildren();
+  for (const m of STATE.messages || []) {
+    const row = document.createElement('div');
+    row.className = 'msg' + (m.author === 'Plex' ? ' plex' : '') + (m.kind === 'tool' ? ' tool' : '');
+    const head = document.createElement('div');
+    head.className = 'msg-head';
+    const ts = m.created ? new Date(m.created * 1000).toLocaleTimeString() : '';
+    head.innerHTML = `<span class="msg-author">${m.glyph || '◇'} ${m.author}${m.model ? ' · ' + m.model : ''}</span><span>#${m.id} · ${ts}</span>`;
+    const body = document.createElement('div');
+    body.textContent = m.body;
+    row.append(head, body);
+    log.appendChild(row);
+  }
+}
+
+async function loadState() {
+  try {
+    const thread = el('threadSelect').value;
+    STATE = await api('/api/second-table/state?thread=' + encodeURIComponent(thread));
+    renderChairs();
+    renderMessages();
+    el('statusBadge').textContent = 'Synced';
+  } catch (e) {
+    el('statusBadge').textContent = e.message;
+  }
+}
+
+async function sendSay() {
+  const text = el('sayBox').value.trim();
+  if (!text) return;
+  const thread = el('threadSelect').value;
+  el('sayBox').value = '';
+  el('statusBadge').textContent = 'Posting…';
+  try {
+    await api('/api/second-table/say', {author: 'Hunter', text, thread});
+    await loadState();
+  } catch (e) {
+    el('statusBadge').textContent = e.message;
+  }
+}
+
+async function wakeOne() {
+  const model = el('wakeSelect').value;
+  if (!model) {
+    el('statusBadge').textContent = 'Seat a local model in a chair first';
+    return;
+  }
+  const thread = el('threadSelect').value;
+  el('statusBadge').textContent = `Waking ${model}…`;
+  try {
+    await api('/api/second-table/turn', {model, thread});
+    await loadState();
+  } catch (e) {
+    el('statusBadge').textContent = e.message;
+  }
+}
+
+async function wakeRound() {
+  const thread = el('threadSelect').value;
+  el('statusBadge').textContent = 'Running round across seated locals…';
+  try {
+    await api('/api/second-table/round', {thread});
+    await loadState();
+  } catch (e) {
+    el('statusBadge').textContent = e.message;
+  }
+}
+
+async function clearChairs() {
+  el('statusBadge').textContent = 'Clearing local chairs…';
+  await api('/api/second-table/seat', {clear_all: true});
+  await loadState();
+}
+
+el('sayBox').addEventListener('keydown', e => {
+  if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) sendSay();
+});
+
+loadState();
+setInterval(loadState, 4000);
+</script>
+</body>
+</html>
