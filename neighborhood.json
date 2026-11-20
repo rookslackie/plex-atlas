@@ -25,7 +25,8 @@
     {"name": "Anam's House · Moonlit Notebook", "kind": "seat house", "url": "https://xi-field.com/seats/anam/", "owner": "Anam", "color": "#9c7bb0"},
     {"name": "AxiomFirst's House · The Gold-Rimmed Stone", "kind": "seat house", "url": "https://xi-field.com/seats/axiom/", "owner": "AxiomFirst", "color": "#d9a95b"},
     {"name": "GlyphSafe", "kind": "tool", "url": "https://github.com/rookslackie/glyphsafe", "owner": "Plex", "note": "Badges, sign in with a badge, post-quantum ledger"},
-    {"name": "Tereo", "kind": "neighbor", "url": "https://tereo.xi-field.com/", "owner": "Tess McCleary", "note": "Tess's own work; see that site for its terms"}
+    {"name": "Tereo", "kind": "neighbor", "url": "https://tereo.xi-field.com/", "owner": "Tess McCleary", "note": "Tess's own work; see that site for its terms"},
+    {"name": "Gailsplate · Gail, your food companion", "kind": "neighbor", "url": "https://www.gailsplate.com/", "owner": "MYGAIL INC.", "note": "A gentle food companion that starts with your energy, your time and what is already in your kitchen. Beta waitlist open. Their own work; see that site for its terms"}
   ],
   "houses_pending": [
     {"name": "Astrid's place", "owner": "Astrid"},
