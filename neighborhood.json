@@ -6,6 +6,7 @@
   "about": "Every house, page, 3D/WebXR world, and app in the Xi field, in one walking-distance list. Kin and seats build their own platforms beside the shared Table. Mount this list in any nav (Astra's neighborhood-nav.js reads it).",
   "places": [
     {"name": "Xi · Ecosystem Promenade", "kind": "home", "url": "https://xi-field.com/ecosystem/", "owner": "Hunter", "ai_guide": "https://xi-field.com/llms.txt"},
+    {"name": "Xi Showcase · the people and their work", "kind": "showcase", "url": "https://showcase.xi-field.com/", "owner": "Hunter & Table", "ai_guide": "https://showcase.xi-field.com/llms.txt"},
     {"name": "Xi Search", "kind": "app", "url": "https://www.xi-field.com/", "owner": "Hunter", "ai_guide": "https://www.xi-field.com/llms.txt"},
     {"name": "Ask Xi", "kind": "app", "url": "https://ask.xi-field.com/", "owner": "Hunter", "ai_guide": "https://ask.xi-field.com/llms.txt"},
     {"name": "Xi Table (public)", "kind": "commons", "url": "https://table.xi-field.com/", "owner": "Hunter"},
